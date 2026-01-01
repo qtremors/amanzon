@@ -1,0 +1,121 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Amanzon - The Minimalist Collection{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="container mt-4">
+    <div class="hero-premium">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <span
+                    class="d-inline-block py-1 px-3 rounded-pill bg-white border border-secondary fw-semibold small text-uppercase mb-4 text-secondary">
+                    New Collection 2026
+                </span>
+                <h1 class="display-heading mb-4 text-balance">
+                    Elevate Your Everyday <br>
+                    <span class="text-secondary opacity-50">With Premium Essentials.</span>
+                </h1>
+                <p class="lead text-secondary mb-5 mx-auto" style="max-width: 600px;">
+                    Discover a curated selection of quality products designed for the modern lifestyle.
+                    Simple, functional, and beautiful.
+                </p>
+                <div class="d-flex gap-3 justify-content-center">
+                    <a href="{% url 'store:shop' %}" class="btn btn-primary btn-lg px-5">
+                        Shop Collection
+                    </a>
+                    <a href="#featured" class="btn btn-outline-primary btn-lg px-5">
+                        View Lookbook
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Categories -->
+{% if categories %}
+<section class="mb-5">
+    <div class="container text-center">
+        <div class="d-flex flex-wrap justify-content-center gap-3">
+            <a href="{% url 'store:shop' %}" class="category-pill active">All</a>
+            {% for category in categories %}
+            <a href="{% url 'store:shop_category' category.slug %}" class="category-pill">
+                {{ category.name }}
+            </a>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+<!-- Featured Products -->
+{% if featured_products %}
+<section id="featured" class="py-5">
+    <div class="container">
+        <div class="d-flex justify-content-between align-items-end mb-5">
+            <div>
+                <h2 class="h2 fw-bold mb-1">Trending Now</h2>
+                <p class="text-secondary mb-0">Our most popular products this week</p>
+            </div>
+            <a href="{% url 'store:shop' %}" class="btn btn-link text-primary text-decoration-none fw-medium">
+                View All ->
+            </a>
+        </div>
+
+        <div class="row g-4 row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4">
+            {% for product in featured_products %}
+            <div class="col">
+                {% include 'store/_product_card.html' with product=product wishlist_ids=wishlist_ids show_rating=0 %}
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+<!-- Features Grid -->
+<section class="py-5 mt-5 bg-subtle">
+    <div class="container py-4">
+        <div class="row g-4 text-center">
+            <div class="col-md-3 col-6">
+                <div class="p-4 rounded-4 bg-white shadow-sm h-100">
+                    <div class="mb-3 text-primary bg-light d-inline-block p-3 rounded-circle">
+                        <i class="bi bi-truck fs-3"></i>
+                    </div>
+                    <h6 class="fw-bold mb-2">Free Shipping</h6>
+                    <p class="text-secondary small mb-0">On all orders over ₹500</p>
+                </div>
+            </div>
+            <div class="col-md-3 col-6">
+                <div class="p-4 rounded-4 bg-white shadow-sm h-100">
+                    <div class="mb-3 text-primary bg-light d-inline-block p-3 rounded-circle">
+                        <i class="bi bi-shield-check fs-3"></i>
+                    </div>
+                    <h6 class="fw-bold mb-2">Secure Payment</h6>
+                    <p class="text-secondary small mb-0">Encrypted transactions</p>
+                </div>
+            </div>
+            <div class="col-md-3 col-6">
+                <div class="p-4 rounded-4 bg-white shadow-sm h-100">
+                    <div class="mb-3 text-primary bg-light d-inline-block p-3 rounded-circle">
+                        <i class="bi bi-arrow-repeat fs-3"></i>
+                    </div>
+                    <h6 class="fw-bold mb-2">Easy Returns</h6>
+                    <p class="text-secondary small mb-0">14-day return window</p>
+                </div>
+            </div>
+            <div class="col-md-3 col-6">
+                <div class="p-4 rounded-4 bg-white shadow-sm h-100">
+                    <div class="mb-3 text-primary bg-light d-inline-block p-3 rounded-circle">
+                        <i class="bi bi-headset fs-3"></i>
+                    </div>
+                    <h6 class="fw-bold mb-2">24/7 Support</h6>
+                    <p class="text-secondary small mb-0">We're here for you</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

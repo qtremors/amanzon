@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+
+{% block title %}Wishlist - Amanzon{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <h2 class="fw-bold mb-4">My Wishlist</h2>
+
+    {% if wishlist_items %}
+    <div class="row g-4">
+        {% for item in wishlist_items %}
+        <div class="col-6 col-md-4 col-lg-3">
+            <div class="product-card card h-100">
+                <div class="position-relative">
+                    <a href="{% url 'store:product_detail' item.product.slug %}">
+                        <img src="{{ item.product.image.url }}" class="card-img-top" alt="{{ item.product.name }}">
+                    </a>
+                    <a href="{% url 'store:toggle_wishlist' item.product.id %}" class="wishlist-btn active">
+                        <i class="bi bi-heart-fill"></i>
+                    </a>
+                </div>
+                <div class="card-body">
+                    <h6 class="card-title">
+                        <a href="{% url 'store:product_detail' item.product.slug %}"
+                            class="text-decoration-none text-dark">
+                            {{ item.product.name }}
+                        </a>
+                    </h6>
+                    <span class="price">₹{{ item.product.price }}</span>
+                </div>
+                <div class="card-footer bg-transparent border-0 pt-0">
+                    <a href="{% url 'store:add_to_cart' item.product.id %}" class="btn btn-primary btn-sm w-100">
+                        <i class="bi bi-cart-plus me-1"></i> Add to Cart
+                    </a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="empty-state">
+        <i class="bi bi-heart"></i>
+        <h5>Your wishlist is empty</h5>
+        <p class="text-muted">Start adding products you love to your wishlist!</p>
+        <a href="{% url 'store:shop' %}" class="btn btn-primary">Browse Products</a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

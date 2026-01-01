@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+
+{% block title %}Register - Amanzon{% endblock %}
+
+{% block content %}
+<div class="container py-5 my-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6 col-lg-5">
+            <div class="text-center mb-4">
+                <h2 class="fw-bold">Create Account</h2>
+                <p class="text-secondary">Join us to start shopping today.</p>
+            </div>
+
+            <div class="bg-white rounded-4 shadow-sm border border-subtle p-4 p-md-5">
+                {% if form.errors %}
+                <div
+                    class="alert alert-danger rounded-3 border-danger-subtle bg-danger-subtle text-danger-emphasis mb-4">
+                    {% for field, errors in form.errors.items %}
+                    {% for error in errors %}
+                    <p class="mb-0 small"><i class="bi bi-exclamation-circle me-1"></i> {{ error }}</p>
+                    {% endfor %}
+                    {% endfor %}
+                </div>
+                {% endif %}
+
+                <form method="POST">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label
+                            class="form-label small fw-bold text-secondary text-uppercase tracking-wide">Username</label>
+                        {{ form.username }}
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label small fw-bold text-secondary text-uppercase tracking-wide">Email
+                            Address</label>
+                        {{ form.email }}
+                    </div>
+                    <div class="mb-3">
+                        <label
+                            class="form-label small fw-bold text-secondary text-uppercase tracking-wide">Password</label>
+                        {{ form.password }}
+                    </div>
+                    <div class="mb-4">
+                        <label class="form-label small fw-bold text-secondary text-uppercase tracking-wide">Confirm
+                            Password</label>
+                        {{ form.confirm_password }}
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100 rounded-pill py-2 fw-medium shadow-sm">Create
+                        Account</button>
+                </form>
+
+                <div class="my-4 d-flex align-items-center text-secondary">
+                    <hr class="flex-grow-1 border-secondary opacity-10">
+                    <span class="mx-3 small">or</span>
+                    <hr class="flex-grow-1 border-secondary opacity-10">
+                </div>
+
+                <div class="text-center">
+                    <p class="mb-0 text-secondary">
+                        Already have an account? <a href="{% url 'store:login' %}"
+                            class="fw-bold text-primary text-decoration-none">Sign in</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

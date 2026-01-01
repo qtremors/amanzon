@@ -1,0 +1,88 @@
+{% extends 'base.html' %}
+
+{% block title %}Shop - Amanzon{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-center mb-5">
+        <div>
+            <h1 class="h2 fw-bold mb-2">Shop Collection</h1>
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb mb-0">
+                    <li class="breadcrumb-item"><a href="{% url 'store:index' %}" class="text-secondary text-decoration-none small">Home</a></li>
+                    <li class="breadcrumb-item active text-primary small">Shop</li>
+                    {% if current_category %}
+                    <li class="breadcrumb-item active text-primary small">{{ current_category.name }}</li>
+                    {% endif %}
+                </ol>
+            </nav>
+        </div>
+        <div class="d-flex align-items-center gap-3 mt-3 mt-md-0">
+            <p class="mb-0 text-muted small">{% if query %}Results for "{{ query }}"{% else %}{{ products.paginator.count }} items{% endif %}</p>
+            <form method="GET" action="" id="sort-form">
+                {% if query %}<input type="hidden" name="q" value="{{ query }}">{% endif %}
+                {% if request.GET.min_price %}<input type="hidden" name="min_price" value="{{ request.GET.min_price }}">{% endif %}
+                {% if request.GET.max_price %}<input type="hidden" name="max_price" value="{{ request.GET.max_price }}">{% endif %}
+                <select class="form-select form-select-sm border-0 bg-light rounded-pill px-3 py-2 fw-medium" style="min-width: 140px; cursor: pointer;" name="sort" onchange="this.form.submit()">
+                    <option value="-created_at" {% if request.GET.sort == '-created_at' or not request.GET.sort %}selected{% endif %}>Newest First</option>
+                    <option value="price_low" {% if request.GET.sort == 'price_low' %}selected{% endif %}>Price: Low to High</option>
+                    <option value="price_high" {% if request.GET.sort == 'price_high' %}selected{% endif %}>Price: High to Low</option>
+                    <option value="name" {% if request.GET.sort == 'name' %}selected{% endif %}>Name: A-Z</option>
+                </select>
+            </form>
+        </div>
+    </div>
+    <div class="row g-5">
+        <div class="col-lg-3">
+            <div class="sticky-top" style="top: 100px; z-index: 1;">
+                <div class="mb-5">
+                    <h6 class="text-uppercase tracking-wide fw-bold mb-3 small text-secondary">Categories</h6>
+                    <div class="nav flex-column gap-1">
+                        <a href="{% url 'store:shop' %}" class="nav-link px-0 py-2 d-flex justify-content-between align-items-center {% if not current_category %}text-primary fw-bold{% else %}text-secondary{% endif %}">All Products{% if not current_category %}<i class="bi bi-chevron-right small"></i>{% endif %}</a>
+                        {% for category in categories %}
+                        <a href="{% url 'store:shop_category' category.slug %}" class="nav-link px-0 py-2 d-flex justify-content-between align-items-center {% if current_category.id == category.id %}text-primary fw-bold{% else %}text-secondary{% endif %}">{{ category.name }}{% if current_category.id == category.id %}<i class="bi bi-chevron-right small"></i>{% endif %}</a>
+                        {% endfor %}
+                    </div>
+                </div>
+                <div>
+                    <h6 class="text-uppercase tracking-wide fw-bold mb-3 small text-secondary">Price Range</h6>
+                    <form method="GET" action="">
+                        {% if query %}<input type="hidden" name="q" value="{{ query }}">{% endif %}
+                        {% if request.GET.sort %}<input type="hidden" name="sort" value="{{ request.GET.sort }}">{% endif %}
+                        <div class="row g-2 mb-3">
+                            <div class="col-6"><input type="number" name="min_price" class="form-control form-control-sm bg-light border-0" placeholder="Min" value="{{ request.GET.min_price }}"></div>
+                            <div class="col-6"><input type="number" name="max_price" class="form-control form-control-sm bg-light border-0" placeholder="Max" value="{{ request.GET.max_price }}"></div>
+                        </div>
+                        <button type="submit" class="btn btn-outline-primary btn-sm w-100 rounded-pill">Apply Filter</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-9">
+            {% if products %}
+            <div class="row g-4 row-cols-1 row-cols-sm-2 row-cols-lg-3">
+                {% for product in products %}
+                <div class="col">{% include 'store/_product_card.html' with product=product wishlist_ids=wishlist_ids show_rating=True %}</div>
+                {% endfor %}
+            </div>
+            {% if products.has_other_pages %}
+            <nav class="mt-5">
+                <ul class="pagination justify-content-center gap-2">
+                    {% if products.has_previous %}<li class="page-item"><a class="page-link border-0 rounded-circle d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;" href="?page={{ products.previous_page_number }}{% if request.GET.sort %}&sort={{ request.GET.sort }}{% endif %}"><i class="bi bi-chevron-left"></i></a></li>{% endif %}
+                    {% for num in products.paginator.page_range %}{% if products.number == num %}<li class="page-item active"><span class="page-link border-0 rounded-circle d-flex align-items-center justify-content-center bg-primary text-white" style="width: 40px; height: 40px;">{{ num }}</span></li>{% elif num > products.number|add:'-3' and num < products.number|add:'3' %}<li class="page-item"><a class="page-link border-0 rounded-circle d-flex align-items-center justify-content-center text-secondary" style="width: 40px; height: 40px;" href="?page={{ num }}">{{ num }}</a></li>{% endif %}{% endfor %}
+                    {% if products.has_next %}<li class="page-item"><a class="page-link border-0 rounded-circle d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;" href="?page={{ products.next_page_number }}"><i class="bi bi-chevron-right"></i></a></li>{% endif %}
+                </ul>
+            </nav>
+            {% endif %}
+            {% else %}
+            <div class="empty-state py-5 my-5 text-center">
+                <div class="mb-4 text-secondary opacity-50"><i class="bi bi-search" style="font-size: 4rem;"></i></div>
+                <h4 class="fw-bold text-primary">No products found</h4>
+                <p class="text-secondary mb-4">We couldn't find any products matching your criteria.</p>
+                <a href="{% url 'store:shop' %}" class="btn btn-primary rounded-pill px-4">Clear All Filters</a>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

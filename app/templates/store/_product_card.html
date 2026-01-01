@@ -1,0 +1,63 @@
+{% comment %}
+Product Card Component - Premium Minimalist
+Usage: {% include 'store/_product_card.html' with product=product wishlist_ids=wishlist_ids show_rating=True %}
+{% endcomment %}
+
+<div class="product-card h-100 card-hover">
+    <div class="product-img-wrapper">
+        {% if product.discount_percent > 0 %}
+        <span
+            class="position-absolute top-0 start-0 m-3 badge bg-white text-danger border border-danger-subtle rounded-pill shadow-sm">
+            -{{ product.discount_percent }}%
+        </span>
+        {% endif %}
+
+        <a href="{% url 'store:product_detail' product.slug %}">
+            <img src="{% if product.image %}{{ product.image.url }}{% else %}https://placehold.co/400x400/f3f4f6/9ca3af?text=No+Image{% endif %}"
+                class="product-img" alt="{{ product.name }}">
+        </a>
+
+        <div class="product-actions">
+            <a href="{% url 'store:add_to_cart' product.id %}?next={{ request.path }}{% if request.GET.urlencode %}&{{ request.GET.urlencode }}{% endif %}"
+                class="btn-action" title="Add to Cart">
+                <i class="bi bi-bag-plus"></i>
+            </a>
+
+            {% if user.is_authenticated %}
+            <a href="{% url 'store:toggle_wishlist' product.id %}?next={{ request.path }}{% if request.GET.urlencode %}&{{ request.GET.urlencode }}{% endif %}"
+                class="btn-action {% if product.id in wishlist_ids %}text-danger{% endif %}" title="Wishlist">
+                <i class="bi bi-heart{% if product.id in wishlist_ids %}-fill{% endif %}"></i>
+            </a>
+            {% endif %}
+
+            <a href="{% url 'store:product_detail' product.slug %}" class="btn-action" title="View Details">
+                <i class="bi bi-eye"></i>
+            </a>
+        </div>
+    </div>
+
+    <div class="py-3 px-1 text-center">
+        <div class="small text-secondary text-uppercase tracking-wide mb-1" style="font-size: 0.7rem;">{{
+            product.category.name }}</div>
+        <h6 class="mb-2">
+            <a href="{% url 'store:product_detail' product.slug %}" class="text-reset fw-semibold">
+                {{ product.name }}
+            </a>
+        </h6>
+
+        <div class="d-flex align-items-center justify-content-center gap-2">
+            <span class="fw-bold text-primary">₹{{ product.price }}</span>
+            {% if product.discount_percent > 0 %}
+            <span class="text-muted text-decoration-line-through small">₹{{ product.original_price }}</span>
+            {% endif %}
+        </div>
+
+        {% if show_rating %}
+        <div class="d-flex align-items-center justify-content-center gap-1 mt-2">
+            <i class="bi bi-star-fill text-warning" style="font-size: 0.75rem;"></i>
+            <span class="small fw-medium">{{ product.avg_rating|default:product.average_rating|default:0 }}</span>
+            <span class="small text-muted">({{ product.review_count|default:product.reviews.count }})</span>
+        </div>
+        {% endif %}
+    </div>
+</div>

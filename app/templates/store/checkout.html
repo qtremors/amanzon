@@ -1,0 +1,227 @@
+{% extends 'base.html' %}
+
+{% block title %}Checkout - Amanzon{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row g-5">
+        <!-- Billing Form -->
+        <div class="col-lg-7">
+            <h4 class="fw-bold mb-4">Billing Details</h4>
+            <div class="bg-white p-4 rounded-4 shadow-sm border border-subtle">
+                <form id="checkout-form" method="POST">
+                    {% csrf_token %}
+                    <div class="row g-3">
+                        <h6 class="text-secondary small text-uppercase tracking-wide fw-bold mb-0 mt-2">Contact Info
+                        </h6>
+                        <div class="col-md-6">
+                            <label class="form-label small fw-bold">First Name</label>
+                            {{ form.first_name }}
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label small fw-bold">Last Name</label>
+                            {{ form.last_name }}
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label small fw-bold">Email</label>
+                            {{ form.email }}
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label small fw-bold">Phone</label>
+                            {{ form.phone }}
+                        </div>
+
+                        <div class="col-12 mt-4">
+                            <h6 class="text-secondary small text-uppercase tracking-wide fw-bold mb-1">Shipping Address
+                            </h6>
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label small fw-bold">Address Line 1</label>
+                            {{ form.address_line1 }}
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label small fw-bold">Address Line 2 <span
+                                    class="text-muted fw-normal">(Optional)</span></label>
+                            {{ form.address_line2 }}
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label small fw-bold">City</label>
+                            {{ form.city }}
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label small fw-bold">State</label>
+                            {{ form.state }}
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label small fw-bold">Country</label>
+                            {{ form.country }}
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label small fw-bold">ZIP Code</label>
+                            {{ form.zip_code }}
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Order Summary -->
+        <div class="col-lg-5">
+            <h4 class="fw-bold mb-4">Your Order</h4>
+            <div class="bg-light p-4 rounded-4 sticky-top" style="top: 100px;">
+                <div class="d-flex flex-column gap-3 mb-4">
+                    {% for item in cart_items %}
+                    <div class="d-flex align-items-center justify-content-between">
+                        <div class="d-flex align-items-center gap-3">
+                            <div class="position-relative">
+                                <img src="{{ item.product.image.url }}" alt="{{ item.product.name }}" class="rounded"
+                                    style="width: 50px; height: 50px; object-fit: cover;">
+                                <span
+                                    class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-secondary text-white"
+                                    style="font-size: 0.7rem;">
+                                    {{ item.quantity }}
+                                </span>
+                            </div>
+                            <div>
+                                <h6 class="mb-0 small fw-bold text-dark">{{ item.product.name }}</h6>
+                                <small class="text-secondary">{{ item.product.category.name }}</small>
+                            </div>
+                        </div>
+                        <span class="fw-medium small">₹{{ item.total_price }}</span>
+                    </div>
+                    {% endfor %}
+                </div>
+
+                <hr class="border-secondary opacity-10">
+
+                <div class="d-flex justify-content-between mb-2 text-secondary small">
+                    <span>Subtotal</span>
+                    <span>₹{{ subtotal }}</span>
+                </div>
+                {% if discount > 0 %}
+                <div class="d-flex justify-content-between mb-2 text-success small">
+                    <span>Discount</span>
+                    <span>-₹{{ discount }}</span>
+                </div>
+                {% endif %}
+                <div class="d-flex justify-content-between mb-4 text-secondary small">
+                    <span>Shipping</span>
+                    <span>₹{{ shipping }}</span>
+                </div>
+
+                <div
+                    class="d-flex justify-content-between align-items-center border-top border-secondary border-opacity-10 pt-3 mb-4">
+                    <span class="fw-bold fs-5">Total</span>
+                    <span class="fw-bold fs-4 text-primary">₹{{ total }}</span>
+                </div>
+
+                <button id="pay-button" class="btn btn-primary w-100 py-3 rounded-pill fw-bold shadow-sm">
+                    Pay ₹{{ total }} Securely
+                </button>
+                <div class="text-center mt-3">
+                    <small class="text-muted"><i class="bi bi-lock-fill me-1"></i> Secured by Razorpay</small>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<script>
+    document.getElementById('pay-button').addEventListener('click', function (e) {
+        e.preventDefault();
+
+        // Validate billing form before opening payment
+        var form = document.getElementById('checkout-form');
+        var requiredFields = ['first_name', 'last_name', 'email', 'phone', 'address_line1', 'city', 'state', 'country', 'zip_code'];
+        var isValid = true;
+
+        requiredFields.forEach(function (fieldName) {
+            var field = form.querySelector('[name="' + fieldName + '"]');
+            if (field && !field.value.trim()) {
+                field.classList.add('is-invalid');
+                isValid = false;
+            } else if (field) {
+                field.classList.remove('is-invalid');
+            }
+        });
+
+        if (!isValid) {
+            // Shake effect or toast could go here
+            alert('Please fill in all required billing fields marked with *');
+            // Scroll to top of form
+            form.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            return;
+        }
+
+        // Get current form values for prefill
+        var firstName = form.querySelector('[name="first_name"]').value;
+        var lastName = form.querySelector('[name="last_name"]').value;
+        var email = form.querySelector('[name="email"]').value;
+        var phone = form.querySelector('[name="phone"]').value;
+
+        var options = {
+            "key": "{{ razorpay_key }}",
+            "amount": "{{ razorpay_order.amount }}",
+            "currency": "{{ razorpay_order.currency }}",
+            "name": "Amanon",
+            "description": "Payment for Order",
+            "order_id": "{{ razorpay_order.id }}",
+            "handler": function (response) {
+                // Add billing data to the payment callback form
+                var paymentForm = document.createElement('form');
+                paymentForm.method = 'POST';
+                paymentForm.action = '{% url "store:payment_callback" %}';
+
+                var csrfInput = document.createElement('input');
+                csrfInput.type = 'hidden';
+                csrfInput.name = 'csrfmiddlewaretoken';
+                csrfInput.value = '{{ csrf_token }}';
+                paymentForm.appendChild(csrfInput);
+
+                // Add payment response fields
+                var fields = ['razorpay_payment_id', 'razorpay_order_id', 'razorpay_signature'];
+                fields.forEach(function (field) {
+                    var input = document.createElement('input');
+                    input.type = 'hidden';
+                    input.name = field;
+                    input.value = response[field];
+                    paymentForm.appendChild(input);
+                });
+
+                // Add billing details
+                var billingForm = document.getElementById('checkout-form');
+                var billingInputs = billingForm.querySelectorAll('input, select, textarea');
+                billingInputs.forEach(function (input) {
+                    if (input.name && input.name !== 'csrfmiddlewaretoken') {
+                        var hiddenInput = document.createElement('input');
+                        hiddenInput.type = 'hidden';
+                        hiddenInput.name = 'billing_' + input.name;
+                        hiddenInput.value = input.value;
+                        paymentForm.appendChild(hiddenInput);
+                    }
+                });
+
+                document.body.appendChild(paymentForm);
+                paymentForm.submit();
+            },
+            "prefill": {
+                "name": firstName + ' ' + lastName,
+                "email": email,
+                "contact": phone
+            },
+            "theme": {
+                "color": "#111827"
+            },
+            "modal": {
+                "backdropclose": false
+            }
+        };
+
+        var rzp = new Razorpay(options);
+        rzp.open();
+    });
+</script>
+{% endblock %}
