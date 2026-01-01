@@ -86,8 +86,12 @@ def update_cart(request, item_id):
     
     action = request.POST.get('action')
     if action == 'increase':
-        cart_item.quantity += 1
-        cart_item.save()
+        # BUG-04: Validate stock before increasing
+        if cart_item.quantity >= cart_item.product.stock:
+            messages.warning(request, f'Only {cart_item.product.stock} units of "{cart_item.product.name}" available.')
+        else:
+            cart_item.quantity += 1
+            cart_item.save()
     elif action == 'decrease':
         if cart_item.quantity > 1:
             cart_item.quantity -= 1

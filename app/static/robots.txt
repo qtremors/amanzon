@@ -1,0 +1,12 @@
+# Robots.txt for Amanzon
+
+User-agent: *
+Allow: /
+Disallow: /admin/
+Disallow: /cart/
+Disallow: /checkout/
+Disallow: /orders/
+Disallow: /profile/
+
+# Sitemap (uncomment when available)
+# Sitemap: https://yourdomain.com/sitemap.xml

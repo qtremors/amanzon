@@ -1,14 +1,18 @@
 """Context processor for cart and wishlist counts."""
 
+from django.db.models import Sum
+
+
 def cart_wishlist_count(request):
     """Add cart and wishlist counts to all templates."""
     cart_count = 0
     wishlist_count = 0
     
     if request.user.is_authenticated:
-        # Get cart count
+        # CQ-01: Use aggregation to avoid N+1 query
         if hasattr(request.user, 'cart'):
-            cart_count = request.user.cart.total_items
+            result = request.user.cart.items.aggregate(total=Sum('quantity'))
+            cart_count = result['total'] or 0
         
         # Get wishlist count
         wishlist_count = request.user.wishlist.count()
@@ -17,3 +21,4 @@ def cart_wishlist_count(request):
         'cart_count': cart_count,
         'wishlist_count': wishlist_count,
     }
+

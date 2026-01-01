@@ -57,6 +57,20 @@ def shop(request, category_slug=None):
     if max_price:
         products = products.filter(price__lte=max_price)
     
+    # Rating filter
+    min_rating = request.GET.get('rating')
+    if min_rating:
+        try:
+            min_rating = int(min_rating)
+            products = products.filter(avg_rating__gte=min_rating)
+        except (ValueError, TypeError):
+            pass
+    
+    # In-stock filter
+    in_stock = request.GET.get('in_stock')
+    if in_stock == '1':
+        products = products.filter(stock__gt=0)
+    
     # Sorting
     sort = request.GET.get('sort', '-created_at')
     if sort == 'price_low':
@@ -65,6 +79,8 @@ def shop(request, category_slug=None):
         products = products.order_by('-price')
     elif sort == 'name':
         products = products.order_by('name')
+    elif sort == 'rating':
+        products = products.order_by('-avg_rating')
     else:
         products = products.order_by('-created_at')
     

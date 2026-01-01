@@ -5,6 +5,7 @@ Django settings for Amanzon project.
 import os
 from pathlib import Path
 from dotenv import load_dotenv
+from django.core.exceptions import ImproperlyConfigured
 
 # Load environment variables
 load_dotenv()
@@ -17,9 +18,22 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # SECURITY SETTINGS
 # =============================================================================
 
-SECRET_KEY = os.getenv('SECRET_KEY', 'django-insecure-dev-key-change-in-production')
 DEBUG = os.getenv('DEBUG', 'True').lower() in ('true', '1', 'yes')
+
+# SECRET_KEY: Required in production, fallback only for development
+_secret_key = os.getenv('SECRET_KEY')
+if not _secret_key:
+    if DEBUG:
+        SECRET_KEY = 'django-insecure-dev-key-change-in-production'
+    else:
+        raise ImproperlyConfigured('SECRET_KEY environment variable is required in production')
+else:
+    SECRET_KEY = _secret_key
+
 ALLOWED_HOSTS = [h.strip() for h in os.getenv('ALLOWED_HOSTS', 'localhost,127.0.0.1').split(',')]
+
+# CSRF trusted origins for production (add your domains)
+CSRF_TRUSTED_ORIGINS = [o.strip() for o in os.getenv('CSRF_TRUSTED_ORIGINS', 'http://localhost:8000,http://127.0.0.1:8000').split(',')]
 
 # Production security settings (only apply when DEBUG=False)
 if not DEBUG:
@@ -51,6 +65,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',  # Serve static files in production
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -143,6 +158,7 @@ EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER', '')
 EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD', '')
+DEFAULT_FROM_EMAIL = os.getenv('DEFAULT_FROM_EMAIL', EMAIL_HOST_USER)
 
 
 # =============================================================================
@@ -172,4 +188,41 @@ CACHES = {
         'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
         'LOCATION': 'amanzon-cache',
     }
+}
+
+
+# =============================================================================
+# SHIPPING CONFIGURATION
+# =============================================================================
+
+FREE_SHIPPING_THRESHOLD = int(os.getenv('FREE_SHIPPING_THRESHOLD', '500'))
+SHIPPING_COST = int(os.getenv('SHIPPING_COST', '50'))
+
+
+# =============================================================================
+# LOGGING
+# =============================================================================
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'verbose': {
+            'format': '{levelname} {asctime} {module} {message}',
+            'style': '{',
+        },
+    },
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+            'formatter': 'verbose',
+        },
+    },
+    'loggers': {
+        'store': {
+            'handlers': ['console'],
+            'level': 'INFO',
+            'propagate': True,
+        },
+    },
 }

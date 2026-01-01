@@ -1,45 +1,37 @@
 # Amanzon - Task List
 
+> **Version:** v1.0.0  
 > **Last Updated:** 2026-01-01
-> **Status:** All High Priority Complete ✅
 
 ---
 
-## ✅ Completed
+## 🟢 Future Enhancements
 
-- [x] **Email Verification** - Users receive verification email before activation
-- [x] **Order Cancellation & Refunds** - Stock restoration and Razorpay refund initiation
-- [x] **Rate Limiting** - Applied to Login/Register endpoints (5 req/min)
-- [x] **Session Security** - Verified session fixation protection and HttpOnly cookies
-- [x] **View Refactoring** - Split into `views/auth.py`, `shop.py`, `cart.py`, `orders.py`, `main.py`
-- [x] **Test Consolidation** - All tests in `store/tests/` package (57 tests passing)
-- [x] **Payment Flow Tests** - Checkout and payment callback tests with mocked Razorpay
-- [x] **Database Indexes** - Added to `Product.is_active`, `Product.price`, `Order.status`, `Order.created_at`
-- [x] **Image Optimization** - Auto-resize/compress on upload for User profiles and Product images
+### High Priority
+- [ ] Product variants (size, color options)
+- [ ] Multiple product images per product
+- [ ] Order status update emails (shipped, delivered)
 
----
-
-## 🟡 Medium Priority
-
-### UI/UX
-- [ ] Search autocomplete
-- [ ] Loading states during checkout
-- [ ] Product gallery (multiple images)
-
-### Features
-- [ ] Order tracking integration
+### Medium Priority
+- [ ] REST API endpoints (Django REST Framework)
 - [ ] PDF invoice generation
-- [ ] Wishlist to cart button
+- [ ] Related products section ("You may also like")
+- [ ] Order tracking with carrier integration
+- [ ] Search autocomplete (AJAX)
+- [ ] Tax/GST calculation per region
 
-### Code Quality
-- [ ] Type hints for complex functions
-- [ ] Replace prints with logging
+### Low Priority
+- [ ] Recently viewed products
+- [ ] Product comparison
+- [ ] Multi-currency support
+- [ ] Sitemap.xml generation
+- [ ] Frontend E2E tests
 
 ---
 
-## 🟢 Low Priority
+## 📝 Commands
 
-- [ ] Breadcrumb navigation
-- [ ] Social login (Google/GitHub)
-- [ ] Newsletter subscription
-- [ ] Soft delete for orders/products
+```bash
+uv run python manage.py test store    # Run tests
+uv run python manage.py runserver     # Start dev server
+```

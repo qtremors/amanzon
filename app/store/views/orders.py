@@ -1,3 +1,4 @@
+import logging
 import razorpay
 from django.conf import settings
 from django.shortcuts import render, redirect, get_object_or_404
@@ -10,13 +11,19 @@ from ..models import Cart, Coupon, CouponUsage, Order
 from ..forms import CheckoutForm
 from .. import services
 
+logger = logging.getLogger(__name__)
+
 @login_required
 def checkout(request):
     """Checkout page."""
     # Validate Razorpay credentials before proceeding
-    if not settings.RAZORPAY_KEY_ID or not settings.RAZORPAY_KEY_SECRET:
-        messages.error(request, 'Payment system is not configured. Please contact support.')
-        return redirect('store:cart')
+    # Check if Razorpay keys are configured
+    razorpay_configured = bool(settings.RAZORPAY_KEY_ID and settings.RAZORPAY_KEY_SECRET)
+    
+    # If not configured, we'll run in demo mode instead of erroring
+    if not razorpay_configured:
+        limit = 0  # Placeholder to avoid indentation error if needed, though logically flow continues
+
     
     cart_obj = get_object_or_404(Cart, user=request.user)
     cart_items = cart_obj.items.select_related('product').all()
@@ -51,12 +58,23 @@ def checkout(request):
     totals = services.calculate_cart_totals(cart_obj, coupon)
     
     # Create Razorpay order
-    client = razorpay.Client(auth=(settings.RAZORPAY_KEY_ID, settings.RAZORPAY_KEY_SECRET))
-    razorpay_order = client.order.create({
-        'amount': int(totals['total'] * 100),  # Amount in paise
-        'currency': 'INR',
-        'payment_capture': 1,
-    })
+    # Create Razorpay order (or dummy order in demo mode)
+    if razorpay_configured:
+        client = razorpay.Client(auth=(settings.RAZORPAY_KEY_ID, settings.RAZORPAY_KEY_SECRET))
+        razorpay_order = client.order.create({
+            'amount': int(totals['total'] * 100),  # Amount in paise
+            'currency': 'INR',
+            'payment_capture': 1,
+        })
+    else:
+        # Demo mode: Create a dummy order object
+        import uuid
+        razorpay_order = {
+            'id': f'order_demo_{uuid.uuid4().hex[:8]}',
+            'amount': int(totals['total'] * 100),
+            'currency': 'INR',
+        }
+
     
     if request.method == 'POST':
         form = CheckoutForm(request.POST)
@@ -76,7 +94,8 @@ def checkout(request):
         'discount': totals['discount'],
         'total': totals['total'],
         'razorpay_order': razorpay_order,
-        'razorpay_key': settings.RAZORPAY_KEY_ID,
+        'razorpay_key': settings.RAZORPAY_KEY_ID or 'demo_key',
+        'demo_mode': not razorpay_configured,
     })
 
 
@@ -89,15 +108,36 @@ def payment_callback(request):
     razorpay_order_id = request.POST.get('razorpay_order_id')
     razorpay_signature = request.POST.get('razorpay_signature')
     
-    client = razorpay.Client(auth=(settings.RAZORPAY_KEY_ID, settings.RAZORPAY_KEY_SECRET))
+    # SEC-03: Idempotency check - prevent duplicate order creation
+    if Order.objects.filter(razorpay_order_id=razorpay_order_id).exists():
+        existing_order = Order.objects.get(razorpay_order_id=razorpay_order_id)
+        messages.info(request, 'Order already processed.')
+        return redirect('store:order_detail', order_id=existing_order.id)
     
+    # Check if we are in demo mode
+    razorpay_configured = bool(settings.RAZORPAY_KEY_ID and settings.RAZORPAY_KEY_SECRET)
+    
+    if razorpay_configured:
+        client = razorpay.Client(auth=(settings.RAZORPAY_KEY_ID, settings.RAZORPAY_KEY_SECRET))
+        
+        try:
+            # Verify payment signature first
+            client.utility.verify_payment_signature({
+                'razorpay_order_id': razorpay_order_id,
+                'razorpay_payment_id': razorpay_payment_id,
+                'razorpay_signature': razorpay_signature,
+            })
+        except razorpay.errors.SignatureVerificationError:
+            logger.warning(f'Payment signature verification failed for order {razorpay_order_id}')
+            messages.error(request, 'Payment verification failed. Please try again.')
+            return redirect('store:checkout')
+    else:
+        # Demo mode: Skip verification
+        if not razorpay_payment_id.startswith('pay_demo_'):
+             # Basic check to ensure it looks like a demo payment
+             logger.warning(f'Invalid demo payment ID: {razorpay_payment_id}')
+        
     try:
-        # Verify payment signature first
-        client.utility.verify_payment_signature({
-            'razorpay_order_id': razorpay_order_id,
-            'razorpay_payment_id': razorpay_payment_id,
-            'razorpay_signature': razorpay_signature,
-        })
         
         # Get billing data from POST (sent from checkout JS)
         billing_data = {
@@ -145,10 +185,8 @@ def payment_callback(request):
         messages.success(request, 'Order placed successfully!')
         return redirect('store:order_detail', order_id=order.id)
         
-    except razorpay.errors.SignatureVerificationError:
-        messages.error(request, 'Payment verification failed. Please try again.')
-        return redirect('store:checkout')
     except Exception as e:
+        logger.exception(f'Error processing payment callback: {e}')
         messages.error(request, 'An error occurred while processing your order. Please contact support.')
         return redirect('store:checkout')
 

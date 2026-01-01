@@ -1,107 +1,53 @@
-# Amanzon 🛒
+<p align="center">
+  <img src="app/static/img/amanzon.png" alt="Amanzon Logo" width="100"/>
+</p>
 
-A modern Django e-commerce application with clean design and essential features.
+# Amanzon
+
+A minimalist e-commerce application built with Django 5.
 
 ## Features
 
-- 🔐 User authentication (register, login, password reset with OTP)
-- ✉️ Email verification for new accounts
-- 🛍️ Product catalog with categories, search, and filters
-- 🛒 Shopping cart with quantity management
-- ❤️ Wishlist functionality
-- 💳 Razorpay payment integration
-- 📦 Order management with cancellation & refunds
-- ⭐ Product reviews and ratings
-- 🎟️ Coupon/discount codes
-- 🔒 Rate limiting on auth endpoints
-- 📧 Contact form
+- Product catalog with categories, search, and filtering
+- Shopping cart and wishlist
+- Razorpay payment integration
+- Coupon/discount codes
+- Order history
+- Email verification and OTP password reset
+- Product reviews and ratings
 
 ## Tech Stack
 
-- **Backend:** Django 5.x
-- **Frontend:** Bootstrap 5, HTML, CSS
-- **Database:** SQLite (dev) / MySQL (production)
-- **Payments:** Razorpay
-- **Package Manager:** uv
+- Django 5.2, Python 3.12
+- Bootstrap 5, Vanilla JS
+- SQLite
+- Razorpay API
 
-## Quick Start
+## Local Development
 
-### 1. Clone and navigate
 ```bash
-git clone https://github.com/yourusername/amanzon.git
 cd amanzon/app
-```
-
-### 2. Install dependencies
-```bash
 uv sync
-```
-
-### 3. Configure environment
-```bash
-cp .env.example .env
-# Edit .env with your credentials
-```
-
-### 4. Run migrations
-```bash
+cp .env.example .env  # Edit with your credentials
 uv run python manage.py migrate
 uv run python manage.py createsuperuser
-```
-
-### 5. Start server
-```bash
 uv run python manage.py runserver
 ```
 
-Visit http://localhost:8000
+## Deployment (Render)
 
-## Environment Variables
+1. Create Web Service, connect GitHub repo
+2. Root Directory: `app`
+3. Build Command: `pip install -r requirements.txt && python manage.py collectstatic --noinput && python manage.py migrate && python manage.py create_superuser`
+4. Start Command: `gunicorn amanzon.wsgi:application`
+5. Set environment variables (see `.env.example`)
 
-| Variable | Description |
-|----------|-------------|
-| `SECRET_KEY` | Django secret key |
-| `DEBUG` | Debug mode (True/False) |
-| `RAZORPAY_KEY_ID` | Razorpay API key ID |
-| `RAZORPAY_KEY_SECRET` | Razorpay API secret |
-| `EMAIL_HOST_USER` | Gmail address for SMTP |
-| `EMAIL_HOST_PASSWORD` | Gmail app password |
-
-## Project Structure
-
-```
-app/
-├── amanzon/           # Django project settings
-├── store/             # Main application
-│   ├── models.py      # Database models
-│   ├── views/         # Modular view package
-│   │   ├── auth.py    # Authentication views
-│   │   ├── shop.py    # Shop & product views
-│   │   ├── cart.py    # Cart management
-│   │   ├── orders.py  # Checkout & orders
-│   │   └── main.py    # Contact, misc
-│   ├── tests/         # Test package (53 tests)
-│   ├── forms.py       # Form definitions
-│   ├── services.py    # Business logic
-│   ├── middleware.py  # Rate limiting
-│   └── urls.py        # URL routing
-├── templates/         # HTML templates
-├── static/            # CSS, JS, images
-└── media/             # User uploads
-```
-
-## Running Tests
+## Testing
 
 ```bash
 uv run python manage.py test store
 ```
 
-## Deployment (PythonAnywhere)
+## License
 
-1. Upload code to PythonAnywhere
-2. Create virtualenv with Python 3.11
-3. Install dependencies: `pip install -r requirements.txt`
-4. Configure WSGI to point to `amanzon.wsgi`
-5. Set environment variables in .env
-6. Run `python manage.py collectstatic`
-7. Configure MySQL database
+MIT License

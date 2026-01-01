@@ -4,8 +4,10 @@ Amanzon Business Logic Services
 Centralized business logic for cart calculations, shipping, order creation, etc.
 """
 
+from __future__ import annotations
 from decimal import Decimal
 from io import BytesIO
+from typing import TYPE_CHECKING, Any, Optional
 import razorpay
 from django.conf import settings
 from django.core.mail import send_mail
@@ -13,12 +15,15 @@ from django.core.files.uploadedfile import InMemoryUploadedFile
 from django.db import transaction
 from PIL import Image
 
+if TYPE_CHECKING:
+    from .models import Cart, Coupon, Order, User
+
 # ============================================================================
-# CONSTANTS
+# CONSTANTS (configurable via settings)
 # ============================================================================
 
-FREE_SHIPPING_THRESHOLD = Decimal('500')
-SHIPPING_COST = Decimal('50')
+FREE_SHIPPING_THRESHOLD = Decimal(str(getattr(settings, 'FREE_SHIPPING_THRESHOLD', 500)))
+SHIPPING_COST = Decimal(str(getattr(settings, 'SHIPPING_COST', 50)))
 OTP_EXPIRY_SECONDS = 600  # 10 minutes
 MAX_IMAGE_SIZE = (800, 800)
 IMAGE_QUALITY = 85
@@ -28,7 +33,11 @@ IMAGE_QUALITY = 85
 # IMAGE OPTIMIZATION
 # ============================================================================
 
-def optimize_image(image_field, max_size=MAX_IMAGE_SIZE, quality=IMAGE_QUALITY):
+def optimize_image(
+    image_field: Any,
+    max_size: tuple[int, int] = MAX_IMAGE_SIZE,
+    quality: int = IMAGE_QUALITY
+) -> InMemoryUploadedFile:
     """
     Resize and compress an uploaded image.
     
@@ -69,7 +78,7 @@ def optimize_image(image_field, max_size=MAX_IMAGE_SIZE, quality=IMAGE_QUALITY):
 # SHIPPING & CART CALCULATIONS
 # ============================================================================
 
-def calculate_shipping(subtotal):
+def calculate_shipping(subtotal: Decimal) -> Decimal:
     """
     Calculate shipping cost based on subtotal.
     Free shipping for orders >= FREE_SHIPPING_THRESHOLD.
@@ -79,7 +88,7 @@ def calculate_shipping(subtotal):
     return SHIPPING_COST
 
 
-def calculate_discount(subtotal, coupon):
+def calculate_discount(subtotal: Decimal, coupon: Optional[Coupon]) -> Decimal:
     """
     Calculate discount amount for a coupon.
     Returns 0 if coupon is invalid or doesn't meet minimum order.
@@ -96,7 +105,7 @@ def calculate_discount(subtotal, coupon):
     return (subtotal * coupon.discount_percent) / 100
 
 
-def calculate_cart_totals(cart, coupon=None):
+def calculate_cart_totals(cart: Cart, coupon: Optional[Coupon] = None) -> dict[str, Decimal]:
     """
     Calculate all cart totals including subtotal, shipping, discount, and total.
     
@@ -180,7 +189,7 @@ def create_order_from_cart(user, cart, billing_data, razorpay_order_id, razorpay
     
     # Record coupon usage if applicable
     if coupon:
-        CouponUsage.objects.create(coupon=coupon, user=user)
+        CouponUsage.objects.create(coupon=coupon, user=user, order=order)
     
     # Clear cart
     cart.items.all().delete()
@@ -208,7 +217,7 @@ We'll notify you when your order ships.
 
 Best regards,
 Amanzon Team''',
-            from_email=settings.EMAIL_HOST_USER,
+            from_email=settings.DEFAULT_FROM_EMAIL,
             recipient_list=[order.email],
             fail_silently=True,
         )
@@ -227,30 +236,21 @@ def cancel_order(order):
     if order.status not in ['pending', 'confirmed']:
         return False, 'Order cannot be cancelled in its current state.'
     
-    # Restore stock
-    for item in order.items.select_related('product').all():
-        item.product.stock += item.quantity
-        item.product.save(update_fields=['stock'])
-    
-    # Process Refund if paid
+    # Process Refund FIRST if paid (before restoring stock)
     if order.is_paid and order.razorpay_payment_id:
         try:
             client = razorpay.Client(auth=(settings.RAZORPAY_KEY_ID, settings.RAZORPAY_KEY_SECRET))
-            # Amount is in paise, so multiply by 100. refunds.create expects amount in smallest currency unit.
-            # However, razorpay refund allows partial or full. 
-            # If we don't pass amount, it refunds full amount.
-            # Let's be explicit.
             refund_amount = int(order.total * 100)
             client.payment.refund(order.razorpay_payment_id, {'amount': refund_amount})
         except Exception as e:
-            # Log error but continue with cancellation? 
-            # Or fail? Ideally fail to ensure manual intervention or retry.
-            # For this MVP, let's return False so admin/user knows it failed.
-            # But stock is already restored due to atomic transaction? 
-            # Wait, if this raises exception, transaction mimics rollback.
-            # So returning False and letting exception bubble or raising ours is best.
-            # Using transaction.atomic, raising an error rolls back stock changes too.
-            raise e
+            # Refund failed - do not cancel order
+            return False, f'Refund failed: {str(e)}. Order not cancelled.'
+    
+    # Refund succeeded (or order was unpaid) - now restore stock
+    for item in order.items.select_related('product').all():
+        if item.product:  # Product may have been deleted
+            item.product.stock += item.quantity
+            item.product.save(update_fields=['stock'])
     
     order.status = 'cancelled'
     order.save()
