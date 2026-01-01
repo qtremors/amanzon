@@ -1,5 +1,4 @@
 import secrets
-import uuid
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
 from django.contrib.auth import login, logout, authenticate
@@ -8,6 +7,7 @@ from django.contrib import messages
 from django.core.mail import send_mail
 from django.conf import settings
 from django.utils import timezone
+from django.utils.http import url_has_allowed_host_and_scheme
 
 from ..models import User
 from ..forms import RegisterForm, LoginForm, ProfileForm, PasswordResetForm, PasswordResetConfirmForm
@@ -34,8 +34,11 @@ def login_view(request):
             if user:
                 login(request, user)
                 messages.success(request, f'Welcome back, {user.username}!')
-                next_url = request.GET.get('next', 'store:index')
-                return redirect(next_url)
+                # CQ-03: Validate redirect URL to prevent open redirects
+                next_url = request.GET.get('next', '')
+                if next_url and url_has_allowed_host_and_scheme(next_url, allowed_hosts={request.get_host()}):
+                    return redirect(next_url)
+                return redirect('store:index')
             else:
                 messages.error(request, 'Invalid email or password.')
     else:
@@ -66,7 +69,8 @@ def register(request):
             )
             # Deactivate user until verified
             user.is_active = False
-            user.verification_token = str(uuid.uuid4())
+            # SEC-06: Use cryptographically secure token
+            user.verification_token = secrets.token_urlsafe(32)
             user.save()
             
             # Send verification email
@@ -77,7 +81,7 @@ def register(request):
             send_mail(
                 'Verify your Amanzon account',
                 f'Click the link to verify your email: {verification_link}',
-                settings.EMAIL_HOST_USER,
+                settings.DEFAULT_FROM_EMAIL,
                 [user.email],
                 fail_silently=False,
             )
@@ -143,7 +147,7 @@ def password_reset(request):
                 send_mail(
                     'Amanzon - Password Reset OTP',
                     f'Your OTP for password reset is: {otp}\n\nThis OTP is valid for 10 minutes.',
-                    settings.EMAIL_HOST_USER,
+                    settings.DEFAULT_FROM_EMAIL,
                     [email],
                     fail_silently=False,
                 )

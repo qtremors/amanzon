@@ -115,8 +115,15 @@
                     <span class="fw-bold fs-4 text-primary">₹{{ total }}</span>
                 </div>
 
+                {% if demo_mode %}
+                <div class="alert alert-warning small mb-3">
+                    <i class="bi bi-exclamation-circle-fill me-1"></i> Demo Mode Active: No actual payment will be
+                    processed.
+                </div>
+                {% endif %}
+
                 <button id="pay-button" class="btn btn-primary w-100 py-3 rounded-pill fw-bold shadow-sm">
-                    Pay ₹{{ total }} Securely
+                    {% if demo_mode %}Execute Demo Payment{% else %}Pay ₹{{ total }} Securely{% endif %}
                 </button>
                 <div class="text-center mt-3">
                     <small class="text-muted"><i class="bi bi-lock-fill me-1"></i> Secured by Razorpay</small>
@@ -128,33 +135,81 @@
 {% endblock %}
 
 {% block extra_js %}
+<style>
+    .is-invalid {
+        border-color: #dc3545 !important;
+    }
+
+    .invalid-feedback {
+        display: none;
+        color: #dc3545;
+        font-size: 0.875rem;
+        margin-top: 0.25rem;
+    }
+
+    .is-invalid+.invalid-feedback,
+    .is-invalid~.invalid-feedback {
+        display: block;
+    }
+
+    .btn-loading {
+        pointer-events: none;
+        opacity: 0.7;
+    }
+
+    .spinner-border-sm {
+        width: 1rem;
+        height: 1rem;
+        border-width: 0.15em;
+    }
+</style>
 <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 <script>
     document.getElementById('pay-button').addEventListener('click', function (e) {
         e.preventDefault();
+        var btn = this;
 
         // Validate billing form before opening payment
         var form = document.getElementById('checkout-form');
         var requiredFields = ['first_name', 'last_name', 'email', 'phone', 'address_line1', 'city', 'state', 'country', 'zip_code'];
         var isValid = true;
 
+        // Clear previous validation
+        form.querySelectorAll('.is-invalid').forEach(function (el) {
+            el.classList.remove('is-invalid');
+        });
+
         requiredFields.forEach(function (fieldName) {
             var field = form.querySelector('[name="' + fieldName + '"]');
             if (field && !field.value.trim()) {
                 field.classList.add('is-invalid');
+                // Add feedback message if not exists
+                if (!field.nextElementSibling || !field.nextElementSibling.classList.contains('invalid-feedback')) {
+                    var feedback = document.createElement('div');
+                    feedback.className = 'invalid-feedback';
+                    feedback.textContent = 'This field is required';
+                    field.parentNode.insertBefore(feedback, field.nextSibling);
+                }
                 isValid = false;
-            } else if (field) {
-                field.classList.remove('is-invalid');
             }
         });
 
+        // Email validation
+        var emailField = form.querySelector('[name="email"]');
+        if (emailField && emailField.value && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailField.value)) {
+            emailField.classList.add('is-invalid');
+            isValid = false;
+        }
+
         if (!isValid) {
-            // Shake effect or toast could go here
-            alert('Please fill in all required billing fields marked with *');
-            // Scroll to top of form
             form.scrollIntoView({ behavior: 'smooth', block: 'center' });
             return;
         }
+
+        // Show loading state
+        var originalText = btn.innerHTML;
+        btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>Processing...';
+        btn.classList.add('btn-loading');
 
         // Get current form values for prefill
         var firstName = form.querySelector('[name="first_name"]').value;
@@ -166,10 +221,13 @@
             "key": "{{ razorpay_key }}",
             "amount": "{{ razorpay_order.amount }}",
             "currency": "{{ razorpay_order.currency }}",
-            "name": "Amanon",
+            "name": "Amanzon",
             "description": "Payment for Order",
             "order_id": "{{ razorpay_order.id }}",
             "handler": function (response) {
+                // Keep loading state during form submission
+                btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>Completing Order...';
+
                 // Add billing data to the payment callback form
                 var paymentForm = document.createElement('form');
                 paymentForm.method = 'POST';
@@ -181,47 +239,86 @@
                 csrfInput.value = '{{ csrf_token }}';
                 paymentForm.appendChild(csrfInput);
 
-                // Add payment response fields
-                var fields = ['razorpay_payment_id', 'razorpay_order_id', 'razorpay_signature'];
-                fields.forEach(function (field) {
+                // Add Razorpay payment details
+                var fields = {
+                    'razorpay_payment_id': response.razorpay_payment_id,
+                    'razorpay_order_id': response.razorpay_order_id,
+                    'razorpay_signature': response.razorpay_signature
+                };
+
+                for (var key in fields) {
                     var input = document.createElement('input');
                     input.type = 'hidden';
-                    input.name = field;
-                    input.value = response[field];
+                    input.name = key;
+                    input.value = fields[key];
                     paymentForm.appendChild(input);
-                });
+                }
 
-                // Add billing details
-                var billingForm = document.getElementById('checkout-form');
-                var billingInputs = billingForm.querySelectorAll('input, select, textarea');
-                billingInputs.forEach(function (input) {
-                    if (input.name && input.name !== 'csrfmiddlewaretoken') {
-                        var hiddenInput = document.createElement('input');
-                        hiddenInput.type = 'hidden';
-                        hiddenInput.name = 'billing_' + input.name;
-                        hiddenInput.value = input.value;
-                        paymentForm.appendChild(hiddenInput);
+                // Add billing details from the main form
+                var billingFields = ['first_name', 'last_name', 'email', 'phone', 'address_line1', 'address_line2', 'city', 'state', 'country', 'zip_code'];
+                billingFields.forEach(function (fieldName) {
+                    var input = document.createElement('input');
+                    input.type = 'hidden';
+                    input.name = 'billing_' + fieldName;
+                    var field = form.querySelector('[name="' + fieldName + '"]');
+                    if (field) {
+                        input.value = field.value;
                     }
+                    paymentForm.appendChild(input);
                 });
 
                 document.body.appendChild(paymentForm);
                 paymentForm.submit();
             },
             "prefill": {
-                "name": firstName + ' ' + lastName,
+                "name": firstName + " " + lastName,
                 "email": email,
                 "contact": phone
             },
             "theme": {
-                "color": "#111827"
+                "color": "#0d6efd"
             },
             "modal": {
-                "backdropclose": false
+                "ondismiss": function () {
+                    btn.innerHTML = originalText;
+                    btn.classList.remove('btn-loading');
+                }
             }
         };
 
-        var rzp = new Razorpay(options);
-        rzp.open();
+        // Check for Demo Mode
+        // Check for Demo Mode
+        var isDemoMode = "{{ demo_mode }}" === "True";
+
+        if (isDemoMode) {
+            // Simulate payment flow
+            setTimeout(function () {
+                var mockResponse = {
+                    razorpay_payment_id: 'pay_demo_' + Math.random().toString(36).substr(2, 9),
+                    razorpay_order_id: "{{ razorpay_order.id }}",
+                    razorpay_signature: 'demo_signature'
+                };
+                options.handler(mockResponse);
+            }, 1500); // 1.5s delay to simulate processing
+        } else {
+            // Initialize Razorpay
+            var rzp1 = new Razorpay(options);
+            rzp1.on('payment.failed', function (response) {
+                alert('Payment Failed: ' + response.error.description);
+                btn.innerHTML = originalText;
+                btn.classList.remove('btn-loading');
+            });
+            rzp1.open();
+        }
+    });
+
+    // Real-time validation on blur
+    document.getElementById('checkout-form').querySelectorAll('input').forEach(function (input) {
+        input.addEventListener('blur', function () {
+            if (this.value.trim()) {
+                this.classList.remove('is-invalid');
+            }
+        });
     });
 </script>
 {% endblock %}
