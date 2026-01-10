@@ -3,6 +3,7 @@ Management command to migrate existing local media files to Supabase Storage.
 """
 import os
 from django.core.management.base import BaseCommand
+from django.core.files.base import ContentFile
 from django.conf import settings
 from store.models import Product, User
 
@@ -34,8 +35,8 @@ class Command(BaseCommand):
                             with open(local_path, 'rb') as f:
                                 file_content = f.read()
                             
-                            # Upload to Supabase
-                            storage._save(product.image.name, file_content)
+                            # Upload to Supabase using public API
+                            storage.save(product.image.name, ContentFile(file_content))
                             self.stdout.write(self.style.SUCCESS(f'  ✓ {product.name}'))
                             migrated += 1
                         else:
@@ -55,11 +56,13 @@ class Command(BaseCommand):
                         with open(local_path, 'rb') as f:
                             file_content = f.read()
                         
-                        storage._save(user.profile_picture.name, file_content)
+                        # Upload to Supabase using public API
+                        storage.save(user.profile_picture.name, ContentFile(file_content))
                         self.stdout.write(self.style.SUCCESS(f'  ✓ {user.username}'))
                         migrated += 1
                     else:
                         self.stdout.write(self.style.WARNING(f'  ⚠ {user.username}: Local file not found'))
+                        failed += 1
             except Exception as e:
                 self.stdout.write(self.style.ERROR(f'  ✗ {user.username}: {e}'))
                 failed += 1
