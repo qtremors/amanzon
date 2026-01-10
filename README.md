@@ -1,53 +1,89 @@
 <p align="center">
-  <img src="app/static/img/amanzon.png" alt="Amanzon Logo" width="100"/>
+  <img src="app/static/img/amanzon.png" alt="Amanzon Logo" width="120"/>
 </p>
 
-# Amanzon
+<h1 align="center">Amanzon</h1>
 
-A minimalist e-commerce application built with Django 5.
+<p align="center">
+  A modern, minimalist e-commerce platform built with Django 5
+</p>
+
+<p align="center">
+  <img src="https://img.shields.io/badge/Django-5.2-092E20?logo=django" alt="Django">
+  <img src="https://img.shields.io/badge/Python-3.12-3776AB?logo=python&logoColor=white" alt="Python">
+  <img src="https://img.shields.io/badge/Supabase-PostgreSQL-3ECF8E?logo=supabase&logoColor=white" alt="Supabase">
+  <img src="https://img.shields.io/badge/Bootstrap-5.3-7952B3?logo=bootstrap&logoColor=white" alt="Bootstrap">
+</p>
+
+---
 
 ## Features
 
-- Product catalog with categories, search, and filtering
-- Shopping cart and wishlist
-- Razorpay payment integration
-- Coupon/discount codes
-- Order history
-- Email verification and OTP password reset
-- Product reviews and ratings
+### 🛍️ Shopping Experience
+- Product catalog with categories, subcategories, search & filtering
+- Shopping cart with quantity management
+- Wishlist functionality
+- Product reviews and ratings (1-5 stars)
+
+### 💳 Payments & Orders
+- Razorpay payment integration (with demo mode for testing)
+- Coupon/discount code system with usage tracking
+- Order history and status tracking
+- Order cancellation with automatic stock restoration
+
+### 🔐 Authentication & Security
+- Email verification for new accounts
+- OTP-based password reset via email
+- Profile management with avatar upload
+- Rate limiting on authentication endpoints
+- CSRF protection, secure cookies, HTTPS enforcement
+
+### 🛠️ Technical Highlights
+- Service layer architecture for business logic
+- Custom storage backend for Supabase
+- Image optimization on upload (auto-resize, compression)
+- Database indexes on frequently queried fields
+- Comprehensive test suite (57+ tests)
+
+---
 
 ## Tech Stack
 
-- Django 5.2, Python 3.12
-- Bootstrap 5, Vanilla JS
-- Supabase (PostgreSQL + Storage)
-- Razorpay API
+| Category | Technology |
+|----------|------------|
+| **Backend** | Django 5.2, Python 3.12 |
+| **Frontend** | Bootstrap 5, Vanilla JS |
+| **Database** | Supabase PostgreSQL |
+| **Storage** | Supabase Storage |
+| **Payments** | Razorpay API |
 
-## Local Development
+---
 
-```bash
-cd amanzon/app
-uv sync
-cp .env.example .env  # Edit with your credentials
-uv run python manage.py migrate
-uv run python manage.py createsuperuser
-uv run python manage.py runserver
+## Project Structure
+
+```
+amanzon/
+├── app/
+│   ├── amanzon/          # Django project settings
+│   ├── store/            # Main application
+│   │   ├── models.py     # 12 database models
+│   │   ├── views/        # View modules
+│   │   ├── services.py   # Business logic layer
+│   │   └── storage.py    # Supabase storage backend
+│   ├── templates/        # HTML templates
+│   └── static/           # CSS, JS, images
+├── CHANGELOG.md
+└── README.md
 ```
 
-## Deployment (Render)
-
-1. Create Web Service, connect GitHub repo
-2. Root Directory: `app`
-3. Build Command: `pip install -r requirements.txt && python manage.py collectstatic --noinput && python manage.py migrate && python manage.py create_superuser`
-4. Start Command: `gunicorn amanzon.wsgi:application`
-5. Set environment variables (see `.env.example`)
-
-## Testing
-
-```bash
-uv run python manage.py test store
-```
+---
 
 ## License
 
 MIT License
+
+---
+
+<p align="center">
+  Made with ❤️ by <a href="https://github.com/qtremors">qtremors</a>
+</p>
