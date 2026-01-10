@@ -5,3 +5,8 @@ python-dotenv>=1.2.1
 razorpay>=2.0.0
 gunicorn>=23.0.0
 whitenoise>=6.8.0
+
+# Database & Storage (Supabase)
+dj-database-url>=2.3.0
+psycopg2-binary>=2.9.10
+supabase>=2.0.0

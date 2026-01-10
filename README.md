@@ -20,7 +20,7 @@ A minimalist e-commerce application built with Django 5.
 
 - Django 5.2, Python 3.12
 - Bootstrap 5, Vanilla JS
-- SQLite
+- Supabase (PostgreSQL + Storage)
 - Razorpay API
 
 ## Local Development

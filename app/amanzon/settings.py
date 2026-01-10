@@ -6,6 +6,7 @@ import os
 from pathlib import Path
 from dotenv import load_dotenv
 from django.core.exceptions import ImproperlyConfigured
+import dj_database_url
 
 # Load environment variables
 load_dotenv()
@@ -97,14 +98,14 @@ WSGI_APPLICATION = 'amanzon.wsgi.application'
 
 
 # =============================================================================
-# DATABASE
+# DATABASE (Supabase PostgreSQL or SQLite fallback)
 # =============================================================================
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
+    'default': dj_database_url.config(
+        default=f"sqlite:///{BASE_DIR / 'db.sqlite3'}",
+        conn_max_age=600
+    )
 }
 
 
@@ -146,6 +147,15 @@ STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
+
+# Supabase Storage Configuration
+SUPABASE_URL = os.getenv('SUPABASE_URL', '')
+SUPABASE_SERVICE_ROLE_KEY = os.getenv('SUPABASE_SERVICE_ROLE_KEY', '')
+SUPABASE_BUCKET = os.getenv('SUPABASE_BUCKET', 'media')
+
+# Use Supabase Storage for media files in production
+if SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY:
+    DEFAULT_FILE_STORAGE = 'store.storage.SupabaseStorage'
 
 
 # =============================================================================
