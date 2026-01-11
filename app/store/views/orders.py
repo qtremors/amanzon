@@ -23,7 +23,8 @@ def checkout(request):
     # Check if Razorpay keys are configured
     razorpay_configured = bool(settings.RAZORPAY_KEY_ID and settings.RAZORPAY_KEY_SECRET)
     
-    cart_obj = get_object_or_404(Cart, user=request.user)
+    # H2: Use get_or_create instead of get_object_or_404 to handle users without cart
+    cart_obj, _ = Cart.objects.get_or_create(user=request.user)
     cart_items = cart_obj.items.select_related('product').all()
     
     if not cart_items.exists():

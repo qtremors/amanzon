@@ -5,13 +5,22 @@ from .models import (
     Wishlist, Coupon, CouponUsage, Order, OrderItem, Review, ContactMessage
 )
 
+# M8: Inline for viewing user addresses in admin
+class AddressInline(admin.TabularInline):
+    model = Address
+    extra = 0
+    fields = ['label', 'first_name', 'last_name', 'city', 'state', 'is_default']
+    readonly_fields = ['label']
+
 
 @admin.register(User)
 class UserAdmin(BaseUserAdmin):
     list_display = ['username', 'email', 'first_name', 'last_name', 'is_staff']
+    inlines = [AddressInline]
     fieldsets = BaseUserAdmin.fieldsets + (
         ('Profile', {'fields': ('profile_picture',)}),
     )
+
 
 
 @admin.register(Address)

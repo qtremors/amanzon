@@ -151,6 +151,20 @@ class ContactForm(forms.Form):
         'placeholder': 'Your message',
         'rows': 5,
     }))
+    # M6: Honeypot field for spam protection (should remain empty)
+    website = forms.CharField(required=False, widget=forms.TextInput(attrs={
+        'class': 'form-control',
+        'style': 'position: absolute; left: -9999px;',  # Hide from users
+        'tabindex': '-1',
+        'autocomplete': 'off',
+    }))
+
+    def clean(self):
+        cleaned_data = super().clean()
+        # M6: If honeypot field is filled, it's likely a bot
+        if cleaned_data.get('website'):
+            raise forms.ValidationError('Spam detected.')
+        return cleaned_data
 
 
 class ReviewForm(forms.Form):

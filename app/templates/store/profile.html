@@ -26,8 +26,7 @@
                 <div class="p-5">
                     <div class="d-flex justify-content-between align-items-center mb-4">
                         <h5 class="fw-bold mb-0">Account Details</h5>
-                        <span class="badge bg-light text-secondary border border-subtle">Member since {{
-                            user.date_joined|date:"M Y" }}</span>
+                        <span class="badge bg-light text-secondary border border-subtle">Member since {{ user.date_joined|date:"M Y" }}</span>
                     </div>
 
                     <form method="POST" enctype="multipart/form-data">
@@ -86,8 +85,7 @@
                                 class="border rounded-3 p-3 h-100 {% if address.is_default %}border-primary bg-primary bg-opacity-10{% endif %}">
                                 <div class="d-flex justify-content-between align-items-start mb-2">
                                     <div>
-                                        <span class="badge bg-secondary-subtle text-secondary rounded-pill">{{
-                                            address.label }}</span>
+                                        <span class="badge bg-secondary-subtle text-secondary rounded-pill">{{ address.label }}</span>
                                         {% if address.is_default %}
                                         <span class="badge bg-primary rounded-pill ms-1">Default</span>
                                         {% endif %}

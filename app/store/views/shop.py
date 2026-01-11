@@ -4,6 +4,7 @@ from django.views.decorators.http import require_POST
 from django.contrib import messages
 from django.core.paginator import Paginator
 from django.db.models import Q, Count, Avg
+from django.utils.http import url_has_allowed_host_and_scheme
 
 from ..models import Category, Product, Wishlist, Review
 from ..forms import ReviewForm
@@ -153,7 +154,10 @@ def toggle_wishlist(request, product_id):
     else:
         messages.success(request, f'Added "{product.name}" to wishlist.')
     
-    next_url = request.GET.get('next', request.META.get('HTTP_REFERER', 'store:shop'))
+    # SEC-02: Validate redirect URL to prevent open redirect
+    next_url = request.GET.get('next') or request.META.get('HTTP_REFERER', '')
+    if not next_url or not url_has_allowed_host_and_scheme(next_url, allowed_hosts={request.get_host()}):
+        next_url = 'store:shop'
     return redirect(next_url)
 
 

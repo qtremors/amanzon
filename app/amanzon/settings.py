@@ -196,6 +196,14 @@ SESSION_COOKIE_AGE = 60 * 60 * 24 * 14  # 2 weeks
 # =============================================================================
 # CACHE (for rate limiting)
 # =============================================================================
+# NOTE (H6): LocMemCache is per-process and won't sync across Gunicorn workers.
+# For production with multiple workers, use Redis:
+#   CACHES = {
+#       'default': {
+#           'BACKEND': 'django.core.cache.backends.redis.RedisCache',
+#           'LOCATION': os.getenv('REDIS_URL', 'redis://localhost:6379'),
+#       }
+#   }
 
 CACHES = {
     'default': {
@@ -205,12 +213,16 @@ CACHES = {
 }
 
 
+
 # =============================================================================
 # SHIPPING CONFIGURATION
 # =============================================================================
 
 FREE_SHIPPING_THRESHOLD = int(os.getenv('FREE_SHIPPING_THRESHOLD', '500'))
 SHIPPING_COST = int(os.getenv('SHIPPING_COST', '50'))
+
+# H7: Configurable country default
+DEFAULT_COUNTRY = os.getenv('DEFAULT_COUNTRY', 'India')
 
 # Token expiry settings
 VERIFICATION_TOKEN_EXPIRY_HOURS = 24

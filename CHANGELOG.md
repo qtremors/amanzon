@@ -5,6 +5,36 @@ All notable changes to Amanzon will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.2.5] - 2026-01-11
+
+### Added
+- Custom 404 and 500 error pages with branded design
+- AddressInline in Django admin for user management
+- Honeypot field in contact form for spam protection
+- `loading="lazy"` on all product images for faster page loads
+- Redis cache configuration note for production rate limiting
+- `DEFAULT_COUNTRY` setting for configurable country default
+
+### Changed
+- Supabase client now uses lazy initialization (faster startup)
+- `SupabaseStorage.size()` now returns actual file size from metadata
+- Product image field made optional (`blank=True, null=True`)
+
+### Fixed
+- Open redirect vulnerabilities in cart and wishlist views
+- Race condition in stock deduction using F() expressions
+- OTP brute force vulnerability (5 attempts max)
+- Cart handling in checkout using `get_or_create()`
+- Email sending failures now handled gracefully
+- Pagination now preserves all filter parameters
+- Template syntax errors in shop.html
+- Footer copyright duplication removed
+
+### Security
+- URL validation for all redirect URLs
+- Contact form spam protection with honeypot
+- Stock re-validation inside atomic transaction
+
 ## [1.2.0] - 2026-01-11
 
 ### Added

@@ -80,15 +80,27 @@ def register(request):
                 reverse('store:verify_email', kwargs={'token': user.verification_token})
             )
             
-            send_mail(
-                'Verify your Amanzon account',
-                f'Click the link to verify your email: {verification_link}',
-                settings.DEFAULT_FROM_EMAIL,
-                [user.email],
-                fail_silently=False,
-            )
-            
-            return redirect('store:verification_sent')
+            # H3: Handle email failures gracefully
+            try:
+                send_mail(
+                    'Verify your Amanzon account',
+                    f'Click the link to verify your email: {verification_link}',
+                    settings.DEFAULT_FROM_EMAIL,
+                    [user.email],
+                    fail_silently=False,
+                )
+                return redirect('store:verification_sent')
+            except Exception:
+                # If email fails, activate user anyway and show message
+                user.is_active = True
+                user.verification_token = None
+                user.verification_token_created_at = None
+                user.save()
+                messages.warning(
+                    request, 
+                    'Account created but verification email failed. You can login directly.'
+                )
+                return redirect('store:login')
     else:
         form = RegisterForm()
     
@@ -186,6 +198,16 @@ def password_reset_confirm(request):
     if not email:
         return redirect('store:password_reset')
     
+    # C5: Track OTP attempts to prevent brute force
+    otp_attempts = request.session.get('otp_attempts', 0)
+    max_attempts = 5
+    
+    if otp_attempts >= max_attempts:
+        messages.error(request, 'Too many failed attempts. Please request a new OTP.')
+        request.session.pop('reset_email', None)
+        request.session.pop('otp_attempts', None)
+        return redirect('store:password_reset')
+    
     if request.method == 'POST':
         form = PasswordResetConfirmForm(request.POST)
         if form.is_valid():
@@ -194,7 +216,10 @@ def password_reset_confirm(request):
                 
                 # Check OTP
                 if user.otp != form.cleaned_data['otp']:
-                    messages.error(request, 'Invalid OTP.')
+                    # C5: Increment failed attempt counter
+                    request.session['otp_attempts'] = otp_attempts + 1
+                    remaining = max_attempts - otp_attempts - 1
+                    messages.error(request, f'Invalid OTP. {remaining} attempts remaining.')
                     return render(request, 'auth/password_reset_confirm.html', {'form': form})
                 
                 # Check OTP expiry (10 minutes)
@@ -208,7 +233,9 @@ def password_reset_confirm(request):
                 user.otp_created_at = None
                 user.save()
                 
-                del request.session['reset_email']
+                # Clear session data
+                request.session.pop('reset_email', None)
+                request.session.pop('otp_attempts', None)
                 messages.success(request, 'Password changed successfully! Please login.')
                 return redirect('store:login')
                 

@@ -18,17 +18,21 @@ class SupabaseStorage(Storage):
     """
     Django storage backend for Supabase Storage.
     Uploads files to a Supabase bucket and returns public URLs.
+    Uses lazy initialization for faster app startup.
     """
 
     def __init__(self):
         self.supabase_url = getattr(settings, 'SUPABASE_URL', '')
         self.supabase_key = getattr(settings, 'SUPABASE_SERVICE_ROLE_KEY', '')
         self.bucket_name = getattr(settings, 'SUPABASE_BUCKET', 'media')
-        
-        if self.supabase_url and self.supabase_key:
-            self.client = create_client(self.supabase_url, self.supabase_key)
-        else:
-            self.client = None
+        self._client = None  # Lazy initialization
+
+    @property
+    def client(self):
+        """Lazy-load Supabase client on first use."""
+        if self._client is None and self.supabase_url and self.supabase_key:
+            self._client = create_client(self.supabase_url, self.supabase_key)
+        return self._client
 
     def _get_storage_path(self, name):
         """Get the full path in the bucket."""
@@ -110,8 +114,19 @@ class SupabaseStorage(Storage):
         return f"{self.supabase_url}/storage/v1/object/public/{self.bucket_name}/{path}"
 
     def size(self, name):
-        """Return file size (not implemented for Supabase)."""
-        return 0
+        """Return file size from Supabase metadata."""
+        try:
+            path = self._get_storage_path(name)
+            folder = '/'.join(path.split('/')[:-1]) or ''
+            filename = path.split('/')[-1]
+            result = self.client.storage.from_(self.bucket_name).list(folder)
+            for item in result:
+                if item.get('name') == filename:
+                    # Supabase returns metadata with 'size' in bytes
+                    return item.get('metadata', {}).get('size', 0)
+            return 0
+        except Exception:
+            return 0
 
     def get_valid_name(self, name):
         """Return a valid filename."""

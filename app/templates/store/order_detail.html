@@ -16,10 +16,7 @@
             <div class="bg-white rounded p-4 mb-4">
                 <div class="d-flex justify-content-between align-items-center mb-3">
                     <h5 class="fw-bold mb-0">Order #{{ order.id }}</h5>
-                    <span
-                        class="badge {% if order.status == 'delivered' %}bg-success{% elif order.status == 'cancelled' %}bg-danger{% else %}bg-primary{% endif %}">
-                        {{ order.get_status_display }}
-                    </span>
+                    <span class="badge {% if order.status == 'delivered' %}bg-success{% elif order.status == 'cancelled' %}bg-danger{% else %}bg-primary{% endif %}">{{ order.get_status_display }}</span>
                 </div>
                 <p class="text-muted mb-3">Placed on {{ order.created_at|date:"F d, Y at H:i" }}</p>
 

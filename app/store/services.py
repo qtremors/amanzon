@@ -13,7 +13,10 @@ from django.conf import settings
 from django.core.mail import send_mail
 from django.core.files.uploadedfile import InMemoryUploadedFile
 from django.db import transaction
+from django.db.models import F
 from PIL import Image
+
+from .exceptions import StockError, PaymentError, OrderError
 
 if TYPE_CHECKING:
     from .models import Cart, Coupon, Order, User
@@ -180,8 +183,12 @@ def create_order_from_cart(
         status='confirmed',
     )
     
-    # Create order items and decrement stock
+    # Create order items and decrement stock atomically
     for item in cart.items.select_related('product').all():
+        # C3/C4: Validate stock availability inside transaction
+        if item.quantity > item.product.stock:
+            raise StockError(f'Insufficient stock for {item.product.name}')
+        
         OrderItem.objects.create(
             order=order,
             product=item.product,
@@ -190,9 +197,9 @@ def create_order_from_cart(
             quantity=item.quantity,
         )
         
-        # Decrement stock
-        item.product.stock -= item.quantity
-        item.product.save(update_fields=['stock'])
+        # C4: Use F() expression for atomic stock decrement to prevent race conditions
+        from .models import Product
+        Product.objects.filter(pk=item.product.pk).update(stock=F('stock') - item.quantity)
     
     # Record coupon usage if applicable
     if coupon:

@@ -7,15 +7,11 @@ Usage: {% include 'store/_product_card.html' with product=product wishlist_ids=w
     <div class="product-img-wrapper">
         {% if product.discount_percent > 0 %}
         <span
-            class="position-absolute top-0 start-0 m-3 badge bg-white text-danger border border-danger-subtle rounded-pill shadow-sm">
-            -{{ product.discount_percent }}%
+            class="position-absolute top-0 start-0 m-3 badge bg-white text-danger border border-danger-subtle rounded-pill shadow-sm"> -{{ product.discount_percent }}%
         </span>
         {% endif %}
 
-        <a href="{% url 'store:product_detail' product.slug %}">
-            <img src="{% if product.image %}{{ product.image.url }}{% else %}https://placehold.co/400x400/f3f4f6/9ca3af?text=No+Image{% endif %}"
-                class="product-img" alt="{{ product.name }}">
-        </a>
+        <a href="{% url 'store:product_detail' product.slug %}"><img src="{% if product.image %}{{ product.image.url }}{% else %}https://placehold.co/400x400/f3f4f6/9ca3af?text=No+Image{% endif %}" class="product-img" alt="{{ product.name }}" loading="lazy"></a>
 
         <div class="product-actions">
             <a href="{% url 'store:add_to_cart' product.id %}?next={{ request.path }}{% if request.GET.urlencode %}&{{ request.GET.urlencode }}{% endif %}"
