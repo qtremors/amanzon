@@ -1,9 +1,25 @@
 # Changelog
 
-All notable changes to Amanzon will be documented in this file.
+## [1.3.0] - 2026-01-11
 
-The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
-and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+### Added
+- **DEVELOPMENT.md** - Comprehensive developer documentation (567 lines)
+  - Architecture overview with diagrams
+  - Complete database schema (14 models)
+  - Full API routes documentation (35+ endpoints)
+  - Environment variables reference
+  - Configuration options
+  - Services layer documentation
+  - Deployment guide for Render
+  - Troubleshooting section
+- **LICENSE.md** - Custom source-available license (Tremors Source License)
+- Personal project disclaimer in README
+
+### Changed
+- Rewrote README.md with cleaner, surface-level content
+- Replaced MIT license with custom Tremors Source License
+- Updated project structure to include LICENSE.md
+- Fixed model count from 13 to 14 across all documentation
 
 ## [1.2.5] - 2026-01-11
 
