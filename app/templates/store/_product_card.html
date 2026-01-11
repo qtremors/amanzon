@@ -19,30 +19,29 @@ Usage: {% include 'store/_product_card.html' with product=product wishlist_ids=w
 
         <div class="product-actions">
             <a href="{% url 'store:add_to_cart' product.id %}?next={{ request.path }}{% if request.GET.urlencode %}&{{ request.GET.urlencode }}{% endif %}"
-                class="btn-action" title="Add to Cart">
-                <i class="bi bi-bag-plus"></i>
+                class="btn-action" title="Add to Cart" aria-label="Add {{ product.name }} to cart">
+                <i class="bi bi-bag-plus" aria-hidden="true"></i>
             </a>
 
             {% if user.is_authenticated %}
             <a href="{% url 'store:toggle_wishlist' product.id %}?next={{ request.path }}{% if request.GET.urlencode %}&{{ request.GET.urlencode }}{% endif %}"
-                class="btn-action {% if product.id in wishlist_ids %}text-danger{% endif %}" title="Wishlist">
-                <i class="bi bi-heart{% if product.id in wishlist_ids %}-fill{% endif %}"></i>
+                class="btn-action {% if product.id in wishlist_ids %}text-danger{% endif %}" title="Wishlist"
+                aria-label="{% if product.id in wishlist_ids %}Remove {{ product.name }} from wishlist{% else %}Add {{ product.name }} to wishlist{% endif %}">
+                <i class="bi bi-heart{% if product.id in wishlist_ids %}-fill{% endif %}" aria-hidden="true"></i>
             </a>
             {% endif %}
 
-            <a href="{% url 'store:product_detail' product.slug %}" class="btn-action" title="View Details">
-                <i class="bi bi-eye"></i>
+            <a href="{% url 'store:product_detail' product.slug %}" class="btn-action" title="View Details"
+                aria-label="View details for {{ product.name }}">
+                <i class="bi bi-eye" aria-hidden="true"></i>
             </a>
         </div>
     </div>
 
     <div class="py-3 px-1 text-center">
-        <div class="small text-secondary text-uppercase tracking-wide mb-1" style="font-size: 0.7rem;">{{
-            product.category.name }}</div>
+        <div class="small text-secondary text-uppercase tracking-wide mb-1" style="font-size: 0.7rem;">{{ product.category.name }}</div>
         <h6 class="mb-2">
-            <a href="{% url 'store:product_detail' product.slug %}" class="text-reset fw-semibold">
-                {{ product.name }}
-            </a>
+            <a href="{% url 'store:product_detail' product.slug %}" class="text-reset fw-semibold">{{ product.name }}</a>
         </h6>
 
         <div class="d-flex align-items-center justify-content-center gap-2">

@@ -1,5 +1,4 @@
 from django.urls import path
-from django.contrib.auth import views as auth_views
 from .views import auth, shop, cart, orders, main
 
 app_name = 'store'
@@ -39,6 +38,12 @@ urlpatterns = [
     path('register/verification-sent/', auth.verification_sent, name='verification_sent'),
     path('verify-email/<str:token>/', auth.verify_email, name='verify_email'),
     path('profile/', auth.profile, name='profile'),
+    
+    # Address Management
+    path('address/add/', auth.add_address, name='add_address'),
+    path('address/<int:address_id>/edit/', auth.edit_address, name='edit_address'),
+    path('address/<int:address_id>/delete/', auth.delete_address, name='delete_address'),
+    path('address/<int:address_id>/set-default/', auth.set_default_address, name='set_default_address'),
     
     # Password Reset
     path('password-reset/', auth.password_reset, name='password_reset'),

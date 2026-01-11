@@ -1,0 +1,91 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ title }} - Amanzon{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-6">
+            <nav aria-label="breadcrumb" class="mb-4">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{% url 'store:profile' %}">Profile</a></li>
+                    <li class="breadcrumb-item active">{{ title }}</li>
+                </ol>
+            </nav>
+
+            <div class="bg-white rounded-4 shadow-sm p-4">
+                <h4 class="fw-bold mb-4">{{ title }}</h4>
+
+                <form method="POST">
+                    {% csrf_token %}
+
+                    <div class="mb-3">
+                        <label for="id_label" class="form-label fw-bold">Address Label</label>
+                        {{ form.label }}
+                        <small class="text-muted">e.g., Home, Work, Office</small>
+                    </div>
+
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-6">
+                            <label for="id_first_name" class="form-label fw-bold">First Name</label>
+                            {{ form.first_name }}
+                        </div>
+                        <div class="col-md-6">
+                            <label for="id_last_name" class="form-label fw-bold">Last Name</label>
+                            {{ form.last_name }}
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="id_phone" class="form-label fw-bold">Phone</label>
+                        {{ form.phone }}
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="id_address_line1" class="form-label fw-bold">Address Line 1</label>
+                        {{ form.address_line1 }}
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="id_address_line2" class="form-label fw-bold">Address Line 2 <span
+                                class="text-muted fw-normal">(Optional)</span></label>
+                        {{ form.address_line2 }}
+                    </div>
+
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-6">
+                            <label for="id_city" class="form-label fw-bold">City</label>
+                            {{ form.city }}
+                        </div>
+                        <div class="col-md-6">
+                            <label for="id_state" class="form-label fw-bold">State</label>
+                            {{ form.state }}
+                        </div>
+                    </div>
+
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-6">
+                            <label for="id_country" class="form-label fw-bold">Country</label>
+                            {{ form.country }}
+                        </div>
+                        <div class="col-md-6">
+                            <label for="id_zip_code" class="form-label fw-bold">ZIP Code</label>
+                            {{ form.zip_code }}
+                        </div>
+                    </div>
+
+                    <div class="form-check mb-4">
+                        {{ form.is_default }}
+                        <label class="form-check-label" for="id_is_default">Set as default address</label>
+                    </div>
+
+                    <div class="d-flex gap-3">
+                        <button type="submit" class="btn btn-primary px-4">Save Address</button>
+                        <a href="{% url 'store:profile' %}" class="btn btn-outline-secondary">Cancel</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,7 +1,11 @@
+import logging
+
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django.db.models import Avg
 from django.utils import timezone
+
+logger = logging.getLogger(__name__)
 
 
 class User(AbstractUser):
@@ -10,6 +14,7 @@ class User(AbstractUser):
     otp = models.CharField(max_length=6, blank=True, null=True)
     otp_created_at = models.DateTimeField(blank=True, null=True)
     verification_token = models.CharField(max_length=64, blank=True, null=True)
+    verification_token_created_at = models.DateTimeField(blank=True, null=True)
 
     def __str__(self):
         return self.username
@@ -20,8 +25,45 @@ class User(AbstractUser):
             from . import services
             try:
                 self.profile_picture = services.optimize_image(self.profile_picture)
-            except Exception:
-                pass  # Keep original if optimization fails
+            except Exception as e:
+                logger.warning(
+                    f"Failed to optimize profile picture for user {self.username}: {e}"
+                )
+                # Keep original if optimization fails
+        super().save(*args, **kwargs)
+
+
+class Address(models.Model):
+    """Saved shipping/billing address for a user."""
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='addresses')
+    label = models.CharField(max_length=50, default='Home')  # Home, Work, etc.
+    first_name = models.CharField(max_length=100)
+    last_name = models.CharField(max_length=100)
+    phone = models.CharField(max_length=20)
+    address_line1 = models.CharField(max_length=255)
+    address_line2 = models.CharField(max_length=255, blank=True)
+    city = models.CharField(max_length=100)
+    state = models.CharField(max_length=100)
+    country = models.CharField(max_length=100, default='India')
+    zip_code = models.CharField(max_length=20)
+    is_default = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        verbose_name_plural = 'Addresses'
+        ordering = ['-is_default', '-updated_at']
+
+    def __str__(self):
+        return f"{self.label} - {self.first_name} {self.last_name}, {self.city}"
+
+    def save(self, *args, **kwargs):
+        # If this is set as default, unset other defaults for this user
+        if self.is_default:
+            Address.objects.filter(user=self.user, is_default=True).update(is_default=False)
+        # If this is the first address, make it default
+        elif not self.pk and not Address.objects.filter(user=self.user).exists():
+            self.is_default = True
         super().save(*args, **kwargs)
 
 
@@ -91,8 +133,11 @@ class Product(models.Model):
             from . import services
             try:
                 self.image = services.optimize_image(self.image)
-            except Exception:
-                pass  # Keep original if optimization fails
+            except Exception as e:
+                logger.warning(
+                    f"Failed to optimize image for product {self.name}: {e}"
+                )
+                # Keep original if optimization fails
         super().save(*args, **kwargs)
 
 

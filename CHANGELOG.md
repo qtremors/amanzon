@@ -5,6 +5,37 @@ All notable changes to Amanzon will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.2.0] - 2026-01-11
+
+### Added
+- **Saved Addresses Feature** - Users can save, edit, delete addresses in profile and select at checkout
+- **Dark Mode Toggle** - Manual theme toggle (sun/moon icon) with localStorage persistence
+- **Verification Token Expiry** - 24-hour expiry for email verification tokens
+- **Custom Exception Classes** - `PaymentError`, `StockError`, `CouponError`, `OrderError`, `StorageError`
+- **Template Tags** - `currency` filter and `alt_default` filter in `store_tags.py`
+- Favicon redirect to prevent 404 errors
+- ARIA labels on product card action buttons
+
+### Changed
+- Order cancellation now uses POST instead of GET (RESTful)
+- Address auto-saved on first checkout for new users
+- Checkout prefills from saved/default address
+- Homepage featured products query optimized (no N+1 for ratings)
+- Supabase Storage now used for both local and production environments
+- Settings centralized `VERIFICATION_TOKEN_EXPIRY_HOURS` and `OTP_EXPIRY_SECONDS`
+
+### Fixed
+- Silent failures in image optimization now logged
+- Silent deletion errors in Supabase Storage now logged
+- Dead code and duplicate imports removed
+- Duplicate comments in checkout template removed
+- Form labels properly associated with inputs (accessibility)
+- Missing Razorpay config in `.env.example`
+- Template tag rendering issue in product cards
+
+### Security
+- Email verification tokens now expire after 24 hours
+
 ## [1.1.0] - 2026-01-10
 
 ### Added

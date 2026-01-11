@@ -3,12 +3,15 @@ Custom storage backend for Supabase Storage.
 Handles file uploads for profile pictures and product images.
 """
 
+import logging
 import os
 from io import BytesIO
 from django.conf import settings
 from django.core.files.base import ContentFile
 from django.core.files.storage import Storage
 from supabase import create_client
+
+logger = logging.getLogger(__name__)
 
 
 class SupabaseStorage(Storage):
@@ -83,19 +86,21 @@ class SupabaseStorage(Storage):
         path = self._get_storage_path(name)
         try:
             self.client.storage.from_(self.bucket_name).remove([path])
-        except Exception:
-            pass  # Ignore deletion errors
+        except Exception as e:
+            logger.warning(f"Failed to delete file from Supabase Storage: {path} - {e}")
 
     def exists(self, name):
-        """Check if file exists in Supabase Storage."""
+        """Check if file exists in Supabase Storage using list API (efficient)."""
         if not self.client:
             return False
 
         path = self._get_storage_path(name)
         try:
-            # Try to get file info
-            self.client.storage.from_(self.bucket_name).download(path)
-            return True
+            # Use list API instead of downloading - much more efficient
+            folder = '/'.join(path.split('/')[:-1]) or ''
+            filename = path.split('/')[-1]
+            result = self.client.storage.from_(self.bucket_name).list(folder)
+            return any(item.get('name') == filename for item in result)
         except Exception:
             return False
 

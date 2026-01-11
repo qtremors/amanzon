@@ -91,6 +91,47 @@ class ProfileForm(forms.ModelForm):
         
         return picture
 
+
+class AddressForm(forms.Form):
+    """Form for creating/editing saved addresses."""
+    label = forms.CharField(max_length=50, widget=forms.TextInput(attrs={
+        'class': 'form-control',
+        'placeholder': 'e.g., Home, Work, Office',
+    }))
+    first_name = forms.CharField(max_length=100, widget=forms.TextInput(attrs={
+        'class': 'form-control',
+    }))
+    last_name = forms.CharField(max_length=100, widget=forms.TextInput(attrs={
+        'class': 'form-control',
+    }))
+    phone = forms.CharField(max_length=20, widget=forms.TextInput(attrs={
+        'class': 'form-control',
+    }))
+    address_line1 = forms.CharField(max_length=255, widget=forms.TextInput(attrs={
+        'class': 'form-control',
+        'placeholder': 'Street address',
+    }))
+    address_line2 = forms.CharField(max_length=255, required=False, widget=forms.TextInput(attrs={
+        'class': 'form-control',
+        'placeholder': 'Apartment, suite, etc. (optional)',
+    }))
+    city = forms.CharField(max_length=100, widget=forms.TextInput(attrs={
+        'class': 'form-control',
+    }))
+    state = forms.CharField(max_length=100, widget=forms.TextInput(attrs={
+        'class': 'form-control',
+    }))
+    country = forms.CharField(max_length=100, initial='India', widget=forms.TextInput(attrs={
+        'class': 'form-control',
+    }))
+    zip_code = forms.CharField(max_length=20, widget=forms.TextInput(attrs={
+        'class': 'form-control',
+    }))
+    is_default = forms.BooleanField(required=False, widget=forms.CheckboxInput(attrs={
+        'class': 'form-check-input',
+    }))
+
+
 class ContactForm(forms.Form):
     """Contact page form."""
     name = forms.CharField(max_length=100, widget=forms.TextInput(attrs={

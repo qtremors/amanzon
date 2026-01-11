@@ -8,26 +8,55 @@
         <!-- Billing Form -->
         <div class="col-lg-7">
             <h4 class="fw-bold mb-4">Billing Details</h4>
+
+            {% if saved_addresses %}
+            <!-- Saved Addresses Selector -->
+            <div class="bg-light p-3 rounded-3 mb-4">
+                <label class="form-label small fw-bold text-secondary text-uppercase">Use Saved Address</label>
+                <div class="d-flex flex-wrap gap-2">
+                    {% for addr in saved_addresses %}
+                    <a href="?address={{ addr.id }}"
+                        class="btn btn-sm {% if selected_address.id == addr.id %}btn-primary{% else %}btn-outline-secondary{% endif %} rounded-pill">
+                        {{ addr.label }}{% if addr.is_default %} ⭐{% endif %}
+                    </a>
+                    {% endfor %}
+                    <a href="{% url 'store:add_address' %}?next={% url 'store:checkout' %}"
+                        class="btn btn-sm btn-outline-primary rounded-pill">
+                        <i class="bi bi-plus"></i> New
+                    </a>
+                </div>
+            </div>
+            {% endif %}
+
             <div class="bg-white p-4 rounded-4 shadow-sm border border-subtle">
                 <form id="checkout-form" method="POST">
                     {% csrf_token %}
+
+                    <!-- Save address checkbox for new users -->
+                    {% if not saved_addresses %}
+                    <div class="form-check mb-3">
+                        <input type="checkbox" class="form-check-input" id="save_address" name="save_address" checked>
+                        <label class="form-check-label" for="save_address">Save this address for future orders</label>
+                    </div>
+                    {% endif %}
+
                     <div class="row g-3">
                         <h6 class="text-secondary small text-uppercase tracking-wide fw-bold mb-0 mt-2">Contact Info
                         </h6>
                         <div class="col-md-6">
-                            <label class="form-label small fw-bold">First Name</label>
+                            <label for="id_first_name" class="form-label small fw-bold">First Name</label>
                             {{ form.first_name }}
                         </div>
                         <div class="col-md-6">
-                            <label class="form-label small fw-bold">Last Name</label>
+                            <label for="id_last_name" class="form-label small fw-bold">Last Name</label>
                             {{ form.last_name }}
                         </div>
                         <div class="col-md-6">
-                            <label class="form-label small fw-bold">Email</label>
+                            <label for="id_email" class="form-label small fw-bold">Email</label>
                             {{ form.email }}
                         </div>
                         <div class="col-md-6">
-                            <label class="form-label small fw-bold">Phone</label>
+                            <label for="id_phone" class="form-label small fw-bold">Phone</label>
                             {{ form.phone }}
                         </div>
 
@@ -36,28 +65,28 @@
                             </h6>
                         </div>
                         <div class="col-12">
-                            <label class="form-label small fw-bold">Address Line 1</label>
+                            <label for="id_address_line1" class="form-label small fw-bold">Address Line 1</label>
                             {{ form.address_line1 }}
                         </div>
                         <div class="col-12">
-                            <label class="form-label small fw-bold">Address Line 2 <span
+                            <label for="id_address_line2" class="form-label small fw-bold">Address Line 2 <span
                                     class="text-muted fw-normal">(Optional)</span></label>
                             {{ form.address_line2 }}
                         </div>
                         <div class="col-md-6">
-                            <label class="form-label small fw-bold">City</label>
+                            <label for="id_city" class="form-label small fw-bold">City</label>
                             {{ form.city }}
                         </div>
                         <div class="col-md-6">
-                            <label class="form-label small fw-bold">State</label>
+                            <label for="id_state" class="form-label small fw-bold">State</label>
                             {{ form.state }}
                         </div>
                         <div class="col-md-6">
-                            <label class="form-label small fw-bold">Country</label>
+                            <label for="id_country" class="form-label small fw-bold">Country</label>
                             {{ form.country }}
                         </div>
                         <div class="col-md-6">
-                            <label class="form-label small fw-bold">ZIP Code</label>
+                            <label for="id_zip_code" class="form-label small fw-bold">ZIP Code</label>
                             {{ form.zip_code }}
                         </div>
                     </div>
@@ -286,7 +315,6 @@
             }
         };
 
-        // Check for Demo Mode
         // Check for Demo Mode
         var isDemoMode = "{{ demo_mode }}" === "True";
 

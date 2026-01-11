@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from .models import (
-    User, Category, SubCategory, Product, Cart, CartItem,
+    User, Address, Category, SubCategory, Product, Cart, CartItem,
     Wishlist, Coupon, CouponUsage, Order, OrderItem, Review, ContactMessage
 )
 
@@ -12,6 +12,14 @@ class UserAdmin(BaseUserAdmin):
     fieldsets = BaseUserAdmin.fieldsets + (
         ('Profile', {'fields': ('profile_picture',)}),
     )
+
+
+@admin.register(Address)
+class AddressAdmin(admin.ModelAdmin):
+    list_display = ['label', 'user', 'city', 'state', 'is_default', 'updated_at']
+    list_filter = ['is_default', 'state', 'country']
+    search_fields = ['user__username', 'first_name', 'last_name', 'city']
+    raw_id_fields = ['user']
 
 
 @admin.register(Category)

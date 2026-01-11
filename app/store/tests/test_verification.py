@@ -2,8 +2,9 @@
 from django.test import TestCase
 from django.urls import reverse
 from django.core.cache import cache
-from ..models import User
 from django.core import mail
+from ..models import User
+
 
 class EmailVerificationTest(TestCase):
     """Tests for email verification flow."""
@@ -28,7 +29,6 @@ class EmailVerificationTest(TestCase):
         self.assertIsNotNone(user.verification_token)
 
         # Check email sent
-        from django.core import mail
         self.assertEqual(len(mail.outbox), 1)
         self.assertIn(user.verification_token, mail.outbox[0].body)
         self.assertIn('Verify your Amanzon account', mail.outbox[0].subject)

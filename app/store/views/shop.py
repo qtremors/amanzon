@@ -11,7 +11,11 @@ from ..forms import ReviewForm
 def index(request):
     """Homepage with featured products."""
     categories = Category.objects.prefetch_related('subcategories').all()[:6]
-    featured_products = Product.objects.filter(is_active=True).select_related('category')[:8]
+    # Annotate avg_rating to prevent N+1 queries if show_rating is enabled
+    featured_products = Product.objects.filter(is_active=True).select_related('category').annotate(
+        review_count=Count('reviews'),
+        avg_rating=Avg('reviews__rating')
+    )[:8]
     
     # Wishlist IDs for current user
     wishlist_ids = []

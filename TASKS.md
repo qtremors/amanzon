@@ -1,37 +1,24 @@
-# Amanzon - Task List
+# Amanzon - Tasks
 
-> **Version:** v1.0.0  
-> **Last Updated:** 2026-01-01
+> **Version:** 1.2.0 | **Last Updated:** 2026-01-11
 
----
+## ✅ Recently Completed (v1.2.0)
 
-## 🟢 Future Enhancements
+- Saved Addresses feature (model, views, profile section, checkout integration)
+- Dark mode toggle with localStorage persistence
+- Verification token 24-hour expiry
+- Custom exception classes
+- Template tags (currency, alt_default)
+- N+1 query fix for homepage
+- Order cancellation changed to POST
+- Supabase storage for all environments
+- Accessibility improvements (ARIA labels, form labels)
+- Favicon redirect
 
-### High Priority
-- [ ] Product variants (size, color options)
-- [ ] Multiple product images per product
-- [ ] Order status update emails (shipped, delivered)
+## 🔵 Remaining (Lower Priority)
 
-### Medium Priority
-- [ ] REST API endpoints (Django REST Framework)
-- [ ] PDF invoice generation
-- [ ] Related products section ("You may also like")
-- [ ] Order tracking with carrier integration
-- [ ] Search autocomplete (AJAX)
-- [ ] Tax/GST calculation per region
-
-### Low Priority
-- [ ] Recently viewed products
-- [ ] Product comparison
-- [ ] Multi-currency support
-- [ ] Sitemap.xml generation
-- [ ] Frontend E2E tests
-
----
-
-## 📝 Commands
-
-```bash
-uv run python manage.py test store    # Run tests
-uv run python manage.py runserver     # Start dev server
-```
+- [ ] **M4**: Base form class (reduce widget duplication)
+- [ ] **M5**: Async shop filtering (vanilla JS fetch)
+- [ ] **L1-L4**: Additional test coverage
+- [ ] **L6-L7**: More inline docs
+- [ ] **L11**: Standardize string quotes

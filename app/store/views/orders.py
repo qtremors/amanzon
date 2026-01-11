@@ -1,4 +1,6 @@
 import logging
+import uuid
+
 import razorpay
 from django.conf import settings
 from django.shortcuts import render, redirect, get_object_or_404
@@ -15,15 +17,11 @@ logger = logging.getLogger(__name__)
 
 @login_required
 def checkout(request):
-    """Checkout page."""
-    # Validate Razorpay credentials before proceeding
+    """Checkout page with saved address support."""
+    from ..models import Address
+    
     # Check if Razorpay keys are configured
     razorpay_configured = bool(settings.RAZORPAY_KEY_ID and settings.RAZORPAY_KEY_SECRET)
-    
-    # If not configured, we'll run in demo mode instead of erroring
-    if not razorpay_configured:
-        limit = 0  # Placeholder to avoid indentation error if needed, though logically flow continues
-
     
     cart_obj = get_object_or_404(Cart, user=request.user)
     cart_items = cart_obj.items.select_related('product').all()
@@ -57,7 +55,6 @@ def checkout(request):
     # Calculate totals using services layer
     totals = services.calculate_cart_totals(cart_obj, coupon)
     
-    # Create Razorpay order
     # Create Razorpay order (or dummy order in demo mode)
     if razorpay_configured:
         client = razorpay.Client(auth=(settings.RAZORPAY_KEY_ID, settings.RAZORPAY_KEY_SECRET))
@@ -68,23 +65,50 @@ def checkout(request):
         })
     else:
         # Demo mode: Create a dummy order object
-        import uuid
         razorpay_order = {
             'id': f'order_demo_{uuid.uuid4().hex[:8]}',
             'amount': int(totals['total'] * 100),
             'currency': 'INR',
         }
 
+    # Get saved addresses for the user
+    saved_addresses = request.user.addresses.all()
+    default_address = saved_addresses.filter(is_default=True).first()
+    
+    # Handle address selection from query param
+    selected_address_id = request.GET.get('address')
+    if selected_address_id:
+        try:
+            selected_address = saved_addresses.get(id=selected_address_id)
+        except Address.DoesNotExist:
+            selected_address = default_address
+    else:
+        selected_address = default_address
     
     if request.method == 'POST':
         form = CheckoutForm(request.POST)
         # Form validation handled by JavaScript before Razorpay
     else:
-        form = CheckoutForm(initial={
-            'email': request.user.email,
-            'first_name': request.user.first_name,
-            'last_name': request.user.last_name,
-        })
+        # Prefill form with selected address or user info
+        if selected_address:
+            form = CheckoutForm(initial={
+                'email': request.user.email,
+                'first_name': selected_address.first_name,
+                'last_name': selected_address.last_name,
+                'phone': selected_address.phone,
+                'address_line1': selected_address.address_line1,
+                'address_line2': selected_address.address_line2,
+                'city': selected_address.city,
+                'state': selected_address.state,
+                'country': selected_address.country,
+                'zip_code': selected_address.zip_code,
+            })
+        else:
+            form = CheckoutForm(initial={
+                'email': request.user.email,
+                'first_name': request.user.first_name,
+                'last_name': request.user.last_name,
+            })
     
     return render(request, 'store/checkout.html', {
         'form': form,
@@ -94,6 +118,8 @@ def checkout(request):
         'discount': totals['discount'],
         'total': totals['total'],
         'razorpay_order': razorpay_order,
+        'saved_addresses': saved_addresses,
+        'selected_address': selected_address,
         'razorpay_key': settings.RAZORPAY_KEY_ID or 'demo_key',
         'demo_mode': not razorpay_configured,
     })
@@ -215,6 +241,7 @@ def order_detail(request, order_id):
 
 
 @login_required
+@require_POST
 def cancel_order(request, order_id):
     """Cancel an order."""
     order = get_object_or_404(Order, id=order_id, user=request.user)

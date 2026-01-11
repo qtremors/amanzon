@@ -148,14 +148,18 @@ STATIC_ROOT = BASE_DIR / 'staticfiles'
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
-# Supabase Storage Configuration
+# Supabase Storage Configuration (required for all environments)
 SUPABASE_URL = os.getenv('SUPABASE_URL', '')
 SUPABASE_SERVICE_ROLE_KEY = os.getenv('SUPABASE_SERVICE_ROLE_KEY', '')
 SUPABASE_BUCKET = os.getenv('SUPABASE_BUCKET', 'media')
 
-# Use Supabase Storage for media files in production
+# Always use Supabase Storage for media files
 if SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY:
     DEFAULT_FILE_STORAGE = 'store.storage.SupabaseStorage'
+    STORAGES = {
+        "default": {"BACKEND": "store.storage.SupabaseStorage"},
+        "staticfiles": {"BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage"},
+    }
 
 
 # =============================================================================
@@ -207,6 +211,10 @@ CACHES = {
 
 FREE_SHIPPING_THRESHOLD = int(os.getenv('FREE_SHIPPING_THRESHOLD', '500'))
 SHIPPING_COST = int(os.getenv('SHIPPING_COST', '50'))
+
+# Token expiry settings
+VERIFICATION_TOKEN_EXPIRY_HOURS = 24
+OTP_EXPIRY_SECONDS = 600  # 10 minutes
 
 
 # =============================================================================

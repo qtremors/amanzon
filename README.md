@@ -2,7 +2,7 @@
   <img src="app/static/img/amanzon.png" alt="Amanzon Logo" width="120"/>
 </p>
 
-<h1 align="center">Amanzon</h1>
+<h1 align="center"><a href="https://amanzon.onrender.com">Amanzon</a></h1>
 
 <p align="center">
   A modern, minimalist e-commerce platform built with Django 5
@@ -14,6 +14,9 @@
   <img src="https://img.shields.io/badge/Supabase-PostgreSQL-3ECF8E?logo=supabase&logoColor=white" alt="Supabase">
   <img src="https://img.shields.io/badge/Bootstrap-5.3-7952B3?logo=bootstrap&logoColor=white" alt="Bootstrap">
 </p>
+
+> [!WARNING]
+> **Live Demo Limitations**: The demo hosted on Render free tier may experience slow cold starts (~60s) and occasional timeouts due to memory constraints, it's better if you clone the repo and run it locally.
 
 ---
 
@@ -32,9 +35,10 @@
 - Order cancellation with automatic stock restoration
 
 ### 🔐 Authentication & Security
-- Email verification for new accounts
+- Email verification for new accounts (24-hour token expiry)
 - OTP-based password reset via email
 - Profile management with avatar upload
+- **Saved addresses** with checkout integration
 - Rate limiting on authentication endpoints
 - CSRF protection, secure cookies, HTTPS enforcement
 
@@ -74,6 +78,48 @@ amanzon/
 │   └── static/           # CSS, JS, images
 ├── CHANGELOG.md
 └── README.md
+```
+
+---
+
+## Installation
+
+### Prerequisites
+- Python 3.12+
+- [uv](https://docs.astral.sh/uv/) (recommended) or pip
+
+### Local Development
+
+```bash
+# Clone the repository
+git clone https://github.com/qtremors/amanzon.git
+cd amanzon/app
+
+# Install dependencies
+uv sync
+
+# Copy environment file and configure
+cp .env.example .env
+
+# Run migrations
+uv run python manage.py migrate
+
+# Create admin user
+uv run python manage.py createsuperuser
+
+# Seed sample products (optional)
+uv run python manage.py seed_products
+
+# Start development server
+uv run python manage.py runserver
+```
+
+Visit `http://localhost:8000` to view the app.
+
+### Running Tests
+
+```bash
+uv run python manage.py test store
 ```
 
 ---

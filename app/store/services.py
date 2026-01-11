@@ -24,7 +24,7 @@ if TYPE_CHECKING:
 
 FREE_SHIPPING_THRESHOLD = Decimal(str(getattr(settings, 'FREE_SHIPPING_THRESHOLD', 500)))
 SHIPPING_COST = Decimal(str(getattr(settings, 'SHIPPING_COST', 50)))
-OTP_EXPIRY_SECONDS = 600  # 10 minutes
+OTP_EXPIRY_SECONDS = getattr(settings, 'OTP_EXPIRY_SECONDS', 600)  # 10 minutes
 MAX_IMAGE_SIZE = (800, 800)
 IMAGE_QUALITY = 85
 
@@ -133,7 +133,14 @@ def calculate_cart_totals(cart: Cart, coupon: Optional[Coupon] = None) -> dict[s
 # ============================================================================
 
 @transaction.atomic
-def create_order_from_cart(user, cart, billing_data, razorpay_order_id, razorpay_payment_id, coupon=None):
+def create_order_from_cart(
+    user: 'User',
+    cart: 'Cart',
+    billing_data: dict[str, str],
+    razorpay_order_id: str,
+    razorpay_payment_id: str,
+    coupon: Optional['Coupon'] = None
+) -> 'Order':
     """
     Create an order from a cart after successful payment.
     
@@ -190,6 +197,24 @@ def create_order_from_cart(user, cart, billing_data, razorpay_order_id, razorpay
     # Record coupon usage if applicable
     if coupon:
         CouponUsage.objects.create(coupon=coupon, user=user, order=order)
+    
+    # Auto-save address if user has no saved addresses (first order)
+    from .models import Address
+    if not Address.objects.filter(user=user).exists():
+        Address.objects.create(
+            user=user,
+            label='Home',
+            first_name=billing_data.get('first_name', ''),
+            last_name=billing_data.get('last_name', ''),
+            phone=billing_data.get('phone', ''),
+            address_line1=billing_data.get('address_line1', ''),
+            address_line2=billing_data.get('address_line2', ''),
+            city=billing_data.get('city', ''),
+            state=billing_data.get('state', ''),
+            country=billing_data.get('country', 'India'),
+            zip_code=billing_data.get('zip_code', ''),
+            is_default=True,
+        )
     
     # Clear cart
     cart.items.all().delete()
