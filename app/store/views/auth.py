@@ -3,6 +3,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
 from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.decorators import login_required
+from django.views.decorators.http import require_POST
 from django.contrib import messages
 from django.core.mail import send_mail
 from django.conf import settings
@@ -69,8 +70,9 @@ def register(request):
             )
             # Deactivate user until verified
             user.is_active = False
-            # SEC-06: Use cryptographically secure token
+            # SEC-06: Use cryptographically secure token with expiry
             user.verification_token = secrets.token_urlsafe(32)
+            user.verification_token_created_at = timezone.now()
             user.save()
             
             # Send verification email
@@ -78,15 +80,27 @@ def register(request):
                 reverse('store:verify_email', kwargs={'token': user.verification_token})
             )
             
-            send_mail(
-                'Verify your Amanzon account',
-                f'Click the link to verify your email: {verification_link}',
-                settings.DEFAULT_FROM_EMAIL,
-                [user.email],
-                fail_silently=False,
-            )
-            
-            return redirect('store:verification_sent')
+            # H3: Handle email failures gracefully
+            try:
+                send_mail(
+                    'Verify your Amanzon account',
+                    f'Click the link to verify your email: {verification_link}',
+                    settings.DEFAULT_FROM_EMAIL,
+                    [user.email],
+                    fail_silently=False,
+                )
+                return redirect('store:verification_sent')
+            except Exception:
+                # If email fails, activate user anyway and show message
+                user.is_active = True
+                user.verification_token = None
+                user.verification_token_created_at = None
+                user.save()
+                messages.warning(
+                    request, 
+                    'Account created but verification email failed. You can login directly.'
+                )
+                return redirect('store:login')
     else:
         form = RegisterForm()
     
@@ -102,9 +116,19 @@ def verify_email(request, token):
     """Verify email address."""
     user = get_object_or_404(User, verification_token=token)
     
+    # Check token expiry (default 24 hours)
+    expiry_seconds = getattr(settings, 'VERIFICATION_TOKEN_EXPIRY_HOURS', 24) * 3600
+    if user.verification_token_created_at:
+        token_age = (timezone.now() - user.verification_token_created_at).total_seconds()
+        if token_age > expiry_seconds:
+            messages.error(request, 'Verification link has expired. Please register again.')
+            user.delete()  # Remove unverified user
+            return redirect('store:register')
+    
     if not user.is_active:
         user.is_active = True
         user.verification_token = None
+        user.verification_token_created_at = None
         user.save()
         user.backend = 'django.contrib.auth.backends.ModelBackend'
         login(request, user)
@@ -117,7 +141,7 @@ def verify_email(request, token):
 
 @login_required
 def profile(request):
-    """User profile page."""
+    """User profile page with saved addresses."""
     if request.method == 'POST':
         form = ProfileForm(request.POST, request.FILES, instance=request.user)
         if form.is_valid():
@@ -127,7 +151,12 @@ def profile(request):
     else:
         form = ProfileForm(instance=request.user)
     
-    return render(request, 'store/profile.html', {'form': form})
+    addresses = request.user.addresses.all()
+    
+    return render(request, 'store/profile.html', {
+        'form': form,
+        'addresses': addresses,
+    })
 
 
 def password_reset(request):
@@ -169,6 +198,16 @@ def password_reset_confirm(request):
     if not email:
         return redirect('store:password_reset')
     
+    # C5: Track OTP attempts to prevent brute force
+    otp_attempts = request.session.get('otp_attempts', 0)
+    max_attempts = 5
+    
+    if otp_attempts >= max_attempts:
+        messages.error(request, 'Too many failed attempts. Please request a new OTP.')
+        request.session.pop('reset_email', None)
+        request.session.pop('otp_attempts', None)
+        return redirect('store:password_reset')
+    
     if request.method == 'POST':
         form = PasswordResetConfirmForm(request.POST)
         if form.is_valid():
@@ -177,7 +216,10 @@ def password_reset_confirm(request):
                 
                 # Check OTP
                 if user.otp != form.cleaned_data['otp']:
-                    messages.error(request, 'Invalid OTP.')
+                    # C5: Increment failed attempt counter
+                    request.session['otp_attempts'] = otp_attempts + 1
+                    remaining = max_attempts - otp_attempts - 1
+                    messages.error(request, f'Invalid OTP. {remaining} attempts remaining.')
                     return render(request, 'auth/password_reset_confirm.html', {'form': form})
                 
                 # Check OTP expiry (10 minutes)
@@ -191,7 +233,9 @@ def password_reset_confirm(request):
                 user.otp_created_at = None
                 user.save()
                 
-                del request.session['reset_email']
+                # Clear session data
+                request.session.pop('reset_email', None)
+                request.session.pop('otp_attempts', None)
                 messages.success(request, 'Password changed successfully! Please login.')
                 return redirect('store:login')
                 
@@ -202,3 +246,94 @@ def password_reset_confirm(request):
         form = PasswordResetConfirmForm()
     
     return render(request, 'auth/password_reset_confirm.html', {'form': form, 'email': email})
+
+
+# =============================================================================
+# ADDRESS MANAGEMENT
+# =============================================================================
+
+@login_required
+def add_address(request):
+    """Add a new saved address."""
+    from ..forms import AddressForm
+    from ..models import Address
+    
+    if request.method == 'POST':
+        form = AddressForm(request.POST)
+        if form.is_valid():
+            Address.objects.create(
+                user=request.user,
+                **form.cleaned_data
+            )
+            messages.success(request, 'Address saved successfully!')
+            return redirect('store:profile')
+    else:
+        form = AddressForm()
+    
+    return render(request, 'store/address_form.html', {
+        'form': form,
+        'title': 'Add New Address',
+    })
+
+
+@login_required
+def edit_address(request, address_id):
+    """Edit an existing saved address."""
+    from ..forms import AddressForm
+    from ..models import Address
+    
+    address = get_object_or_404(Address, id=address_id, user=request.user)
+    
+    if request.method == 'POST':
+        form = AddressForm(request.POST)
+        if form.is_valid():
+            for field, value in form.cleaned_data.items():
+                setattr(address, field, value)
+            address.save()
+            messages.success(request, 'Address updated successfully!')
+            return redirect('store:profile')
+    else:
+        form = AddressForm(initial={
+            'label': address.label,
+            'first_name': address.first_name,
+            'last_name': address.last_name,
+            'phone': address.phone,
+            'address_line1': address.address_line1,
+            'address_line2': address.address_line2,
+            'city': address.city,
+            'state': address.state,
+            'country': address.country,
+            'zip_code': address.zip_code,
+            'is_default': address.is_default,
+        })
+    
+    return render(request, 'store/address_form.html', {
+        'form': form,
+        'title': 'Edit Address',
+        'address': address,
+    })
+
+
+@login_required
+@require_POST
+def delete_address(request, address_id):
+    """Delete a saved address."""
+    from ..models import Address
+    
+    address = get_object_or_404(Address, id=address_id, user=request.user)
+    address.delete()
+    messages.success(request, 'Address deleted successfully!')
+    return redirect('store:profile')
+
+
+@login_required
+@require_POST
+def set_default_address(request, address_id):
+    """Set an address as the default."""
+    from ..models import Address
+    
+    address = get_object_or_404(Address, id=address_id, user=request.user)
+    address.is_default = True
+    address.save()  # This will unset other defaults due to model's save method
+    messages.success(request, f'{address.label} is now your default address.')
+    return redirect('store:profile')

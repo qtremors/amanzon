@@ -5,6 +5,67 @@ All notable changes to Amanzon will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.2.5] - 2026-01-11
+
+### Added
+- Custom 404 and 500 error pages with branded design
+- AddressInline in Django admin for user management
+- Honeypot field in contact form for spam protection
+- `loading="lazy"` on all product images for faster page loads
+- Redis cache configuration note for production rate limiting
+- `DEFAULT_COUNTRY` setting for configurable country default
+
+### Changed
+- Supabase client now uses lazy initialization (faster startup)
+- `SupabaseStorage.size()` now returns actual file size from metadata
+- Product image field made optional (`blank=True, null=True`)
+
+### Fixed
+- Open redirect vulnerabilities in cart and wishlist views
+- Race condition in stock deduction using F() expressions
+- OTP brute force vulnerability (5 attempts max)
+- Cart handling in checkout using `get_or_create()`
+- Email sending failures now handled gracefully
+- Pagination now preserves all filter parameters
+- Template syntax errors in shop.html
+- Footer copyright duplication removed
+
+### Security
+- URL validation for all redirect URLs
+- Contact form spam protection with honeypot
+- Stock re-validation inside atomic transaction
+
+## [1.2.0] - 2026-01-11
+
+### Added
+- **Saved Addresses Feature** - Users can save, edit, delete addresses in profile and select at checkout
+- **Dark Mode Toggle** - Manual theme toggle (sun/moon icon) with localStorage persistence
+- **Verification Token Expiry** - 24-hour expiry for email verification tokens
+- **Custom Exception Classes** - `PaymentError`, `StockError`, `CouponError`, `OrderError`, `StorageError`
+- **Template Tags** - `currency` filter and `alt_default` filter in `store_tags.py`
+- Favicon redirect to prevent 404 errors
+- ARIA labels on product card action buttons
+
+### Changed
+- Order cancellation now uses POST instead of GET (RESTful)
+- Address auto-saved on first checkout for new users
+- Checkout prefills from saved/default address
+- Homepage featured products query optimized (no N+1 for ratings)
+- Supabase Storage now used for both local and production environments
+- Settings centralized `VERIFICATION_TOKEN_EXPIRY_HOURS` and `OTP_EXPIRY_SECONDS`
+
+### Fixed
+- Silent failures in image optimization now logged
+- Silent deletion errors in Supabase Storage now logged
+- Dead code and duplicate imports removed
+- Duplicate comments in checkout template removed
+- Form labels properly associated with inputs (accessibility)
+- Missing Razorpay config in `.env.example`
+- Template tag rendering issue in product cards
+
+### Security
+- Email verification tokens now expire after 24 hours
+
 ## [1.1.0] - 2026-01-10
 
 ### Added

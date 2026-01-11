@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_POST
 from django.contrib import messages
+from django.utils.http import url_has_allowed_host_and_scheme
 
 from ..models import Cart, CartItem, Product, Coupon, CouponUsage
 from .. import services
@@ -52,7 +53,10 @@ def add_to_cart(request, product_id):
     # Check stock availability
     if product.stock <= 0:
         messages.error(request, f'Sorry, "{product.name}" is out of stock.')
-        next_url = request.GET.get('next', request.META.get('HTTP_REFERER', 'store:shop'))
+        # SEC-02: Validate redirect URL to prevent open redirect
+        next_url = request.GET.get('next') or request.META.get('HTTP_REFERER', '')
+        if not next_url or not url_has_allowed_host_and_scheme(next_url, allowed_hosts={request.get_host()}):
+            next_url = 'store:shop'
         return redirect(next_url)
     
     cart_obj, _ = Cart.objects.get_or_create(user=request.user)
@@ -73,8 +77,10 @@ def add_to_cart(request, product_id):
     else:
         messages.success(request, f'Added "{product.name}" to cart.')
     
-    # Redirect back to previous page or shop
-    next_url = request.GET.get('next', request.META.get('HTTP_REFERER', 'store:shop'))
+    # SEC-02: Validate redirect URL to prevent open redirect
+    next_url = request.GET.get('next') or request.META.get('HTTP_REFERER', '')
+    if not next_url or not url_has_allowed_host_and_scheme(next_url, allowed_hosts={request.get_host()}):
+        next_url = 'store:shop'
     return redirect(next_url)
 
 

@@ -40,8 +40,8 @@ class OrderCancellationTest(TestCase):
         self.product.stock -= 2
         self.product.save()
         
-        # Cancel order
-        response = self.client.get(reverse('store:cancel_order', args=[order.id]), follow=True)
+        # Cancel order (POST required)
+        response = self.client.post(reverse('store:cancel_order', args=[order.id]), follow=True)
         
         self.assertContains(response, 'Order cancelled successfully')
         
@@ -75,8 +75,8 @@ class OrderCancellationTest(TestCase):
         mock_client = MagicMock()
         mock_client_cls.return_value = mock_client
         
-        # Cancel order
-        response = self.client.get(reverse('store:cancel_order', args=[order.id]), follow=True)
+        # Cancel order (POST required)
+        response = self.client.post(reverse('store:cancel_order', args=[order.id]), follow=True)
         
         self.assertContains(response, 'Order cancelled successfully')
         
@@ -97,7 +97,7 @@ class OrderCancellationTest(TestCase):
             is_paid=True
         )
         
-        response = self.client.get(reverse('store:cancel_order', args=[order.id]), follow=True)
+        response = self.client.post(reverse('store:cancel_order', args=[order.id]), follow=True)
         
         self.assertContains(response, 'This order cannot be cancelled')
         order.refresh_from_db()

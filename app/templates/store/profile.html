@@ -26,8 +26,7 @@
                 <div class="p-5">
                     <div class="d-flex justify-content-between align-items-center mb-4">
                         <h5 class="fw-bold mb-0">Account Details</h5>
-                        <span class="badge bg-light text-secondary border border-subtle">Member since {{
-                            user.date_joined|date:"M Y" }}</span>
+                        <span class="badge bg-light text-secondary border border-subtle">Member since {{ user.date_joined|date:"M Y" }}</span>
                     </div>
 
                     <form method="POST" enctype="multipart/form-data">
@@ -66,6 +65,86 @@
                             </div>
                         </div>
                     </form>
+                </div>
+
+                <!-- Saved Addresses Section -->
+                <div class="p-5 border-top border-subtle">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h5 class="fw-bold mb-0">Saved Addresses</h5>
+                        <a href="{% url 'store:add_address' %}"
+                            class="btn btn-outline-primary btn-sm rounded-pill px-3">
+                            <i class="bi bi-plus-lg me-1"></i> Add Address
+                        </a>
+                    </div>
+
+                    {% if addresses %}
+                    <div class="row g-3">
+                        {% for address in addresses %}
+                        <div class="col-md-6">
+                            <div
+                                class="border rounded-3 p-3 h-100 {% if address.is_default %}border-primary bg-primary bg-opacity-10{% endif %}">
+                                <div class="d-flex justify-content-between align-items-start mb-2">
+                                    <div>
+                                        <span class="badge bg-secondary-subtle text-secondary rounded-pill">{{ address.label }}</span>
+                                        {% if address.is_default %}
+                                        <span class="badge bg-primary rounded-pill ms-1">Default</span>
+                                        {% endif %}
+                                    </div>
+                                    <div class="dropdown">
+                                        <button class="btn btn-link text-secondary p-0" data-bs-toggle="dropdown"
+                                            aria-label="Address options">
+                                            <i class="bi bi-three-dots-vertical"></i>
+                                        </button>
+                                        <ul class="dropdown-menu dropdown-menu-end">
+                                            <li><a class="dropdown-item"
+                                                    href="{% url 'store:edit_address' address.id %}">
+                                                    <i class="bi bi-pencil me-2"></i>Edit
+                                                </a></li>
+                                            {% if not address.is_default %}
+                                            <li>
+                                                <form action="{% url 'store:set_default_address' address.id %}"
+                                                    method="POST" class="d-inline">
+                                                    {% csrf_token %}
+                                                    <button type="submit" class="dropdown-item">
+                                                        <i class="bi bi-check-circle me-2"></i>Set as Default
+                                                    </button>
+                                                </form>
+                                            </li>
+                                            {% endif %}
+                                            <li>
+                                                <hr class="dropdown-divider">
+                                            </li>
+                                            <li>
+                                                <form action="{% url 'store:delete_address' address.id %}" method="POST"
+                                                    onsubmit="return confirm('Delete this address?')">
+                                                    {% csrf_token %}
+                                                    <button type="submit" class="dropdown-item text-danger">
+                                                        <i class="bi bi-trash me-2"></i>Delete
+                                                    </button>
+                                                </form>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <p class="mb-0 small">
+                                    <strong>{{ address.first_name }} {{ address.last_name }}</strong><br>
+                                    {{ address.address_line1 }}<br>
+                                    {% if address.address_line2 %}{{ address.address_line2 }}<br>{% endif %}
+                                    {{ address.city }}, {{ address.state }} {{ address.zip_code }}<br>
+                                    <span class="text-secondary">{{ address.phone }}</span>
+                                </p>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    <div class="text-center py-4 text-secondary">
+                        <i class="bi bi-geo-alt fs-1 opacity-50"></i>
+                        <p class="mb-0 mt-2">No saved addresses yet</p>
+                        <a href="{% url 'store:add_address' %}" class="btn btn-outline-primary btn-sm mt-3">Add Your
+                            First Address</a>
+                    </div>
+                    {% endif %}
                 </div>
 
                 <div class="bg-light p-4 border-top border-subtle">

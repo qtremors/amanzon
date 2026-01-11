@@ -21,7 +21,7 @@
             <div class="product-img-wrapper shadow-none bg-light p-5 d-flex align-items-center justify-content-center"
                 style="aspect-ratio: 1/1;">
                 <img src="{% if product.image %}{{ product.image.url }}{% else %}https://placehold.co/600x600/e5e7eb/9ca3af?text=No+Image{% endif %}"
-                    alt="{{ product.name }}" class="img-fluid rounded shadow-sm"
+                    alt="{{ product.name }}" class="img-fluid rounded shadow-sm" loading="lazy"
                     style="max-height: 100%; object-fit: contain;">
             </div>
         </div>

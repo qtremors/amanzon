@@ -1,37 +1,51 @@
-# Amanzon - Task List
+# Amanzon - Tasks
 
-> **Version:** v1.0.0  
-> **Last Updated:** 2026-01-01
+> **Version:** 1.2.5 | **Last Updated:** 2026-01-11
 
----
+## ✅ Completed
 
-## 🟢 Future Enhancements
+### Critical (C1-C5)
+- Version mismatch fixed in pyproject.toml
+- Open redirect protection in cart/shop views
+- Race condition fix with F() expression in stock deduction
+- Stock re-validation in order creation
+- OTP brute force protection (5 attempts max)
 
-### High Priority
-- [ ] Product variants (size, color options)
-- [ ] Multiple product images per product
-- [ ] Order status update emails (shipped, delivered)
+### High Priority (H1-H7)
+- StockError exception now used in services.py
+- Cart get_or_create in checkout
+- Email failure handling in registration
+- Pagination filter preservation + template syntax fix
+- Product image made optional
+- Redis cache note added
+- DEFAULT_COUNTRY configuration added
 
 ### Medium Priority
-- [ ] REST API endpoints (Django REST Framework)
-- [ ] PDF invoice generation
-- [ ] Related products section ("You may also like")
-- [ ] Order tracking with carrier integration
-- [ ] Search autocomplete (AJAX)
-- [ ] Tax/GST calculation per region
-
-### Low Priority
-- [ ] Recently viewed products
-- [ ] Product comparison
-- [ ] Multi-currency support
-- [ ] Sitemap.xml generation
-- [ ] Frontend E2E tests
+- Footer copyright duplication removed
+- SupabaseStorage.size() implemented
+- Contact form honeypot added
+- 404/500 custom templates created
+- AddressInline added to UserAdmin
 
 ---
 
-## 📝 Commands
+## 📋 Remaining (Lower Priority)
 
-```bash
-uv run python manage.py test store    # Run tests
-uv run python manage.py runserver     # Start dev server
-```
+### Future Enhancements
+- **M3:** Change cart/wishlist to POST (requires template refactoring)
+- **M4:** Base form mixin for Bootstrap classes
+- **M5:** Review edit/delete functionality
+- **M9:** Use currency filter consistently
+- **L11:** AJAX shop filtering
+
+### Code Quality
+- Quote standardization, type hints, test coverage gaps
+- View logging, documentation updates
+
+---
+
+## 🏗️ Architecture Notes
+- Service layer handles business logic well
+- Views properly organized by module
+- Tests well-structured with good mocking
+

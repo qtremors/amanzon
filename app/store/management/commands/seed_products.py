@@ -14,7 +14,9 @@ from datetime import timedelta
 
 
 class Command(BaseCommand):
-    help = 'Seed the database with sample products'
+    """Create sample products for testing and development."""
+    
+    help = 'Seed the database with sample categories and products for testing'
 
     # Unsplash image URLs for different categories
     IMAGES = {

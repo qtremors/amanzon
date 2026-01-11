@@ -4,6 +4,7 @@ from django.views.decorators.http import require_POST
 from django.contrib import messages
 from django.core.paginator import Paginator
 from django.db.models import Q, Count, Avg
+from django.utils.http import url_has_allowed_host_and_scheme
 
 from ..models import Category, Product, Wishlist, Review
 from ..forms import ReviewForm
@@ -11,7 +12,11 @@ from ..forms import ReviewForm
 def index(request):
     """Homepage with featured products."""
     categories = Category.objects.prefetch_related('subcategories').all()[:6]
-    featured_products = Product.objects.filter(is_active=True).select_related('category')[:8]
+    # Annotate avg_rating to prevent N+1 queries if show_rating is enabled
+    featured_products = Product.objects.filter(is_active=True).select_related('category').annotate(
+        review_count=Count('reviews'),
+        avg_rating=Avg('reviews__rating')
+    )[:8]
     
     # Wishlist IDs for current user
     wishlist_ids = []
@@ -149,7 +154,10 @@ def toggle_wishlist(request, product_id):
     else:
         messages.success(request, f'Added "{product.name}" to wishlist.')
     
-    next_url = request.GET.get('next', request.META.get('HTTP_REFERER', 'store:shop'))
+    # SEC-02: Validate redirect URL to prevent open redirect
+    next_url = request.GET.get('next') or request.META.get('HTTP_REFERER', '')
+    if not next_url or not url_has_allowed_host_and_scheme(next_url, allowed_hosts={request.get_host()}):
+        next_url = 'store:shop'
     return redirect(next_url)
 
 
