@@ -10,7 +10,7 @@ class AddressInline(admin.TabularInline):
     model = Address
     extra = 0
     fields = ['label', 'first_name', 'last_name', 'city', 'state', 'is_default']
-    readonly_fields = ['label']
+    # CR-1: Removed 'label' from readonly_fields to allow editing
 
 
 @admin.register(User)

@@ -94,16 +94,16 @@ class SupabaseStorage(Storage):
             logger.warning(f"Failed to delete file from Supabase Storage: {path} - {e}")
 
     def exists(self, name):
-        """Check if file exists in Supabase Storage using list API (efficient)."""
+        """Check if file exists in Supabase Storage using list API with search."""
         if not self.client:
             return False
 
         path = self._get_storage_path(name)
         try:
-            # Use list API instead of downloading - much more efficient
+            # CR-5: Use search parameter to handle folders with >100 items
             folder = '/'.join(path.split('/')[:-1]) or ''
             filename = path.split('/')[-1]
-            result = self.client.storage.from_(self.bucket_name).list(folder)
+            result = self.client.storage.from_(self.bucket_name).list(folder, {"search": filename})
             return any(item.get('name') == filename for item in result)
         except Exception:
             return False
@@ -117,9 +117,10 @@ class SupabaseStorage(Storage):
         """Return file size from Supabase metadata."""
         try:
             path = self._get_storage_path(name)
+            # CR-5: Use search parameter to handle folders with >100 items
             folder = '/'.join(path.split('/')[:-1]) or ''
             filename = path.split('/')[-1]
-            result = self.client.storage.from_(self.bucket_name).list(folder)
+            result = self.client.storage.from_(self.bucket_name).list(folder, {"search": filename})
             for item in result:
                 if item.get('name') == filename:
                     # Supabase returns metadata with 'size' in bytes

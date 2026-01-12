@@ -20,8 +20,9 @@
         <div class="col-lg-6 mb-4">
             <div class="product-img-wrapper shadow-none bg-light p-5 d-flex align-items-center justify-content-center"
                 style="aspect-ratio: 1/1;">
+                <!-- CR-7: Removed loading="lazy" from primary image to improve LCP -->
                 <img src="{% if product.image %}{{ product.image.url }}{% else %}https://placehold.co/600x600/e5e7eb/9ca3af?text=No+Image{% endif %}"
-                    alt="{{ product.name }}" class="img-fluid rounded shadow-sm" loading="lazy"
+                    alt="{{ product.name }}" class="img-fluid rounded shadow-sm"
                     style="max-height: 100%; object-fit: contain;">
             </div>
         </div>

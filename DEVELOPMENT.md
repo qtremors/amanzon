@@ -147,6 +147,98 @@ amanzon/
 
 ---
 
+## Local Development (SQLite)
+
+For quick local development without setting up Supabase, you can run the project using Django's default SQLite database and local file storage.
+
+### Quick Start
+
+```bash
+# Clone and navigate
+git clone https://github.com/qtremors/amanzon.git
+cd amanzon/app
+
+# Install dependencies (using uv - recommended)
+uv sync
+
+# Or using pip
+pip install -r requirements.txt
+
+# Create minimal .env file
+cp .env.example .env
+```
+
+### Minimal `.env` Configuration
+
+For SQLite + local storage, you only need these settings in your `.env`:
+
+```env
+# Core (required)
+SECRET_KEY=your-secret-key-here
+DEBUG=True
+ALLOWED_HOSTS=localhost,127.0.0.1
+
+# Leave these EMPTY to use SQLite and local file storage
+DATABASE_URL=
+SUPABASE_URL=
+SUPABASE_SERVICE_ROLE_KEY=
+
+# Optional: Email (leave empty to skip email features)
+EMAIL_HOST_USER=
+EMAIL_HOST_PASSWORD=
+
+# Optional: Razorpay (leave empty for demo mode)
+RAZORPAY_KEY_ID=
+RAZORPAY_KEY_SECRET=
+```
+
+### Run Migrations & Start Server
+
+```bash
+# Run migrations (creates db.sqlite3)
+uv run python manage.py migrate
+
+# (Optional) Create admin user
+uv run python manage.py createsuperuser
+
+# (Optional) Seed sample products
+uv run python manage.py seed_products
+
+# Start development server
+uv run python manage.py runserver
+```
+
+Visit **http://localhost:8000** 🎉
+
+### What Works Without External Services
+
+| Feature | SQLite Mode | Notes |
+|---------|-------------|-------|
+| Browse products | ✅ | Full functionality |
+| Cart & wishlist | ✅ | Full functionality |
+| User registration | ⚠️ | Works, but no verification email |
+| Checkout | ✅ | Demo mode (simulated payments) |
+| Order history | ✅ | Full functionality |
+| Admin panel | ✅ | Full functionality |
+| Image uploads | ✅ | Stored in `media/` folder locally |
+| Password reset | ⚠️ | Requires email configuration |
+
+### File Storage Behavior
+
+- **With Supabase configured**: Images upload to Supabase Storage
+- **Without Supabase**: Images save to `app/media/` directory locally
+
+### Upgrading to PostgreSQL
+
+When ready to use Supabase PostgreSQL:
+
+1. Set `DATABASE_URL` in `.env` with your Supabase connection string
+2. Set `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`, and `SUPABASE_BUCKET`
+3. Run `uv run python manage.py migrate`
+4. (Optional) Migrate existing media: `uv run python manage.py migrate_media`
+
+---
+
 ## Database Schema
 
 ### Models Overview (14 total)

@@ -1,5 +1,19 @@
 # Changelog
 
+## [1.3.1] - 2026-01-12
+
+### Added
+- **Local Development Guide** - New section in DEVELOPMENT.md for SQLite-only setup
+
+### Fixed
+- **CR-1:** Admin can now edit address labels (removed from `readonly_fields`)
+- **CR-2:** Product images in cart, checkout, wishlist, order detail now have null checks with placeholder fallback
+- **CR-3:** `Address.country` gracefully handles missing `DEFAULT_COUNTRY` setting
+- **CR-4:** Rating annotations now rounded to 1 decimal with `Round(Avg(...), 1)`
+- **CR-5:** `SupabaseStorage.exists()` and `size()` now use search param for >100 files
+- **CR-6:** Address form now displays validation errors
+- **CR-7:** Primary product image no longer uses `loading="lazy"` (improves LCP)
+
 ## [1.3.0] - 2026-01-11
 
 ### Added

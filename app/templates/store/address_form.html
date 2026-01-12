@@ -19,9 +19,19 @@
                 <form method="POST">
                     {% csrf_token %}
 
+                    <!-- CR-6: Display non-field errors -->
+                    {% if form.non_field_errors %}
+                    <div class="alert alert-danger mb-3">
+                        {% for error in form.non_field_errors %}
+                        <div>{{ error }}</div>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+
                     <div class="mb-3">
                         <label for="id_label" class="form-label fw-bold">Address Label</label>
                         {{ form.label }}
+                        {% if form.label.errors %}<div class="text-danger small mt-1">{{ form.label.errors.0 }}</div>{% endif %}
                         <small class="text-muted">e.g., Home, Work, Office</small>
                     </div>
 
@@ -29,10 +39,12 @@
                         <div class="col-md-6">
                             <label for="id_first_name" class="form-label fw-bold">First Name</label>
                             {{ form.first_name }}
+                            {% if form.first_name.errors %}<div class="text-danger small mt-1">{{ form.first_name.errors.0 }}</div>{% endif %}
                         </div>
                         <div class="col-md-6">
                             <label for="id_last_name" class="form-label fw-bold">Last Name</label>
                             {{ form.last_name }}
+                            {% if form.last_name.errors %}<div class="text-danger small mt-1">{{ form.last_name.errors.0 }}</div>{% endif %}
                         </div>
                     </div>
 
