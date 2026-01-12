@@ -19,6 +19,10 @@
 > [!NOTE]
 > **Personal Project** 🎯 I built this to learn Django and explore e-commerce patterns. It's a passion project for skill development, not a production-ready solution. Feel free to explore, learn from it, or use it as a starting point for your own projects!
 
+## Live Website 
+
+**➡️ [https://amanzon.onrender.com](https://amanzon.onrender.com)**
+
 > [!WARNING]
 > **Live Demo Limitations**: The demo hosted on Render free tier may experience slow cold starts (~60s) and occasional timeouts. For the best experience, clone and run locally.
 
@@ -47,10 +51,10 @@
 git clone https://github.com/qtremors/amanzon.git
 cd amanzon/app
 
-# Install dependencies (using uv - recommended)
+# Install dependencies
 uv sync
 
-# Setup environment
+# Setup environment (if needed)
 cp .env.example .env
 
 # Initialize database
@@ -59,7 +63,7 @@ uv run python manage.py migrate
 # (Optional) Seed sample products
 uv run python manage.py seed_products
 
-# Start server
+# Run the project
 uv run python manage.py runserver
 ```
 
@@ -100,27 +104,16 @@ uv run python manage.py createsuperuser
 
 ```
 amanzon/
-├── app/
-│   ├── amanzon/       # Django settings & URLs
-│   ├── store/         # Main app (models, views, services)
-│   ├── templates/     # HTML templates
-│   └── static/        # CSS, JS, images
-├── DEVELOPMENT.md     # Developer documentation
-├── CHANGELOG.md       # Version history
-├── LICENSE.md         # License terms
+├── app/                  # Django application root
+│   ├── amanzon/          # Django settings & URLs
+│   ├── store/            # Main app (models, views, services)
+│   ├── templates/        # HTML templates
+│   └── static/           # CSS, JS, images
+├── DEVELOPMENT.md        # Developer documentation
+├── CHANGELOG.md          # Version history
+├── LICENSE.md            # License terms
 └── README.md
 ```
-
----
-
-## 📚 Documentation
-
-| Document | Description |
-|----------|-------------|
-| [DEVELOPMENT.md](DEVELOPMENT.md) | Architecture, API routes, database schema, deployment |
-| [CHANGELOG.md](CHANGELOG.md) | Version history and release notes |
-| [LICENSE.md](LICENSE.md) | License terms and attribution requirements |
-| [.env.example](app/.env.example) | Environment variable template |
 
 ---
 
@@ -136,14 +129,25 @@ uv run python manage.py test store -v 2
 
 ---
 
+## 📚 Documentation
+
+| Document | Description |
+|----------|-------------|
+| [DEVELOPMENT.md](DEVELOPMENT.md) | Architecture, setup, API reference |
+| [CHANGELOG.md](CHANGELOG.md) | Version history and release notes |
+| [LICENSE.md](LICENSE.md) | License terms and attribution |
+| [.env.example](app/.env.example) | Environment variable template |
+
+---
+
 ## 📄 License
 
-**Tremors Source License (TSL)** - This is a source-available license that allows viewing, forking, and derivative works with **mandatory attribution**. Commercial use requires written permission.
+**Tremors Source License (TSL)** - Source-available license allowing viewing, forking, and derivative works with **mandatory attribution**. Commercial use requires written permission.
 
 See [LICENSE.md](LICENSE.md) for full terms.
 
 ---
 
 <p align="center">
-  Made with ❤️ by <a href="https://github.com/qtremors">qtremors</a>
+  Made with ❤️ by <a href="https://github.com/qtremors">Tremors</a>
 </p>

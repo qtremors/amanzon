@@ -1,6 +1,8 @@
 # License
 
-**Copyright © 2026 [qtremors](https://github.com/qtremors). All rights reserved.**
+**Version 1.0**
+
+**Copyright © 2025-2026 [Tremors](https://github.com/qtremors). All rights reserved.**
 
 ---
 
@@ -29,7 +31,7 @@
 
 If you fork or build upon this project, you must:
 
-- Credit the original author ([qtremors](https://github.com/qtremors)) in your README or credits section
+- Credit the original author [Tremors](https://github.com/qtremors) in your README or credits section
 - Include a link to the original repository: `https://github.com/qtremors/amanzon`
 
 ### Not Permitted
@@ -46,7 +48,7 @@ If you fork or build upon this project, you must:
 Include the following (or similar) in derivative works:
 
 ```
-Based on Amanzon by qtremors
+Based on Amanzon by [Tremors](https://github.com/qtremors)
 https://github.com/qtremors/amanzon
 ```
 
@@ -54,7 +56,7 @@ https://github.com/qtremors/amanzon
 
 ## Commercial Use
 
-For commercial licensing inquiries, contact: **singhamankumar207@gmail.com**
+For commercial licensing inquiries, contact via GitHub: **[Tremors](https://github.com/qtremors)**
 
 ---
 
@@ -64,4 +66,4 @@ This software is provided "as is", without warranty of any kind. The author is n
 
 ---
 
-**© 2026 [qtremors](https://github.com/qtremors)**
+**© 2025-2026 [Tremors](https://github.com/qtremors)**

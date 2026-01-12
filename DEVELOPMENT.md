@@ -1,6 +1,6 @@
 # Amanzon - Developer Documentation
 
-> Comprehensive documentation for developers working on the Amanzon e-commerce platform.
+> Comprehensive documentation for developers working on Amanzon.
 
 **Version:** 1.3.1 | **Last Updated:** 2026-01-12
 
@@ -10,6 +10,7 @@
 
 - [Architecture Overview](#architecture-overview)
 - [Project Structure](#project-structure)
+- [Local Development (SQLite)](#local-development-sqlite)
 - [Database Schema](#database-schema)
 - [API Routes](#api-routes)
 - [Environment Variables](#environment-variables)

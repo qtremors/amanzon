@@ -1,25 +1,65 @@
 # Amanzon - Tasks
 
-> **Version:** 1.3.1 | **Last Updated:** 2026-01-12
+> **Project:** Amanzon  
+> **Version:** 1.3.1  
+> **Last Updated:** 2026-01-12
 
 ---
 
-## 📋 Remaining Tasks
+## ✅ Completed (v1.3.1)
 
-### Future Enhancements
-- **M3:** Change cart/wishlist to POST (requires template refactoring)
-- **M4:** Base form mixin for Bootstrap classes
-- **M5:** Review edit/delete functionality
-- **M9:** Use currency filter consistently across templates
-- **L11:** AJAX shop filtering
+### Documentation
+- [x] Update documentation from templates
+- [x] Create comprehensive DEVELOPMENT.md
+- [x] Create custom LICENSE.md
+
+---
+
+## 🚧 In Progress
+
+### Documentation
+- [/] Refactor documentation to match new templates
+  - Updating README.md, CHANGELOG.md, DEVELOPMENT.md, LICENSE.md, TASKS.md
+
+---
+
+## 📋 To Do
+
+### High Priority
+- [ ] **M3:** Change cart/wishlist to POST (requires template refactoring)
+- [ ] **M5:** Review edit/delete functionality
+- [ ] **M9:** Use currency filter consistently across templates
+
+### Medium Priority
+- [ ] **M4:** Base form mixin for Bootstrap classes
+- [ ] **L11:** AJAX shop filtering
 
 ### Code Quality
-- Quote standardization, type hints, test coverage gaps
-- View logging, documentation updates
+- [ ] Quote standardization
+- [ ] Type hints
+- [ ] Test coverage gaps
+- [ ] View logging
+
+---
+
+## 🐛 Bug Fixes
+
+
+
+---
+
+## 💡 Ideas / Future
+
+- [ ] Future enhancements from previous list
 
 ---
 
 ## 🏗️ Architecture Notes
+
 - Service layer handles business logic well
 - Views properly organized by module
 - Tests well-structured with good mocking
+
+---
+
+

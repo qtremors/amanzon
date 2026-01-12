@@ -1,5 +1,11 @@
 # Changelog
 
+> **Project:** Amanzon  
+> **Version:** 1.3.1  
+> **Last Updated:** 2026-01-12
+
+---
+
 ## [1.3.1] - 2026-01-12
 
 ### Added
