@@ -45,8 +45,8 @@ class Address(models.Model):
     address_line2 = models.CharField(max_length=255, blank=True)
     city = models.CharField(max_length=100)
     state = models.CharField(max_length=100)
-    # H7: Use configurable country default from settings
-    country = models.CharField(max_length=100, default=settings.DEFAULT_COUNTRY)
+    # CR-3: Use getattr with fallback to prevent AttributeError if setting is missing
+    country = models.CharField(max_length=100, default=getattr(settings, 'DEFAULT_COUNTRY', 'India'))
     zip_code = models.CharField(max_length=20)
     is_default = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)

@@ -23,9 +23,13 @@
                 <h6 class="fw-semibold mb-3">Items</h6>
                 {% for item in order.items.all %}
                 <div class="d-flex align-items-center mb-3 pb-3 border-bottom">
-                    {% if item.product %}
+                    <!-- CR-2: Added null check for product image -->
+                    {% if item.product and item.product.image %}
                     <img src="{{ item.product.image.url }}" alt="{{ item.product_name }}" class="rounded me-3"
                         style="width: 60px; height: 60px; object-fit: cover;">
+                    {% elif item.product %}
+                    <img src="https://placehold.co/60x60/e5e7eb/9ca3af?text=No+Image" alt="{{ item.product_name }}"
+                        class="rounded me-3" style="width: 60px; height: 60px; object-fit: cover;">
                     {% endif %}
                     <div class="flex-grow-1">
                         <h6 class="mb-0">{{ item.product_name }}</h6>

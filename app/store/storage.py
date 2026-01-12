@@ -94,17 +94,30 @@ class SupabaseStorage(Storage):
             logger.warning(f"Failed to delete file from Supabase Storage: {path} - {e}")
 
     def exists(self, name):
-        """Check if file exists in Supabase Storage using list API (efficient)."""
+        """Check if file exists in Supabase Storage using paginated list API."""
         if not self.client:
             return False
 
         path = self._get_storage_path(name)
         try:
-            # Use list API instead of downloading - much more efficient
             folder = '/'.join(path.split('/')[:-1]) or ''
             filename = path.split('/')[-1]
-            result = self.client.storage.from_(self.bucket_name).list(folder)
-            return any(item.get('name') == filename for item in result)
+            
+            # Paginate through all files in folder to find match
+            limit = 100
+            offset = 0
+            while True:
+                result = self.client.storage.from_(self.bucket_name).list(
+                    folder, {"limit": limit, "offset": offset, "search": filename}
+                )
+                if not result:
+                    break
+                if any(item.get('name') == filename for item in result):
+                    return True
+                if len(result) < limit:
+                    break
+                offset += limit
+            return False
         except Exception:
             return False
 
@@ -115,15 +128,29 @@ class SupabaseStorage(Storage):
 
     def size(self, name):
         """Return file size from Supabase metadata."""
+        if not self.client:
+            return 0
+            
         try:
             path = self._get_storage_path(name)
             folder = '/'.join(path.split('/')[:-1]) or ''
             filename = path.split('/')[-1]
-            result = self.client.storage.from_(self.bucket_name).list(folder)
-            for item in result:
-                if item.get('name') == filename:
-                    # Supabase returns metadata with 'size' in bytes
-                    return item.get('metadata', {}).get('size', 0)
+            
+            # Paginate through all files in folder to find match
+            limit = 100
+            offset = 0
+            while True:
+                result = self.client.storage.from_(self.bucket_name).list(
+                    folder, {"limit": limit, "offset": offset, "search": filename}
+                )
+                if not result:
+                    break
+                for item in result:
+                    if item.get('name') == filename:
+                        return item.get('metadata', {}).get('size', 0)
+                if len(result) < limit:
+                    break
+                offset += limit
             return 0
         except Exception:
             return 0

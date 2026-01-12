@@ -1,9 +1,39 @@
 # Changelog
 
-All notable changes to Amanzon will be documented in this file.
+## [1.3.1] - 2026-01-12
 
-The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
-and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+### Added
+- **Local Development Guide** - New section in DEVELOPMENT.md for SQLite-only setup
+
+### Fixed
+- **CR-1:** Admin can now edit address labels (removed from `readonly_fields`)
+- **CR-2:** Product images in cart, checkout, wishlist, order detail now have null checks with placeholder fallback
+- **CR-3:** `Address.country` gracefully handles missing `DEFAULT_COUNTRY` setting
+- **CR-4:** Rating annotations now rounded to 1 decimal with `Round(Avg(...), 1)`
+- **CR-5:** `SupabaseStorage.exists()` and `size()` now use search param for >100 files
+- **CR-6:** Address form now displays validation errors
+- **CR-7:** Primary product image no longer uses `loading="lazy"` (improves LCP)
+
+## [1.3.0] - 2026-01-11
+
+### Added
+- **DEVELOPMENT.md** - Comprehensive developer documentation (567 lines)
+  - Architecture overview with diagrams
+  - Complete database schema (14 models)
+  - Full API routes documentation (35+ endpoints)
+  - Environment variables reference
+  - Configuration options
+  - Services layer documentation
+  - Deployment guide for Render
+  - Troubleshooting section
+- **LICENSE.md** - Custom source-available license (Tremors Source License)
+- Personal project disclaimer in README
+
+### Changed
+- Rewrote README.md with cleaner, surface-level content
+- Replaced MIT license with custom Tremors Source License
+- Updated project structure to include LICENSE.md
+- Fixed model count from 13 to 14 across all documentation
 
 ## [1.2.5] - 2026-01-11
 

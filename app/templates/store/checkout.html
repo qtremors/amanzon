@@ -103,7 +103,9 @@
                     <div class="d-flex align-items-center justify-content-between">
                         <div class="d-flex align-items-center gap-3">
                             <div class="position-relative">
-                                <img src="{{ item.product.image.url }}" alt="{{ item.product.name }}" class="rounded"
+                                <!-- CR-2: Added null check for product image -->
+                                <img src="{% if item.product.image %}{{ item.product.image.url }}{% else %}https://placehold.co/50x50/e5e7eb/9ca3af?text=No+Image{% endif %}"
+                                    alt="{{ item.product.name }}" class="rounded"
                                     style="width: 50px; height: 50px; object-fit: cover;">
                                 <span
                                     class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-secondary text-white"

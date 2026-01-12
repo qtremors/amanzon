@@ -19,9 +19,19 @@
                 <form method="POST">
                     {% csrf_token %}
 
+                    <!-- CR-6: Display non-field errors -->
+                    {% if form.non_field_errors %}
+                    <div class="alert alert-danger mb-3">
+                        {% for error in form.non_field_errors %}
+                        <div>{{ error }}</div>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+
                     <div class="mb-3">
                         <label for="id_label" class="form-label fw-bold">Address Label</label>
                         {{ form.label }}
+                        {% if form.label.errors %}<div class="text-danger small mt-1">{{ form.label.errors.0 }}</div>{% endif %}
                         <small class="text-muted">e.g., Home, Work, Office</small>
                     </div>
 
@@ -29,21 +39,25 @@
                         <div class="col-md-6">
                             <label for="id_first_name" class="form-label fw-bold">First Name</label>
                             {{ form.first_name }}
+                            {% if form.first_name.errors %}<div class="text-danger small mt-1">{{ form.first_name.errors.0 }}</div>{% endif %}
                         </div>
                         <div class="col-md-6">
                             <label for="id_last_name" class="form-label fw-bold">Last Name</label>
                             {{ form.last_name }}
+                            {% if form.last_name.errors %}<div class="text-danger small mt-1">{{ form.last_name.errors.0 }}</div>{% endif %}
                         </div>
                     </div>
 
                     <div class="mb-3">
                         <label for="id_phone" class="form-label fw-bold">Phone</label>
                         {{ form.phone }}
+                        {% if form.phone.errors %}<div class="text-danger small mt-1">{{ form.phone.errors.0 }}</div>{% endif %}
                     </div>
 
                     <div class="mb-3">
                         <label for="id_address_line1" class="form-label fw-bold">Address Line 1</label>
                         {{ form.address_line1 }}
+                        {% if form.address_line1.errors %}<div class="text-danger small mt-1">{{ form.address_line1.errors.0 }}</div>{% endif %}
                     </div>
 
                     <div class="mb-3">
@@ -56,10 +70,14 @@
                         <div class="col-md-6">
                             <label for="id_city" class="form-label fw-bold">City</label>
                             {{ form.city }}
+                            {% if form.city.errors %}<div class="text-danger small mt-1">{{ form.city.errors.0 }}</div>
+                            {% endif %}
                         </div>
                         <div class="col-md-6">
                             <label for="id_state" class="form-label fw-bold">State</label>
                             {{ form.state }}
+                            {% if form.state.errors %}<div class="text-danger small mt-1">{{ form.state.errors.0 }}
+                            </div>{% endif %}
                         </div>
                     </div>
 
@@ -67,10 +85,13 @@
                         <div class="col-md-6">
                             <label for="id_country" class="form-label fw-bold">Country</label>
                             {{ form.country }}
+                            {% if form.country.errors %}<div class="text-danger small mt-1">{{ form.country.errors.0 }}
+                            </div>{% endif %}
                         </div>
                         <div class="col-md-6">
                             <label for="id_zip_code" class="form-label fw-bold">ZIP Code</label>
                             {{ form.zip_code }}
+                            {% if form.zip_code.errors %}<div class="text-danger small mt-1">{{ form.zip_code.errors.0 }}</div>{% endif %}
                         </div>
                     </div>
 
