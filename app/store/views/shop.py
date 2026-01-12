@@ -4,6 +4,7 @@ from django.views.decorators.http import require_POST
 from django.contrib import messages
 from django.core.paginator import Paginator
 from django.db.models import Q, Count, Avg
+from django.db.models.functions import Round  # CR-4: For rounding avg_rating
 from django.utils.http import url_has_allowed_host_and_scheme
 
 from ..models import Category, Product, Wishlist, Review
@@ -13,9 +14,10 @@ def index(request):
     """Homepage with featured products."""
     categories = Category.objects.prefetch_related('subcategories').all()[:6]
     # Annotate avg_rating to prevent N+1 queries if show_rating is enabled
+    # CR-4: Round avg_rating to 1 decimal for consistency with Product.average_rating
     featured_products = Product.objects.filter(is_active=True).select_related('category').annotate(
         review_count=Count('reviews'),
-        avg_rating=Avg('reviews__rating')
+        avg_rating=Round(Avg('reviews__rating'), 1)
     )[:8]
     
     # Wishlist IDs for current user
@@ -32,9 +34,10 @@ def index(request):
 
 def shop(request, category_slug=None):
     """Shop page with filtering and pagination."""
+    # CR-4: Round avg_rating to 1 decimal for consistency with Product.average_rating
     products = Product.objects.filter(is_active=True).select_related('category', 'subcategory').annotate(
         review_count=Count('reviews'),
-        avg_rating=Avg('reviews__rating')
+        avg_rating=Round(Avg('reviews__rating'), 1)
     )
     categories = Category.objects.prefetch_related('subcategories').all()
     

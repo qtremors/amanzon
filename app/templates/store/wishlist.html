@@ -13,8 +13,9 @@
             <div class="product-card card h-100">
                 <div class="position-relative">
                     <a href="{% url 'store:product_detail' item.product.slug %}">
-                        <img src="{{ item.product.image.url }}" class="card-img-top" alt="{{ item.product.name }}"
-                            loading="lazy">
+                        <!-- CR-2: Added null check for product image -->
+                        <img src="{% if item.product.image %}{{ item.product.image.url }}{% else %}https://placehold.co/300x300/e5e7eb/9ca3af?text=No+Image{% endif %}"
+                            class="card-img-top" alt="{{ item.product.name }}" loading="lazy">
                     </a>
                     <a href="{% url 'store:toggle_wishlist' item.product.id %}" class="wishlist-btn active">
                         <i class="bi bi-heart-fill"></i>

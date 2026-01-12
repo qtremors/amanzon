@@ -1,6 +1,6 @@
 [project]
 name = "amanzon"
-version = "1.3.0"
+version = "1.3.1"
 description = "A modern Django e-commerce application"
 readme = "../README.md"
 requires-python = ">=3.11"
