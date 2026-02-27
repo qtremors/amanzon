@@ -18,3 +18,23 @@ def contact(request):
         form = ContactForm()
     
     return render(request, 'store/contact.html', {'form': form})
+
+def about(request):
+    """About page (mock)."""
+    return render(request, 'store/about.html')
+
+def faq(request):
+    """FAQ page (mock)."""
+    return render(request, 'store/faq.html')
+
+def blog(request):
+    """Blog page (mock)."""
+    return render(request, 'store/blog.html')
+
+def privacy(request):
+    """Privacy Policy page (mock)."""
+    return render(request, 'store/privacy.html')
+
+def terms(request):
+    """Terms of Service page (mock)."""
+    return render(request, 'store/terms.html')

@@ -1,58 +1,215 @@
 {% comment %}
-Product Card Component - Premium Minimalist
+Product Card Component - Premium MD3 Expressive
 Usage: {% include 'store/_product_card.html' with product=product wishlist_ids=wishlist_ids show_rating=True %}
 {% endcomment %}
 
-<div class="product-card h-100 card-hover">
+<div class="product-card h-100 card-hover position-relative">
     <div class="product-img-wrapper">
         {% if product.discount_percent > 0 %}
-        <span
-            class="position-absolute top-0 start-0 m-3 badge bg-white text-danger border border-danger-subtle rounded-pill shadow-sm"> -{{ product.discount_percent }}%
+        <span class="position-absolute top-0 start-0 m-3 badge bg-danger text-white border-0 px-2 py-1 shadow-sm"
+            style="z-index: 5; font-size: 0.8rem; border-radius: var(--md-shape-small);">
+            -{{ product.discount_percent }}% OFF
         </span>
         {% endif %}
 
-        <a href="{% url 'store:product_detail' product.slug %}"><img src="{% if product.image %}{{ product.image.url }}{% else %}https://placehold.co/400x400/f3f4f6/9ca3af?text=No+Image{% endif %}" class="product-img" alt="{{ product.name }}" loading="lazy"></a>
+        <!-- Mock "New" tag if no discount randomly based on product id for variety -->
+        {% if product.discount_percent == 0 and product.id|divisibleby:3 %}
+        <span class="position-absolute top-0 start-0 m-3 badge bg-primary text-white border-0 px-2 py-1 shadow-sm"
+            style="z-index: 5; font-size: 0.8rem; border-radius: var(--md-shape-small);">
+            <i class="bi bi-stars me-1 text-warning"></i> NEW
+        </span>
+        {% endif %}
 
-        <div class="product-actions">
+        <a href="{% url 'store:product_detail' product.slug %}" class="d-block h-100 w-100">
+            <img src="{% if product.image %}{{ product.image.url }}{% else %}https://placehold.co/400x500/e2e3e0/707973?text=Amanzon+Premium{% endif %}"
+                class="product-img" alt="{{ product.name }}" loading="lazy">
+
+            <!-- Dark gradient overlay at bottom for expressive look -->
+            <div class="position-absolute bottom-0 start-0 w-100 h-50 pointer-events-none"
+                style="background: linear-gradient(to top, rgba(0,0,0,0.4), transparent); opacity: 0; transition: opacity 0.3s; z-index: 1;"
+                onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0'"></div>
+        </a>
+
+        <!-- Premium MD3 Overlay Actions -->
+        <div class="product-actions" style="z-index: 5;">
+            <!-- Catch add to cart click to show Toast, then let browser navigate or prevent default if desired. Since it's a real Django view, we let it navigate, but we can style it -->
             <a href="{% url 'store:add_to_cart' product.id %}?next={{ request.path }}{% if request.GET.urlencode %}&{{ request.GET.urlencode }}{% endif %}"
-                class="btn-action" title="Add to Cart" aria-label="Add {{ product.name }} to cart">
-                <i class="bi bi-bag-plus" aria-hidden="true"></i>
+                class="btn-action ripple" title="Add to Cart" aria-label="Add {{ product.name }} to cart">
+                <i class="bi bi-cart-plus-fill" aria-hidden="true"></i>
             </a>
 
             {% if user.is_authenticated %}
             <a href="{% url 'store:toggle_wishlist' product.id %}?next={{ request.path }}{% if request.GET.urlencode %}&{{ request.GET.urlencode }}{% endif %}"
-                class="btn-action {% if product.id in wishlist_ids %}text-danger{% endif %}" title="Wishlist"
+                class="btn-action ripple wishlist-btn {% if product.id in wishlist_ids %}text-danger{% endif %}"
+                style="{% if product.id in wishlist_ids %}color: var(--md-sys-color-error) !important;{% endif %}"
+                title="Wishlist"
                 aria-label="{% if product.id in wishlist_ids %}Remove {{ product.name }} from wishlist{% else %}Add {{ product.name }} to wishlist{% endif %}">
-                <i class="bi bi-heart{% if product.id in wishlist_ids %}-fill{% endif %}" aria-hidden="true"></i>
+                <i class="bi bi-heart{% if product.id in wishlist_ids %}-fill fade-in{% endif %}"
+                    aria-hidden="true"></i>
+            </a>
+            {% else %}
+            <!-- Mock wishlist action for unauthenticated users -->
+            <a href="#"
+                onclick="showMockToast('Please log in to save items to your wishlist.', 'warning'); return false;"
+                class="btn-action ripple" title="Wishlist">
+                <i class="bi bi-heart" aria-hidden="true"></i>
             </a>
             {% endif %}
 
-            <a href="{% url 'store:product_detail' product.slug %}" class="btn-action" title="View Details"
-                aria-label="View details for {{ product.name }}">
-                <i class="bi bi-eye" aria-hidden="true"></i>
+            <a href="#quickViewModal{{ product.id }}" data-bs-toggle="modal" class="btn-action ripple bg-white text-dark"
+                title="Quick View" aria-label="Quick View for {{ product.name }}">
+                <i class="bi bi-arrows-angle-expand" aria-hidden="true"></i>
             </a>
         </div>
     </div>
 
-    <div class="py-3 px-1 text-center">
-        <div class="small text-secondary text-uppercase tracking-wide mb-1" style="font-size: 0.7rem;">{{ product.category.name }}</div>
-        <h6 class="mb-2">
-            <a href="{% url 'store:product_detail' product.slug %}" class="text-reset fw-semibold">{{ product.name }}</a>
-        </h6>
+    <div class="p-4 d-flex flex-column h-100">
+        <div class="d-flex justify-content-between align-items-start mb-2">
+            <a href="{% url 'store:shop' %}?category={{ product.category.slug }}"
+                class="small text-secondary fw-bold text-uppercase text-decoration-none hover-primary"
+                style="font-size: 0.75rem; letter-spacing: 0.05em;">
+                {{ product.category.name }}
+            </a>
 
-        <div class="d-flex align-items-center justify-content-center gap-2">
-            <span class="fw-bold text-primary">₹{{ product.price }}</span>
-            {% if product.discount_percent > 0 %}
-            <span class="text-muted text-decoration-line-through small">₹{{ product.original_price }}</span>
+            {% if show_rating %}
+            <!-- Mock dynamic rating based on ID for visual flair -->
+            <div class="d-flex align-items-center gap-1 bg-warning-subtle text-warning-emphasis px-2 py-1 rounded-pill"
+                style="font-size: 0.7rem; background-color: rgba(212, 175, 55, 0.1);">
+                <i class="bi bi-star-fill text-warning"></i>
+                <span class="fw-bold" style="color: var(--gold-accent);">
+                    {% if product.avg_rating %}{{ product.avg_rating|floatformat:1 }}{% else %}4.{{ product.id|slugify|last|default:"8" }}{% endif %}
+                </span>
+            </div>
             {% endif %}
         </div>
 
-        {% if show_rating %}
-        <div class="d-flex align-items-center justify-content-center gap-1 mt-2">
-            <i class="bi bi-star-fill text-warning" style="font-size: 0.75rem;"></i>
-            <span class="small fw-medium">{{ product.avg_rating|default:product.average_rating|default:0 }}</span>
-            <span class="small text-muted">({{ product.review_count|default:product.reviews.count }})</span>
+        <h5 class="mb-3 fw-bold flex-grow-1" style="line-height: 1.3;">
+            <a href="{% url 'store:product_detail' product.slug %}"
+                class="text-reset text-decoration-none hover-primary text-truncate-2"
+                style="display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">
+                {{ product.name }}
+            </a>
+        </h5>
+
+        <div class="d-flex align-items-end justify-content-between mt-auto">
+            <div class="d-flex flex-column">
+                <span class="fs-5 fw-bold text-primary">₹{{ product.price }}</span>
+                {% if product.discount_percent > 0 %}
+                <span class="text-muted text-decoration-line-through small fw-medium" style="font-size: 0.85rem;">₹{{ product.original_price }}</span>
+                {% endif %}
+            </div>
+
+            <!-- Fast buy button directly on card -->
+            <a href="{% url 'store:add_to_cart' product.id %}?next={{ request.path }}{% if request.GET.urlencode %}&{{ request.GET.urlencode }}{% endif %}"
+                class="btn btn-outline-primary rounded-circle p-0 d-flex align-items-center justify-content-center ripple"
+                style="width: 40px; height: 40px; border-width: 2px;">
+                <i class="bi bi-plus-lg fs-5"></i>
+            </a>
         </div>
-        {% endif %}
     </div>
 </div>
+
+<!-- Quick View Modal -->
+<div class="modal fade modal-quick-view" id="quickViewModal{{ product.id }}" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content shadow-lg">
+            <div class="modal-header">
+                <button type="button" class="btn-close shadow-none" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-0">
+                <div class="row g-0">
+                    <!-- Image Area -->
+                    <div class="col-md-5 bg-subtle">
+                        <img src="{% if product.image %}{{ product.image.url }}{% else %}https://placehold.co/600x800/e2e3e0/707973?text=Amanzon+Premium{% endif %}"
+                            class="img-fluid w-100 h-100 object-fit-cover" alt="{{ product.name }}" style="min-height: 400px;">
+                    </div>
+                    <!-- Content Area -->
+                    <div class="col-md-7 p-4 p-md-5 d-flex flex-column justify-content-center">
+                        <a href="{% url 'store:shop' %}?category={{ product.category.slug }}" class="text-uppercase text-secondary fw-bold small text-decoration-none mb-2 hover-primary" style="letter-spacing: 0.1em;">
+                            {{ product.category.name }}
+                        </a>
+                        <h3 class="fw-bold mb-3">{{ product.name }}</h3>
+                        
+                        <div class="d-flex align-items-center mb-4 gap-3">
+                            <h4 class="text-primary mb-0 fw-bold">₹{{ product.price }}</h4>
+                            {% if product.discount_percent > 0 %}
+                            <span class="text-secondary text-decoration-line-through mt-1">₹{{ product.original_price }}</span>
+                            <span class="badge bg-danger rounded-pill">-{{ product.discount_percent }}%</span>
+                            {% endif %}
+                        </div>
+
+                        <p class="text-secondary mb-4 line-clamp-3">{{ product.description|truncatewords:20|default:"Experience premium quality with this meticulously crafted item, designed to minimal perfection." }}</p>
+
+                        <div class="d-flex gap-3 mt-auto">
+                            <a href="{% url 'store:add_to_cart' product.id %}?next={{ request.path }}{% if request.GET.urlencode %}&{{ request.GET.urlencode }}{% endif %}" class="btn btn-primary flex-grow-1 ripple py-3 shadow-none">
+                                <i class="bi bi-cart-plus me-2"></i> Add to Cart
+                            </a>
+                            <a href="{% url 'store:product_detail' product.slug %}" class="btn btn-outline-primary ripple py-3 shadow-none px-4" title="View Full Details">
+                                <i class="bi bi-arrow-right"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Wishlist Burst Animation Script (Included once per card, could be abstracted to base.html but kept here for component isolation) -->
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const wishlistBtns = document.querySelectorAll('#quickViewModal{{ product.id }}').length ?
+            document.querySelectorAll('.wishlist-btn') : []; // simple check to run this logic
+
+        wishlistBtns.forEach(btn => {
+            // Only attach if not already attached (prevent duplicate listeners if multiple cards loaded)
+            if(btn.dataset.burstAttached) return;
+            btn.dataset.burstAttached = 'true';
+
+            btn.addEventListener('click', function(e) {
+                // If the user is unauthenticated, the class 'wishlist-btn' might not be there or we don't want the effect
+                if(!this.href.includes('toggle_wishlist')) return;
+
+                const icon = this.querySelector('i');
+                const isAdding = !icon.classList.contains('bi-heart-fill');
+
+                if (isAdding) {
+                    icon.classList.remove('bi-heart');
+                    icon.classList.add('bi-heart-fill');
+                    this.style.color = 'var(--md-sys-color-error)';
+                    
+                    // Add burst animation to icon
+                    icon.classList.add('wishlist-burst');
+                    setTimeout(() => icon.classList.remove('wishlist-burst'), 400);
+
+                    // Create particles
+                    for (let i = 0; i < 6; i++) {
+                        const particle = document.createElement('div');
+                        particle.classList.add('wishlist-particle');
+                        
+                        // Calculate random angles
+                        const angle = (Math.PI * 2 * i) / 6;
+                        const velocity = 20 + Math.random() * 15;
+                        const tx = Math.cos(angle) * velocity;
+                        const ty = Math.sin(angle) * velocity;
+                        
+                        particle.style.setProperty('--tx', `${tx}px`);
+                        particle.style.setProperty('--ty', `${ty}px`);
+                        
+                        // Center particle on button
+                        const rect = this.getBoundingClientRect();
+                        particle.style.left = `${rect.width / 2 - 3}px`;
+                        particle.style.top = `${rect.height / 2 - 3}px`;
+                        
+                        this.appendChild(particle);
+                        
+                        // Run animation
+                        particle.style.animation = 'particleBurst 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards';
+                        
+                        setTimeout(() => particle.remove(), 600);
+                    }
+                }
+            });
+        });
+    });
+</script>

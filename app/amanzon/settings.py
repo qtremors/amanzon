@@ -8,8 +8,8 @@ from dotenv import load_dotenv
 from django.core.exceptions import ImproperlyConfigured
 import dj_database_url
 
-# Load environment variables
-load_dotenv()
+# Load environment variables from repo root
+load_dotenv(Path(__file__).resolve().parent.parent.parent / '.env')
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -98,7 +98,7 @@ WSGI_APPLICATION = 'amanzon.wsgi.application'
 
 
 # =============================================================================
-# DATABASE (Supabase PostgreSQL or SQLite fallback)
+# DATABASE (NeonDB PostgreSQL in production, SQLite for local development)
 # =============================================================================
 
 DATABASES = {

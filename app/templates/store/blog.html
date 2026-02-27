@@ -1,0 +1,162 @@
+{% extends 'base.html' %}
+
+{% block title %}Style Guide & Journal - Amanzon Premium{% endblock %}
+
+{% block content %}
+<!-- Premium Hero Section -->
+<div class="position-relative overflow-hidden bg-dark text-white"
+    style="min-height: 50vh; display: flex; align-items: center;">
+        style="background-image: url('https://images.unsplash.com/photo-1441986300917-64674bd600d8?q=80&w=2000&auto=format&fit=crop'); background-size: cover; background-position: center; filter: grayscale(50%) contrast(1.2);">
+    </div>
+    <div class="position-absolute top-0 start-0 w-100 h-100" style="background: linear-gradient(to top, var(--md-sys-color-surface) 0%, transparent 100%);"></div>
+    <div class="position-absolute top-0 start-0 w-100 h-100" style="background: rgba(0,0,0,0.6);"></div>
+
+    <div class="container position-relative z-1 stagger-item py-5 text-center mt-5">
+        <span class="badge border border-white text-white rounded-pill px-3 py-2 fw-bold letter-spacing-wide text-uppercase mb-4 dropdown-blur">The Journal</span>
+        <h1 class="display-3 fw-bold mb-4 text-balance mx-auto text-white shadow-sm" style="line-height: 1.1; max-width: 900px; text-shadow: 0 4px 12px rgba(0,0,0,0.3);">Where Style Meets Substance.</h1>
+        <p class="fs-4 text-white-50 text-balance mx-auto mb-5" style="max-width: 700px;">Curated editorials, styling advice, and stories behind our most exquisite collections.</p>
+    </div>
+</div>
+
+<div class="container mb-5 stagger-item" style="margin-top: -50px; position: relative; z-index: 10;">
+    <!-- Featured Article -->
+    <div class="card border-0 rounded-5 overflow-hidden shadow-lg border border-light bg-white">
+        <div class="row g-0">
+            <div class="col-lg-7 position-relative overflow-hidden" style="min-height: 400px;">
+                <img src="https://images.unsplash.com/photo-1490481651871-ab68de25d43d?q=80&w=1200&auto=format&fit=crop" class="position-absolute w-100 h-100 object-fit-cover hover-zoom transition-slow" alt="Featured Article">
+            </div>
+            <div class="col-lg-5 p-5 p-lg-5 d-flex flex-column justify-content-center">
+                <div class="d-flex align-items-center gap-3 mb-4">
+                    <span class="badge bg-primary-subtle text-primary rounded-pill px-3 py-2 fw-bold letter-spacing-wide text-uppercase">Editorial</span>
+                    <span class="text-secondary small fw-medium text-uppercase"><i class="bi bi-clock me-1"></i> 5 min read</span>
+                </div>
+                <h2 class="display-6 fw-bold mb-3">The New Standard of Minimalist Elegance</h2>
+                <p class="text-secondary fs-5 mb-4 lh-lg">Discover how the latest collection redefines everyday wear by stripping away the unnecessary, focusing purely on impeccable drape, supreme materials, and timeless silhouettes.</p>
+                <div class="mt-auto pt-4 border-top border-light d-flex align-items-center justify-content-between">
+                    <div class="d-flex align-items-center gap-3">
+                        <img src="https://placehold.co/100x100/10b981/ffffff?text=ER" class="rounded-circle" width="40" height="40" alt="Author">
+                        <div>
+                            <h6 class="fw-bold mb-0">Elena Rostova</h6>
+                            <p class="small text-secondary mb-0">Oct 12, 2024</p>
+                        </div>
+                    </div>
+                    <button class="btn btn-outline-primary rounded-circle p-2 ripple" style="width: 48px; height: 48px;" onclick="showMockToast('Reading article... (Mock)', 'info')">
+                        <i class="bi bi-arrow-right fs-5"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container py-5 stagger-item">
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-5 gap-4">
+        <h2 class="fw-bold display-6 mb-0">Latest Stories</h2>
+
+        <!-- Filter Mock -->
+        <div class="d-flex gap-2 overflow-auto pb-2" style="scrollbar-width: none;">
+            <button class="btn btn-dark rounded-pill px-4 fw-medium text-nowrap shadow-sm">All</button>
+            <button class="btn btn-outline-secondary bg-subtle rounded-pill px-4 fw-medium text-nowrap border-light hover-primary">Style Guides</button>
+            <button class="btn btn-outline-secondary bg-subtle rounded-pill px-4 fw-medium text-nowrap border-light hover-primary">Behind the Brand</button>
+            <button class="btn btn-outline-secondary bg-subtle rounded-pill px-4 fw-medium text-nowrap border-light hover-primary">Interviews</button>
+        </div>
+    </div>
+
+    <div class="row g-4 g-lg-5">
+        <!-- Article Card 1 -->
+        <div class="col-md-6 col-lg-4">
+            <div class="card h-100 border-0 bg-transparent article-card cursor-pointer" onclick="showMockToast('Opening article... (Mock)', 'info')">
+                <div class="position-relative rounded-5 overflow-hidden mb-4 shadow-sm border border-light" style="aspect-ratio: 4/3;">
+                    <img src="https://images.unsplash.com/photo-1515378960530-7c0da6229678?q=80&w=800&auto=format&fit=crop" class="w-100 h-100 object-fit-cover transition-slow" alt="Article Image">
+                    <span class="position-absolute top-0 start-0 m-3 badge bg-white text-dark rounded-pill px-3 py-2 fw-bold shadow-sm">Style Guide</span>
+                </div>
+                <div class="card-body p-0">
+                    <h4 class="fw-bold mb-3 article-title transition">Transitional Wardrobe Essentials</h4>
+                    <p class="text-secondary mb-4 line-clamp-3">Mastering the art of layering as the seasons change. We spotlight the five foundational pieces every modern wardrobe requires.</p>
+                    <div class="d-flex align-items-center gap-2 small text-secondary fw-medium text-uppercase tracking-wide">
+                        <span>Marcus Chen</span>
+                        <i class="bi bi-dot"></i>
+                        <span>Oct 05, 2024</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Article Card 2 -->
+        <div class="col-md-6 col-lg-4">
+            <div class="card h-100 border-0 bg-transparent article-card cursor-pointer" onclick="showMockToast('Opening article... (Mock)', 'info')">
+                <div class="position-relative rounded-5 overflow-hidden mb-4 shadow-sm border border-light" style="aspect-ratio: 4/3;">
+                    <img src="https://images.unsplash.com/photo-1445205170230-053b83016050?q=80&w=800&auto=format&fit=crop" class="w-100 h-100 object-fit-cover transition-slow" alt="Article Image">
+                    <span class="position-absolute top-0 start-0 m-3 badge bg-white text-dark rounded-pill px-3 py-2 fw-bold shadow-sm">Behind the Brand</span>
+                </div>
+                <div class="card-body p-0">
+                    <h4 class="fw-bold mb-3 article-title transition">The Artisan's Journey: Sourcing Fine Leather</h4>
+                    <p class="text-secondary mb-4 line-clamp-3">Travel with our sourcing team to Florence, where we partner with generational craftsmen to select the hides for our new accessories line.</p>
+                    <div class="d-flex align-items-center gap-2 small text-secondary fw-medium text-uppercase tracking-wide">
+                        <span>Sarah Jenkins</span>
+                        <i class="bi bi-dot"></i>
+                        <span>Sep 28, 2024</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Article Card 3 -->
+        <div class="col-md-6 col-lg-4">
+            <div class="card h-100 border-0 bg-transparent article-card cursor-pointer" onclick="showMockToast('Opening article... (Mock)', 'info')">
+                <div class="position-relative rounded-5 overflow-hidden mb-4 shadow-sm border border-light" style="aspect-ratio: 4/3;">
+                    <div class="position-absolute w-100 h-100 bg-primary opacity-20 z-1" style="mix-blend-mode: color;"></div>
+                    <img src="https://images.unsplash.com/photo-1581044777550-4cfa60707c03?q=80&w=800&auto=format&fit=crop" class="w-100 h-100 object-fit-cover transition-slow" alt="Article Image">
+                    <span class="position-absolute top-0 start-0 m-3 badge bg-white text-dark rounded-pill px-3 py-2 fw-bold shadow-sm">Interview</span>
+                </div>
+                <div class="card-body p-0">
+                    <h4 class="fw-bold mb-3 article-title transition">In Conversation: The Mind Behind the Architecture</h4>
+                    <p class="text-secondary mb-4 line-clamp-3">We sit down with the designer of our new flagship store to discuss how spatial design influences the shopping experience.</p>
+                    <div class="d-flex align-items-center gap-2 small text-secondary fw-medium text-uppercase tracking-wide">
+                        <span>Editorial Team</span>
+                        <i class="bi bi-dot"></i>
+                        <span>Sep 15, 2024</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="text-center mt-5 pt-4">
+        <button class="btn btn-outline-primary rounded-pill px-5 py-3 fw-bold ripple shadow-sm" onclick="showMockToast('Loading more articles (Mock)', 'info')">
+            <i class="bi bi-arrow-down me-2"></i> Load More Stories
+        </button>
+    </div>
+</div>
+
+<style>
+    /* Article Card Styles */
+    .hover-zoom:hover {
+        transform: scale(1.05);
+    }
+
+    .transition-slow {
+        transition: transform 0.6s cubic-bezier(0.2, 0, 0, 1);
+    }
+
+    .article-card:hover .transition-slow {
+        transform: scale(1.05);
+    }
+
+    .article-card:hover .article-title {
+        color: var(--md-sys-color-primary);
+    }
+
+    .line-clamp-3 {
+        display: -webkit-box;
+        -webkit-line-clamp: 3;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+
+    .dropdown-blur {
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(10px);
+    }
+</style>
+{% endblock %}

@@ -1,0 +1,273 @@
+{% extends 'base.html' %}
+
+{% block title %}Help Center & FAQ - Amanzon Premium{% endblock %}
+
+{% block content %}
+<!-- Premium Hero Section -->
+<div class="position-relative overflow-hidden bg-primary text-white"
+    style="background: linear-gradient(135deg, var(--md-sys-color-primary) 0%, var(--md-sys-color-tertiary) 100%);">
+        style="background-image: radial-gradient(circle at 80% 20%, rgba(255,255,255,0.3) 0%, transparent 50%); mix-blend-mode: overlay;">
+    </div>
+
+    <div class="container py-5 my-md-5 py-md-5 position-relative z-1 stagger-item text-center">
+            class="badge bg-white text-primary rounded-pill px-3 py-2 fw-bold letter-spacing-wide text-uppercase mb-4 shadow-sm">Support Center</span>
+        <h1 class="display-3 fw-bold mb-4 text-balance mx-auto" style="line-height: 1.1; max-width: 800px;">How can we assist you today?</h1>
+
+        <!-- Mock Search Bar -->
+        <div class="mx-auto mt-5" style="max-width: 600px;">
+            <div class="position-relative shadow-lg rounded-pill overflow-hidden bg-white p-2 d-flex align-items-center">
+                <i class="bi bi-search text-secondary ms-3 fs-5"></i>
+                    placeholder="Search for answers..." onclick="showMockToast('Search functionality is a mockup', 'info')">
+                <button class="btn btn-primary rounded-pill px-4 py-2 fw-bold" onclick="showMockToast('Search functionality is a mockup', 'info')">Search</button>
+            </div>
+            <div class="d-flex justify-content-center gap-3 mt-4 flex-wrap">
+                <span class="text-white-50 small fw-bold text-uppercase">Popular:</span>
+                <a href="#shipping" class="text-white text-decoration-none hover-opacity-75 small border-bottom border-light pb-1">Shipping times</a>
+                <a href="#returns" class="text-white text-decoration-none hover-opacity-75 small border-bottom border-light pb-1">Return policy</a>
+                <a href="#payment" class="text-white text-decoration-none hover-opacity-75 small border-bottom border-light pb-1">Payment methods</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container py-5 my-5 stagger-item">
+    <div class="row w-100 m-0">
+        <!-- Sidebar Navigation -->
+        <div class="col-lg-3 mb-5 mb-lg-0">
+            <div class="bg-white rounded-5 shadow-sm border border-light p-4 sticky-lg-top" style="top: 100px;">
+                <h5 class="fw-bold mb-4 px-2">Categories</h5>
+                <div class="nav flex-column nav-pills gap-2" id="faq-tabs" role="tablist" aria-orientation="vertical">
+                    <button
+                        class="nav-link text-start px-3 py-3 fw-medium rounded-4 active d-flex justify-content-between align-items-center"
+                        id="orders-tab" data-bs-toggle="pill" data-bs-target="#orders" type="button" role="tab"
+                        aria-selected="true">
+                        <span><i class="bi bi-box-seam me-2"></i> Orders & Delivery</span>
+                        <i class="bi bi-chevron-right small"></i>
+                    </button>
+                    <button
+                        class="nav-link text-start px-3 py-3 fw-medium rounded-4 d-flex justify-content-between align-items-center"
+                        id="returns-tab" data-bs-toggle="pill" data-bs-target="#returns" type="button" role="tab"
+                        aria-selected="false">
+                        <span><i class="bi bi-arrow-counterclockwise me-2"></i> Returns & Refunds</span>
+                        <i class="bi bi-chevron-right small"></i>
+                    </button>
+                    <button
+                        class="nav-link text-start px-3 py-3 fw-medium rounded-4 d-flex justify-content-between align-items-center"
+                        id="payment-tab" data-bs-toggle="pill" data-bs-target="#payment" type="button" role="tab"
+                        aria-selected="false">
+                        <span><i class="bi bi-credit-card me-2"></i> Payment & Pricing</span>
+                        <i class="bi bi-chevron-right small"></i>
+                    </button>
+                    <button
+                        class="nav-link text-start px-3 py-3 fw-medium rounded-4 d-flex justify-content-between align-items-center"
+                        id="account-tab" data-bs-toggle="pill" data-bs-target="#account" type="button" role="tab"
+                        aria-selected="false">
+                        <span><i class="bi bi-person me-2"></i> Account & Security</span>
+                        <i class="bi bi-chevron-right small"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- FAQ Content -->
+        <div class="col-lg-9 ps-lg-5">
+            <div class="tab-content" id="faq-tabsContent">
+
+                <!-- Orders Tab -->
+                <div class="tab-pane fade show active" id="orders" role="tabpanel" tabindex="0">
+                    <h3 class="fw-bold mb-4 pb-2 border-bottom border-light">Orders & Delivery</h3>
+
+                    <div class="accordion" id="accordionOrders">
+                        <!-- FAQ Item 1 -->
+                        <div
+                            class="accordion-item border-light bg-white rounded-4 shadow-sm mb-3 overflow-hidden border-0">
+                            <h2 class="accordion-header">
+                                <button class="accordion-button fw-bold fs-5 collapsed bg-white text-dark py-4 px-4"
+                                    type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne">
+                                    How long will it take to receive my premium order?
+                                </button>
+                            </h2>
+                            <div id="collapseOne" class="accordion-collapse collapse" data-bs-parent="#accordionOrders">
+                                <div class="accordion-body text-secondary lh-lg px-4 pb-4 pt-0">
+                                    Standard shipping generally takes 3-5 business days. For our exclusive collections,
+                                    we offer complimentary expedited shipping (1-2 business days) to ensure your items
+                                    arrive promptly and in impeccable condition. You will receive a tracking link the
+                                    moment your order departs our styling facility.
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- FAQ Item 2 -->
+                        <div
+                            class="accordion-item border-light bg-white rounded-4 shadow-sm mb-3 overflow-hidden border-0">
+                            <h2 class="accordion-header">
+                                <button class="accordion-button fw-bold fs-5 collapsed bg-white text-dark py-4 px-4"
+                                    type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo">
+                                    Do you offer international shipping?
+                                </button>
+                            </h2>
+                            <div id="collapseTwo" class="accordion-collapse collapse" data-bs-parent="#accordionOrders">
+                                <div class="accordion-body text-secondary lh-lg px-4 pb-4 pt-0">
+                                    Yes, Amanzon ships globally to over 100 countries. International priority shipping
+                                    typically requires 5-10 business days depending on the destination and local customs
+                                    processes. Please note that duties and taxes are calculated at checkout so there are
+                                    no surprise fees upon delivery.
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- FAQ Item 3 -->
+                        <div
+                            class="accordion-item border-light bg-white rounded-4 shadow-sm mb-3 overflow-hidden border-0">
+                            <h2 class="accordion-header">
+                                <button class="accordion-button fw-bold fs-5 collapsed bg-white text-dark py-4 px-4"
+                                    type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree">
+                                    Can I modify my order after it has been placed?
+                                </button>
+                            </h2>
+                            <div id="collapseThree" class="accordion-collapse collapse"
+                                data-bs-parent="#accordionOrders">
+                                <div class="accordion-body text-secondary lh-lg px-4 pb-4 pt-0">
+                                    Because our fulfillment team begins preparing your order immediately to ensure swift
+                                    delivery, modifications are only possible within the first hour of placement. Please
+                                    contact our concierge team at <a href="{% url 'store:contact' %}"
+                                        class="text-primary text-decoration-none fw-medium">contact@amanzon.com</a>
+                                    urgently if an adjustment is required.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Returns Tab (Mock Content) -->
+                <div class="tab-pane fade" id="returns" role="tabpanel" tabindex="0">
+                    <h3 class="fw-bold mb-4 pb-2 border-bottom border-light">Returns & Refunds</h3>
+                    <div class="accordion" id="accordionReturns">
+                        <div
+                            class="accordion-item border-light bg-white rounded-4 shadow-sm mb-3 overflow-hidden border-0">
+                            <h2 class="accordion-header">
+                                <button class="accordion-button fw-bold fs-5 collapsed bg-white text-dark py-4 px-4"
+                                    type="button" data-bs-toggle="collapse" data-bs-target="#collapseReturns1">
+                                    What is the Amanzon return policy?
+                                </button>
+                            </h2>
+                            <div id="collapseReturns1" class="accordion-collapse collapse"
+                                data-bs-parent="#accordionReturns">
+                                <div class="accordion-body text-secondary lh-lg px-4 pb-4 pt-0">
+                                    We offer a complimentary 30-day return window for all items in their original,
+                                    unworn condition with tags attached. A prepaid return label is included in every
+                                    package for your convenience.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Payment Tab (Mock Content) -->
+                <div class="tab-pane fade" id="payment" role="tabpanel" tabindex="0">
+                    <h3 class="fw-bold mb-4 pb-2 border-bottom border-light">Payment & Pricing</h3>
+                    <div class="accordion" id="accordionPayment">
+                        <div
+                            class="accordion-item border-light bg-white rounded-4 shadow-sm mb-3 overflow-hidden border-0">
+                            <h2 class="accordion-header">
+                                <button class="accordion-button fw-bold fs-5 collapsed bg-white text-dark py-4 px-4"
+                                    type="button" data-bs-toggle="collapse" data-bs-target="#collapsePayment1">
+                                    Which payment methods do you accept?
+                                </button>
+                            </h2>
+                            <div id="collapsePayment1" class="accordion-collapse collapse"
+                                data-bs-parent="#accordionPayment">
+                                <div class="accordion-body text-secondary lh-lg px-4 pb-4 pt-0">
+                                    We accept all major credit cards (Visa, Mastercard, American Express, Discover),
+                                    PayPal, Apple Pay, Google Pay, and our integrated Razorpay gateway for secure
+                                    transactions.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Account Tab (Mock Content) -->
+                <div class="tab-pane fade" id="account" role="tabpanel" tabindex="0">
+                    <h3 class="fw-bold mb-4 pb-2 border-bottom border-light">Account & Security</h3>
+                    <div class="accordion" id="accordionAccount">
+                        <div
+                            class="accordion-item border-light bg-white rounded-4 shadow-sm mb-3 overflow-hidden border-0">
+                            <h2 class="accordion-header">
+                                <button class="accordion-button fw-bold fs-5 collapsed bg-white text-dark py-4 px-4"
+                                    type="button" data-bs-toggle="collapse" data-bs-target="#collapseAccount1">
+                                    Is my personal information secure?
+                                </button>
+                            </h2>
+                            <div id="collapseAccount1" class="accordion-collapse collapse"
+                                data-bs-parent="#accordionAccount">
+                                <div class="accordion-body text-secondary lh-lg px-4 pb-4 pt-0">
+                                    Absolutely. Amanzon utilizes industry-leading encryption and security protocols to
+                                    protect your data. We do not store your full payment information on our servers, and
+                                    we never sell your personal details to third parties.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Still need help? CTA -->
+<div class="container pb-5 mb-5 stagger-item">
+    <div class="bg-subtle rounded-5 p-5 text-center border border-light">
+        <h3 class="fw-bold mb-3">Still Need Assistance?</h3>
+        <p class="text-secondary mb-4 mx-auto" style="max-width: 500px;">Our dedicated concierge team is available 24/7
+            to provide personalized support for any inquiry.</p>
+        <div class="d-flex justify-content-center gap-3">
+            <a href="{% url 'store:contact' %}"
+                class="btn btn-primary rounded-pill px-4 py-3 fw-bold shadow-sm ripple">Contact Concierge</a>
+            <button
+                class="btn btn-outline-secondary bg-white rounded-pill px-4 py-3 fw-bold border-light shadow-sm ripple"
+                onclick="showMockToast('Initiating live chat... (Mock)', 'info')"><i
+                    class="bi bi-chat-dots me-2"></i>Live Chat</button>
+        </div>
+    </div>
+</div>
+
+<style>
+    /* Smooth accordion transitions */
+    .accordion-button:not(.collapsed) {
+        background-color: var(--md-sys-color-surface);
+        color: var(--md-sys-color-primary);
+        box-shadow: none;
+    }
+
+    .accordion-button:focus {
+        box-shadow: none;
+        border-color: rgba(0, 0, 0, .125);
+    }
+
+    .accordion-item {
+        transition: all 0.3s ease;
+    }
+
+    .accordion-item:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.05) !important;
+    }
+
+    /* Nav Pills Customization */
+    .nav-pills .nav-link {
+        color: var(--md-sys-color-on-surface-variant);
+        transition: all 0.2s ease;
+    }
+
+    .nav-pills .nav-link.active {
+        background-color: var(--md-sys-color-primary-container) !important;
+        color: var(--md-sys-color-on-primary-container) !important;
+    }
+
+    .nav-pills .nav-link:not(.active):hover {
+        background-color: var(--md-sys-color-surface-container-high);
+    }
+</style>
+{% endblock %}

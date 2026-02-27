@@ -12,116 +12,155 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Bootstrap Icons -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
-    <!-- Google Fonts: Inter -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+    <!-- Google Fonts: Material 3 Expressive -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap"
         rel="stylesheet">
-    <!-- Custom CSS -->
+    <!-- Custom CSS (MD3 Tokens) -->
     <link href="{% static 'css/style.css' %}" rel="stylesheet">
     {% block extra_css %}{% endblock %}
 </head>
 
-<body class="d-flex flex-column min-vh-100">
-    <!-- Navbar -->
-    <nav class="navbar navbar-expand-lg fixed-top">
+<body class="d-flex flex-column min-vh-100 loaded">
+    <!-- Global Toast Container for Mock Notifications -->
+    <div id="toast-container" class="toast-container position-fixed bottom-0 end-0 p-3" style="z-index: 1090;"></div>
+
+    <!-- Navbar (Glassmorphism & Sticky) -->
+    <nav class="navbar navbar-expand-lg fixed-top shadow-sm">
         <div class="container">
             <a class="navbar-brand d-flex align-items-center" href="{% url 'store:index' %}">
-                <img src="{% static 'img/amanzon.png' %}" alt="Amanzon" height="32" class="me-2">
+                <img src="{% static 'img/amanzon.png' %}" alt="Amanzon" height="36" class="me-2">
                 Amanzon<span class="text-primary">.</span>
             </a>
 
-            <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
+            <button class="navbar-toggler border-0 shadow-none nav-icon ripple" type="button" data-bs-toggle="collapse"
+                data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false"
+                aria-label="Toggle navigation">
+                <i class="bi bi-list fs-3"></i>
             </button>
 
             <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav mx-auto">
+                <ul class="navbar-nav mx-auto align-items-lg-center">
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'store:index' %}">Home</a>
+                        <a class="nav-link px-3 py-2 ripple" href="{% url 'store:index' %}">Home</a>
+                    </li>
+                    <li class="nav-item dropdown dropdown-mega">
+                        <a class="nav-link px-3 py-2 ripple dropdown-toggle" href="#" id="shopMegaMenu" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Shop
+                        </a>
+                        <div class="dropdown-menu mega-menu border-0 p-4" aria-labelledby="shopMegaMenu">
+                            <div class="row g-4">
+                                <div class="col-md-4 border-end border-light pe-4">
+                                    <h6 class="text-uppercase fw-bold text-primary mb-3" style="letter-spacing: 0.1em; font-size: 0.8rem;">Categories</h6>
+                                    <ul class="list-unstyled mb-0 d-flex flex-column gap-2">
+                                        <li><a href="{% url 'store:shop' %}" class="text-decoration-none mega-menu-link">All Products</a></li>
+                                        <li><a href="#" class="text-decoration-none mega-menu-link">New Arrivals <span class="badge bg-primary text-white ms-2 rounded-pill">New</span></a></li>
+                                        <li><a href="#" class="text-decoration-none mega-menu-link">Bestsellers</a></li>
+                                        <li><a href="#" class="text-decoration-none mega-menu-link">Essentials</a></li>
+                                        <li><a href="#" class="text-decoration-none mega-menu-link">Accessories</a></li>
+                                    </ul>
+                                </div>
+                                <div class="col-md-4 border-end border-light pe-4">
+                                    <h6 class="text-uppercase fw-bold text-primary mb-3" style="letter-spacing: 0.1em; font-size: 0.8rem;">Curated</h6>
+                                    <ul class="list-unstyled mb-0 d-flex flex-column gap-2">
+                                        <li><a href="#" class="text-decoration-none mega-menu-link">The Minimalist Edit</a></li>
+                                        <li><a href="#" class="text-decoration-none mega-menu-link">Sustainable Choice</a></li>
+                                        <li><a href="#" class="text-decoration-none mega-menu-link">Gifts for Him</a></li>
+                                        <li><a href="#" class="text-decoration-none mega-menu-link">Gifts for Her</a></li>
+                                    </ul>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="position-relative h-100 rounded-4 overflow-hidden shadow-sm">
+                                        <img src="https://images.unsplash.com/photo-1441986300917-64674bd600d8?q=80&w=600&auto=format&fit=crop" class="w-100 h-100 object-fit-cover position-absolute top-0 start-0" alt="Featured">
+                                        <div class="position-absolute top-0 start-0 w-100 h-100" style="background: linear-gradient(to top, rgba(0,0,0,0.8) 0%, transparent 100%);"></div>
+                                        <div class="position-absolute bottom-0 start-0 p-3 w-100">
+                                            <h6 class="text-white fw-bold mb-1">New Collection</h6>
+                                            <a href="{% url 'store:shop' %}" class="btn btn-light btn-sm rounded-pill w-100 fw-bold shadow-sm mt-2">Explore Now</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'store:shop' %}">Shop</a>
+                        <a class="nav-link px-3 py-2 ripple" href="{% url 'store:contact' %}">Contact</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'store:contact' %}">Contact</a>
+                        <a class="nav-link px-3 py-2 ripple" href="#"
+                            onclick="showMockToast('About Us page coming soon!'); return false;">About</a>
                     </li>
                 </ul>
 
-                <div class="d-flex align-items-center gap-3">
-                    <!-- Search Trigger (could be expanded to modal later) -->
+                <div
+                    class="d-flex align-items-center gap-3 mt-3 mt-lg-0 pb-3 pb-lg-0 border-top border-lg-0 pt-3 pt-lg-0 border-light border-top border-lg-0">
                     <!-- Search Form -->
                     <form action="{% url 'store:shop' %}" method="GET" class="d-flex" role="search">
                         <div class="input-group">
-                            <input class="form-control form-control-sm border-end-0 bg-light" type="search" name="q"
-                                placeholder="Search..." aria-label="Search">
-                            <button class="btn btn-sm btn-light border border-start-0" type="submit">
+                            <input class="form-control form-control-sm border-end-0 bg-transparent"
+                                style="border-radius: var(--md-shape-full) 0 0 var(--md-shape-full);" type="search"
+                                name="q" placeholder="Search products..." aria-label="Search">
+                            <button class="btn btn-sm btn-outline-primary border-start-0"
+                                style="border-radius: 0 var(--md-shape-full) var(--md-shape-full) 0;" type="submit">
                                 <i class="bi bi-search"></i>
                             </button>
                         </div>
                     </form>
 
                     <!-- Theme Toggle -->
-                    <button class="theme-toggle nav-icon" id="theme-toggle" title="Toggle dark mode"
+                    <button class="theme-toggle nav-icon ripple" id="theme-toggle" title="Toggle dark mode"
                         aria-label="Toggle dark mode">
                         <i class="bi bi-sun-fill" id="theme-icon"></i>
                     </button>
 
                     {% if user.is_authenticated %}
-                    <a href="{% url 'store:wishlist' %}" class="nav-icon position-relative" title="Wishlist">
+                    <a href="{% url 'store:wishlist' %}" class="nav-icon position-relative ripple" title="Wishlist">
                         <i class="bi bi-heart"></i>
                         {% if wishlist_count > 0 %}
-                        <span
-                            class="position-absolute top-0 start-100 translate-middle badge rounded-pill badge-notification p-1 border border-light rounded-circle">
+                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill badge-notification p-1 border border-light rounded-circle">
                             <span class="visually-hidden">New alerts</span>
                         </span>
                         {% endif %}
                     </a>
 
-                    <a href="{% url 'store:cart' %}" class="nav-icon position-relative" title="Cart">
+                    <a href="#offcanvasCart" data-bs-toggle="offcanvas" role="button" aria-controls="offcanvasCart" class="nav-icon position-relative ripple" title="Cart">
                         <i class="bi bi-bag"></i>
                         {% if cart_count > 0 %}
-                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
-                            style="font-size: 0.6rem;">
+                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="font-size: 0.65rem;">
                             {{ cart_count }}
                         </span>
                         {% endif %}
                     </a>
 
                     <div class="dropdown">
-                        <a href="#" class="d-flex align-items-center text-decoration-none dropdown-toggle"
-                            data-bs-toggle="dropdown">
+                        <a href="#" class="d-flex align-items-center text-decoration-none dropdown-toggle border-0 bg-transparent ripple" data-bs-toggle="dropdown" style="padding: 4px; border-radius: 50%;">
                             {% if user.profile_picture %}
-                            <img src="{{ user.profile_picture.url }}" alt="Profile" class="rounded-circle" width="32"
-                                height="32" style="object-fit: cover;">
+                            <img src="{{ user.profile_picture.url }}" alt="Profile" class="rounded-circle" width="36" height="36" style="object-fit: cover;">
                             {% else %}
-                            <div class="rounded-circle bg-light d-flex align-items-center justify-content-center text-dark fw-bold"
-                                style="width: 32px; height: 32px; font-size: 0.8rem;">
+                            <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center fw-bold shadow-sm" style="width: 36px; height: 36px; font-size: 0.85rem;">
                                 {{ user.username|make_list|first|upper }}
                             </div>
                             {% endif %}
                         </a>
-                        <ul class="dropdown-menu dropdown-menu-end shadow-lg border-0 mt-2 p-2"
-                            style="min-width: 200px;">
-                            <li class="px-3 py-2">
+                        <ul class="dropdown-menu dropdown-menu-end mt-2 p-2 border-0" style="min-width: 220px; box-shadow: var(--md-elevation-3); border-radius: var(--md-shape-medium);">
+                            <li class="px-3 py-3 bg-subtle rounded mb-2">
                                 <div class="fw-bold">{{ user.username }}</div>
-                                <div class="small text-muted">{{ user.email }}</div>
+                                <div class="small text-secondary">{{ user.email }}</div>
                             </li>
-                            <li>
-                                <hr class="dropdown-divider">
-                            </li>
-                            <li><a class="dropdown-item rounded" href="{% url 'store:profile' %}">Profile Settings</a>
-                            </li>
-                            <li><a class="dropdown-item rounded" href="{% url 'store:orders' %}">Order History</a></li>
-                            <li>
-                                <hr class="dropdown-divider">
-                            </li>
-                            <li><a class="dropdown-item rounded text-danger" href="{% url 'store:logout' %}">Sign
-                                    Out</a></li>
+                            <li><a class="dropdown-item py-2 fw-medium ripple" href="{% url 'store:profile' %}"><i class="bi bi-person me-2 text-primary"></i>Profile Settings</a></li>
+                            <li><a class="dropdown-item py-2 fw-medium ripple" href="{% url 'store:orders' %}"><i class="bi bi-box-seam me-2 text-primary"></i>Order History</a></li>
+                            <li><hr class="dropdown-divider my-2"></li>
+                            <li><a class="dropdown-item py-2 fw-medium text-danger ripple" href="{% url 'store:logout' %}"><i class="bi bi-box-arrow-right me-2"></i>Sign Out</a></li>
                         </ul>
                     </div>
                     {% else %}
                     <div class="d-flex gap-2">
-                        <a href="{% url 'store:login' %}" class="btn btn-outline-primary btn-sm px-3">Log In</a>
-                        <a href="{% url 'store:register' %}" class="btn btn-primary btn-sm px-3">Sign Up</a>
+                        <a href="#offcanvasCart" data-bs-toggle="offcanvas" role="button" aria-controls="offcanvasCart" class="nav-icon position-relative ripple me-2 d-flex align-items-center justify-content-center" title="Cart">
+                            <i class="bi bi-bag"></i>
+                        </a>
+                        <a href="{% url 'store:login' %}" class="btn btn-outline-primary btn-sm px-4 ripple">Log In</a>
+                        <a href="{% url 'store:register' %}" class="btn btn-primary btn-sm px-4 ripple">Sign Up</a>
                     </div>
                     {% endif %}
                 </div>
@@ -129,15 +168,66 @@
         </div>
     </nav>
 
+    <!-- Offcanvas Cart -->
+    <div class="offcanvas offcanvas-end border-0" tabindex="-1" id="offcanvasCart" aria-labelledby="offcanvasCartLabel" style="width: 400px; max-width: 100vw;">
+        <div class="offcanvas-header bg-subtle border-bottom border-light">
+            <h5 class="offcanvas-title fw-bold text-primary" id="offcanvasCartLabel">Your Cart</h5>
+            <button type="button" class="btn-close shadow-none" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+        </div>
+        <div class="offcanvas-body d-flex flex-column p-0">
+            <div class="flex-grow-1 overflow-auto p-4 custom-scrollbar">
+                {% if cart_count > 0 %}
+                    <!-- Cart Items will be dynamically loaded or managed here -->
+                    <div class="text-center py-5">
+                        <div class="spinner-border text-primary" role="status">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                    </div>
+                {% else %}
+                    <!-- Empty State -->
+                    <div class="h-100 d-flex flex-column align-items-center justify-content-center text-center text-secondary py-5">
+                        <div class="bg-subtle rounded-circle p-4 mb-3 shadow-sm border border-light">
+                            <i class="bi bi-bag-x fs-1 opacity-50"></i>
+                        </div>
+                        <h5 class="fw-bold text-primary">Your cart is empty</h5>
+                        <p class="mb-4">Looks like you haven't added any premium items yet.</p>
+                        <a href="{% url 'store:shop' %}" class="btn btn-primary rounded-pill px-4 ripple">Explore Collection</a>
+                    </div>
+                {% endif %}
+            </div>
+            
+            {% if cart_count > 0 %}
+            <!-- Footer -->
+            <div class="p-4 bg-subtle border-top border-light mt-auto">
+                <div class="d-flex justify-content-between mb-2">
+                    <span class="text-secondary fw-medium">Subtotal</span>
+                    <span class="fw-bold">Calculating...</span>
+                </div>
+                <p class="small text-secondary mb-3">Taxes and shipping calculated at checkout.</p>
+                <div class="d-grid gap-2">
+                    <a href="{% url 'store:cart' %}" class="btn btn-outline-primary rounded-pill ripple">View Full Cart</a>
+                    <a href="{% url 'store:checkout' %}" class="btn btn-primary rounded-pill ripple shadow-sm">Secure Checkout</a>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
     <!-- Spacer for fixed navbar -->
-    <div style="height: 76px;"></div>
+    <div style="height: 85px;"></div>
 
     <!-- Messages -->
     {% if messages %}
-    <div class="container mt-4">
+    <div class="container mt-4 stagger-item visible">
         {% for message in messages %}
-        <div class="alert alert-{{ message.tags }} alert-dismissible fade show border-0 shadow-sm" role="alert">
-            {{ message }}
+        <div class="alert alert-{{ message.tags }} alert-dismissible fade show border-0 d-flex align-items-center"
+            role="alert" style="box-shadow: var(--md-elevation-2); border-radius: var(--md-shape-small);">
+            {% if message.tags == 'success' %}<i class="bi bi-check-circle-fill me-2 fs-5 text-success"></i>{% endif %}
+            {% if message.tags == 'error' or message.tags == 'danger' %}<i
+                class="bi bi-exclamation-triangle-fill me-2 fs-5 text-danger"></i>{% endif %}
+            {% if message.tags == 'warning' %}<i class="bi bi-exclamation-circle-fill me-2 fs-5 text-warning"></i>{% endif %}
+            {% if message.tags == 'info' %}<i class="bi bi-info-circle-fill me-2 fs-5 text-info"></i>{% endif %}
+            <div class="fw-medium">{{ message }}</div>
             <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
         </div>
         {% endfor %}
@@ -153,42 +243,81 @@
     <footer class="footer-premium">
         <div class="container">
             <div class="row g-5">
-                <div class="col-lg-4">
-                    <h5 class="navbar-brand mb-3">Amanzon<span class="text-primary">.</span></h5>
-                    <p class="text-secondary mb-4">
-                        Curating the finest products for the discerning minimalist. Quality over quantity, always.
+                <div class="col-lg-4 pb-4 pb-lg-0 border-bottom border-lg-0 border-light">
+                    <h5 class="navbar-brand mb-4 d-flex align-items-center">
+                        <img src="{% static 'img/amanzon.png' %}" alt="Amanzon" height="32" class="me-2"
+                            style="filter: grayscale(1) brightness(0.8);">
+                        Amanzon<span class="text-primary">.</span>
+                    </h5>
+                    <p class="text-secondary mb-4 pe-lg-4">
+                        Curating the finest products for the discerning minimalist. Quality over quantity, always. A
+                        premium e-commerce experience.
                     </p>
                     <div class="d-flex gap-3">
-                        <a href="#" class="text-secondary fs-5" title="Instagram (Coming Soon)"
-                            aria-label="Instagram"><i class="bi bi-instagram" aria-hidden="true"></i></a>
-                        <a href="#" class="text-secondary fs-5" title="Twitter (Coming Soon)" aria-label="Twitter"><i
-                                class="bi bi-twitter-x" aria-hidden="true"></i></a>
-                        <a href="#" class="text-secondary fs-5" title="LinkedIn (Coming Soon)" aria-label="LinkedIn"><i
-                                class="bi bi-linkedin" aria-hidden="true"></i></a>
+                        <a href="#" onclick="showMockToast('Social media links coming soon!'); return false;"
+                            class="btn-action shadow-none bg-subtle text-secondary" title="Instagram"
+                            aria-label="Instagram"><i class="bi bi-instagram fs-5"></i></a>
+                        <a href="#" onclick="showMockToast('Social media links coming soon!'); return false;"
+                            class="btn-action shadow-none bg-subtle text-secondary" title="Twitter"
+                            aria-label="Twitter"><i class="bi bi-twitter-x fs-5"></i></a>
+                        <a href="#" onclick="showMockToast('Social media links coming soon!'); return false;"
+                            class="btn-action shadow-none bg-subtle text-secondary" title="Pinterest"
+                            aria-label="Pinterest"><i class="bi bi-pinterest fs-5"></i></a>
                     </div>
                 </div>
 
                 <div class="col-lg-2 col-6">
                     <h6 class="footer-heading">Shop</h6>
+                    <a href="{% url 'store:shop' %}" class="footer-link">All Products</a>
                     <a href="{% url 'store:shop' %}" class="footer-link">New Arrivals</a>
-                    <a href="{% url 'store:shop' %}" class="footer-link">Best Sellers</a>
-                    <a href="{% url 'store:shop' %}" class="footer-link">Accessories</a>
+                    <a href="{% url 'store:shop' %}" class="footer-link">Trending</a>
+                    <a href="#" onclick="showMockToast('Gift Cards feature coming soon!'); return false;"
+                        class="footer-link">Gift Cards</a>
                 </div>
 
                 <div class="col-lg-2 col-6">
                     <h6 class="footer-heading">Support</h6>
                     <a href="{% url 'store:contact' %}" class="footer-link">Contact Us</a>
+                    <a href="#" onclick="showMockToast('FAQ page opening...'); return false;"
+                        class="footer-link">FAQ</a>
+                    <a href="#" onclick="showMockToast('Shipping Policy opening...'); return false;"
+                        class="footer-link">Shipping</a>
+                    <a href="#" onclick="showMockToast('Returns Policy opening...'); return false;"
+                        class="footer-link">Returns</a>
                 </div>
 
                 <div class="col-lg-4">
-                    <h6 class="footer-heading">Stay Updated</h6>
-                    <p class="text-secondary small mb-0">Follow us on social media for updates and new arrivals.</p>
+                    <h6 class="footer-heading">Unlock Premium Benefits</h6>
+                    <p class="text-secondary small mb-3">Subscribe to receive early access to new collections and
+                        exclusive offers.</p>
+                    <form
+                        onsubmit="event.preventDefault(); showMockToast('Thanks for subscribing to our newsletter! Please check your email.', 'success'); this.reset();"
+                        class="d-flex gap-2">
+                        <input type="email" class="form-control" placeholder="Email address" required
+                            style="border-radius: var(--md-shape-small);">
+                        <button type="submit" class="btn btn-primary px-4"
+                            style="border-radius: var(--md-shape-small);">Subscribe</button>
+                    </form>
                 </div>
             </div>
 
-    <div class="d-flex justify-content-between align-items-center pt-5 mt-5 border-top border-light">
-                <div class="text-secondary small">
-                    &copy; {% now "Y" %} Amanzon Inc. All rights reserved.
+            <div
+                class="d-flex flex-column flex-md-row justify-content-between align-items-center pt-5 mt-5 border-top border-light gap-3">
+                <div class="d-flex gap-3">
+                    <i class="bi bi-credit-card fs-4 text-secondary"></i>
+                    <i class="bi bi-paypal fs-4 text-secondary"></i>
+                    <i class="bi bi-apple fs-4 text-secondary"></i>
+                </div>
+                <div class="text-secondary small fw-medium text-center">
+                    &copy; {% now "Y" %} Amanzon Inc. All rights reserved. <br class="d-md-none"> Built with Material
+                    Design 3.
+                </div>
+                <div class="d-flex gap-3 small text-secondary">
+                    <a href="#" onclick="showMockToast('Privacy Policy opening...'); return false;"
+                        class="text-decoration-none text-secondary">Privacy</a>
+                    <span>&middot;</span>
+                    <a href="#" onclick="showMockToast('Terms of Service opening...'); return false;"
+                        class="text-decoration-none text-secondary">Terms</a>
                 </div>
             </div>
         </div>
@@ -197,37 +326,131 @@
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
-    <!-- Theme Toggle Script -->
+    <!-- Global Frontend Logic (MD3 Behavior) -->
     <script>
+        // Theme Toggle Logic
         (function () {
             const toggle = document.getElementById('theme-toggle');
             const icon = document.getElementById('theme-icon');
             const html = document.documentElement;
 
-            // Get saved theme or default to light
             const savedTheme = localStorage.getItem('theme') || 'light';
 
-            // Apply saved theme
             if (savedTheme === 'dark') {
                 html.setAttribute('data-theme', 'dark');
                 icon.classList.replace('bi-sun-fill', 'bi-moon-fill');
             }
 
-            // Toggle theme on click
-            toggle.addEventListener('click', function () {
-                const currentTheme = html.getAttribute('data-theme');
+            toggle.addEventListener('click', function (e) {
+                // Add a small rotation animation to icon
+                icon.style.transition = 'transform 0.5s ease';
+                icon.style.transform = 'rotate(180deg)';
 
-                if (currentTheme === 'dark') {
-                    html.removeAttribute('data-theme');
-                    localStorage.setItem('theme', 'light');
-                    icon.classList.replace('bi-moon-fill', 'bi-sun-fill');
-                } else {
-                    html.setAttribute('data-theme', 'dark');
-                    localStorage.setItem('theme', 'dark');
-                    icon.classList.replace('bi-sun-fill', 'bi-moon-fill');
-                }
+                setTimeout(() => {
+                    const currentTheme = html.getAttribute('data-theme');
+                    if (currentTheme === 'dark') {
+                        html.removeAttribute('data-theme');
+                        localStorage.setItem('theme', 'light');
+                        icon.classList.replace('bi-moon-fill', 'bi-sun-fill');
+                    } else {
+                        html.setAttribute('data-theme', 'dark');
+                        localStorage.setItem('theme', 'dark');
+                        icon.classList.replace('bi-sun-fill', 'bi-moon-fill');
+                    }
+                    icon.style.transform = 'rotate(0deg)';
+                }, 150);
             });
         })();
+
+        // Ripple Effect Logic
+        document.addEventListener('mousedown', function (event) {
+            const target = event.target.closest('.ripple, .btn, .nav-link, .category-pill, .btn-action');
+            if (!target) return;
+
+            const circle = document.createElement('span');
+            const diameter = Math.max(target.clientWidth, target.clientHeight);
+            const radius = diameter / 2;
+
+            const rect = target.getBoundingClientRect();
+
+            circle.style.width = circle.style.height = `${diameter}px`;
+            circle.style.left = `${event.clientX - rect.left - radius}px`;
+            circle.style.top = `${event.clientY - rect.top - radius}px`;
+            circle.classList.add('ripple-span');
+
+            const existingRipple = target.querySelector('.ripple-span');
+            if (existingRipple) {
+                existingRipple.remove();
+            }
+
+            target.appendChild(circle);
+
+            setTimeout(() => {
+                circle.remove();
+            }, 600);
+        });
+
+        // Staggered Animation Observer
+        document.addEventListener('DOMContentLoaded', () => {
+            const observerOptions = {
+                root: null,
+                rootMargin: '0px',
+                threshold: 0.1
+            };
+
+            const observer = new IntersectionObserver((entries, observer) => {
+                entries.forEach((entry, index) => {
+                    if (entry.isIntersecting) {
+                        setTimeout(() => {
+                            entry.target.classList.add('visible');
+                        }, index * 100); // Stagger interval
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, observerOptions);
+
+            // Add stagger class to common elements if not already applied
+            document.querySelectorAll('.card, .product-card, .footer-heading').forEach(el => {
+                el.classList.add('stagger-item');
+            });
+
+            // Observe all elements with stagger-item class
+            document.querySelectorAll('.stagger-item').forEach(el => {
+                observer.observe(el);
+            });
+        });
+
+        // Mock Toast Notification System
+        function showMockToast(message, type = 'info') {
+            const container = document.getElementById('toast-container');
+            if (!container) return;
+
+            const toastId = 'toast-' + Math.random().toString(36).substr(2, 9);
+            const iconClass = type === 'success' ? 'bi-check-circle-fill text-success' :
+                type === 'error' ? 'bi-exclamation-triangle-fill text-danger' :
+                    'bi-info-circle-fill text-primary';
+
+            const toastHTML = `
+                <div id="${toastId}" class="toast align-items-center border-0 mb-3 stagger-item visible" role="alert" aria-live="assertive" aria-atomic="true" style="background-color: var(--md-sys-color-surface-container-high); color: var(--md-sys-color-on-surface); box-shadow: var(--md-elevation-3); border-radius: var(--md-shape-medium);">
+                    <div class="d-flex">
+                        <div class="toast-body d-flex align-items-center fw-medium pb-2 pt-2 pe-1">
+                            <i class="bi ${iconClass} fs-5 me-3"></i>
+                            ${message}
+                        </div>
+                        <button type="button" class="btn-close me-2 m-auto shadow-none" data-bs-dismiss="toast" aria-label="Close" style="filter: var(--bs-btn-close-color);"></button>
+                    </div>
+                </div>
+            `;
+
+            container.insertAdjacentHTML('beforeend', toastHTML);
+            const toastElement = document.getElementById(toastId);
+            const bsToast = new bootstrap.Toast(toastElement, { delay: 4000 });
+            bsToast.show();
+
+            toastElement.addEventListener('hidden.bs.toast', () => {
+                toastElement.remove();
+            });
+        }
     </script>
     {% block extra_js %}{% endblock %}
 </body>

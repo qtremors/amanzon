@@ -1,179 +1,333 @@
 {% extends 'base.html' %}
 
-{% block title %}Profile - Amanzon{% endblock %}
+{% block title %}My Profile - Amanzon Premium{% endblock %}
 
 {% block content %}
-<div class="container py-5">
-    <div class="row justify-content-center">
-        <div class="col-lg-8">
-            <div class="bg-white rounded-4 shadow-sm border border-subtle overflow-hidden">
-                <div class="p-5 bg-light border-bottom border-subtle text-center">
-                    <div class="position-relative d-inline-block mb-3">
-                        {% if user.profile_picture %}
-                        <img src="{{ user.profile_picture.url }}" alt="{{ user.username }}"
-                            class="rounded-circle shadow-sm object-fit-cover" width="120" height="120">
-                        {% else %}
-                        <div class="rounded-circle bg-white text-primary d-flex align-items-center justify-content-center mx-auto shadow-sm"
-                            style="width: 120px; height: 120px; font-size: 3rem;">
-                            {{ user.username|make_list|first|upper }}
-                        </div>
-                        {% endif %}
-                    </div>
-                    <h3 class="fw-bold mb-1">{{ user.username }}</h3>
-                    <p class="text-secondary mb-0">{{ user.email }}</p>
-                </div>
+<div class="bg-subtle pt-4 pb-4 border-bottom border-light">
+    <div class="container stagger-item">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb mb-3 align-items-center">
+                <li class="breadcrumb-item"><a href="{% url 'store:index' %}"
+                        class="text-secondary text-decoration-none hover-primary"><i
+                            class="bi bi-house-door me-1"></i>Home</a></li>
+                <li class="breadcrumb-item active text-primary fw-bold" aria-current="page">My Account</li>
+            </ol>
+        </nav>
+        <h1 class="display-5 fw-bold mb-0 text-primary">Account Overview</h1>
+    </div>
+</div>
 
-                <div class="p-5">
-                    <div class="d-flex justify-content-between align-items-center mb-4">
-                        <h5 class="fw-bold mb-0">Account Details</h5>
-                        <span class="badge bg-light text-secondary border border-subtle">Member since {{ user.date_joined|date:"M Y" }}</span>
-                    </div>
-
-                    <form method="POST" enctype="multipart/form-data">
-                        {% csrf_token %}
-                        <div class="row g-4">
-                            <div class="col-md-6">
-                                <label
-                                    class="form-label small fw-bold text-secondary text-uppercase tracking-wide">Username</label>
-                                {{ form.username }}
-                            </div>
-                            <div class="col-md-6">
-                                <label
-                                    class="form-label small fw-bold text-secondary text-uppercase tracking-wide">Email</label>
-                                {{ form.email }}
-                            </div>
-                            <div class="col-md-6">
-                                <label
-                                    class="form-label small fw-bold text-secondary text-uppercase tracking-wide">First
-                                    Name</label>
-                                {{ form.first_name }}
-                            </div>
-                            <div class="col-md-6">
-                                <label class="form-label small fw-bold text-secondary text-uppercase tracking-wide">Last
-                                    Name</label>
-                                {{ form.last_name }}
-                            </div>
-                            <div class="col-12">
-                                <label
-                                    class="form-label small fw-bold text-secondary text-uppercase tracking-wide">Profile
-                                    Picture</label>
-                                {{ form.profile_picture }}
-                            </div>
-                            <div class="col-12 mt-4">
-                                <button type="submit" class="btn btn-primary px-4 py-2 rounded-pill">Save
-                                    Changes</button>
-                            </div>
-                        </div>
-                    </form>
-                </div>
-
-                <!-- Saved Addresses Section -->
-                <div class="p-5 border-top border-subtle">
-                    <div class="d-flex justify-content-between align-items-center mb-4">
-                        <h5 class="fw-bold mb-0">Saved Addresses</h5>
-                        <a href="{% url 'store:add_address' %}"
-                            class="btn btn-outline-primary btn-sm rounded-pill px-3">
-                            <i class="bi bi-plus-lg me-1"></i> Add Address
-                        </a>
-                    </div>
-
-                    {% if addresses %}
-                    <div class="row g-3">
-                        {% for address in addresses %}
-                        <div class="col-md-6">
-                            <div
-                                class="border rounded-3 p-3 h-100 {% if address.is_default %}border-primary bg-primary bg-opacity-10{% endif %}">
-                                <div class="d-flex justify-content-between align-items-start mb-2">
-                                    <div>
-                                        <span class="badge bg-secondary-subtle text-secondary rounded-pill">{{ address.label }}</span>
-                                        {% if address.is_default %}
-                                        <span class="badge bg-primary rounded-pill ms-1">Default</span>
-                                        {% endif %}
-                                    </div>
-                                    <div class="dropdown">
-                                        <button class="btn btn-link text-secondary p-0" data-bs-toggle="dropdown"
-                                            aria-label="Address options">
-                                            <i class="bi bi-three-dots-vertical"></i>
-                                        </button>
-                                        <ul class="dropdown-menu dropdown-menu-end">
-                                            <li><a class="dropdown-item"
-                                                    href="{% url 'store:edit_address' address.id %}">
-                                                    <i class="bi bi-pencil me-2"></i>Edit
-                                                </a></li>
-                                            {% if not address.is_default %}
-                                            <li>
-                                                <form action="{% url 'store:set_default_address' address.id %}"
-                                                    method="POST" class="d-inline">
-                                                    {% csrf_token %}
-                                                    <button type="submit" class="dropdown-item">
-                                                        <i class="bi bi-check-circle me-2"></i>Set as Default
-                                                    </button>
-                                                </form>
-                                            </li>
-                                            {% endif %}
-                                            <li>
-                                                <hr class="dropdown-divider">
-                                            </li>
-                                            <li>
-                                                <form action="{% url 'store:delete_address' address.id %}" method="POST"
-                                                    onsubmit="return confirm('Delete this address?')">
-                                                    {% csrf_token %}
-                                                    <button type="submit" class="dropdown-item text-danger">
-                                                        <i class="bi bi-trash me-2"></i>Delete
-                                                    </button>
-                                                </form>
-                                            </li>
-                                        </ul>
-                                    </div>
-                                </div>
-                                <p class="mb-0 small">
-                                    <strong>{{ address.first_name }} {{ address.last_name }}</strong><br>
-                                    {{ address.address_line1 }}<br>
-                                    {% if address.address_line2 %}{{ address.address_line2 }}<br>{% endif %}
-                                    {{ address.city }}, {{ address.state }} {{ address.zip_code }}<br>
-                                    <span class="text-secondary">{{ address.phone }}</span>
-                                </p>
-                            </div>
-                        </div>
-                        {% endfor %}
-                    </div>
+<div class="container py-5 mb-5">
+    <div class="row g-5">
+        <!-- Sidebar Navigation (New MD3 pattern) -->
+        <div class="col-lg-3 stagger-item">
+            <div class="bg-white rounded-4 shadow-sm border border-light p-3 sticky-lg-top" style="top: 100px;">
+                <div class="d-flex align-items-center gap-3 p-3 mb-3 border-bottom border-light">
+                    {% if user.profile_picture %}
+                    <img src="{{ user.profile_picture.url }}" alt="{{ user.username }}"
+                        class="rounded-circle object-fit-cover shadow-sm" width="48" height="48">
                     {% else %}
-                    <div class="text-center py-4 text-secondary">
-                        <i class="bi bi-geo-alt fs-1 opacity-50"></i>
-                        <p class="mb-0 mt-2">No saved addresses yet</p>
-                        <a href="{% url 'store:add_address' %}" class="btn btn-outline-primary btn-sm mt-3">Add Your
-                            First Address</a>
+                    <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center shadow-sm fw-bold fs-5"
+                        style="width: 48px; height: 48px;">
+                        {{ user.username|make_list|first|upper }}
                     </div>
                     {% endif %}
+                    <div>
+                        <h6 class="fw-bold mb-0 text-truncate" style="max-width: 140px;">{{ user.username }}</h6>
+                        <small class="text-secondary">Premium Member</small>
+                    </div>
                 </div>
 
-                <div class="bg-light p-4 border-top border-subtle">
-                    <div class="row g-2 justify-content-center text-center">
-                        <div class="col-4 col-md-auto">
-                            <a href="{% url 'store:orders' %}"
-                                class="btn btn-outline-secondary border-0 w-100 h-100 d-flex flex-column align-items-center justify-content-center gap-2 py-3 hover-bg-white">
-                                <i class="bi bi-bag fs-4"></i>
-                                <span class="small fw-bold">Orders</span>
-                            </a>
+                <div class="nav flex-column nav-pills gap-2" id="profile-tabs" role="tablist"
+                    aria-orientation="vertical">
+                    <button
+                        class="nav-link text-start px-3 py-2 fw-medium rounded-3 active d-flex align-items-center gap-3"
+                        id="profile-details-tab" data-bs-toggle="pill" data-bs-target="#profile-details" type="button"
+                        role="tab">
+                        <i class="bi bi-person fs-5"></i> Profile Details
+                    </button>
+                    <button class="nav-link text-start px-3 py-2 fw-medium rounded-3 d-flex align-items-center gap-3"
+                        id="addresses-tab" data-bs-toggle="pill" data-bs-target="#addresses" type="button" role="tab">
+                        <i class="bi bi-geo-alt fs-5"></i> Saved Addresses
+                    </button>
+                    <a href="{% url 'store:orders' %}"
+                        class="nav-link text-start px-3 py-2 fw-medium rounded-3 text-secondary hover-primary d-flex align-items-center gap-3">
+                        <i class="bi bi-bag fs-5"></i> Order History
+                    </a>
+                    <a href="{% url 'store:wishlist' %}"
+                        class="nav-link text-start px-3 py-2 fw-medium rounded-3 text-secondary hover-primary d-flex align-items-center gap-3">
+                        <i class="bi bi-heart fs-5"></i> Wishlist
+                    </a>
+                    <a href="{% url 'store:password_reset' %}"
+                        class="nav-link text-start px-3 py-2 fw-medium rounded-3 text-secondary hover-primary d-flex align-items-center gap-3">
+                        <i class="bi bi-shield-lock fs-5"></i> Security
+                    </a>
+                    <div class="border-top border-light my-2"></div>
+                    <a href="#"
+                        class="nav-link text-start px-3 py-2 fw-medium rounded-3 text-danger hover-bg-danger-subtle d-flex align-items-center gap-3"
+                        onclick="document.getElementById('logout-form').submit();">
+                        <i class="bi bi-box-arrow-right fs-5"></i> Sign Out
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content Area -->
+        <div class="col-lg-9 stagger-item">
+            <div class="tab-content" id="profile-tabsContent">
+
+                <!-- Profile Details Tab -->
+                <div class="tab-pane fade show active" id="profile-details" role="tabpanel" tabindex="0">
+                    <div class="bg-white rounded-5 shadow-sm border border-light overflow-hidden">
+                        <div class="p-4 p-md-5 border-bottom border-light bg-subtle">
+                            <h4 class="fw-bold mb-1">Personal Information</h4>
+                            <p class="text-secondary mb-0">Update your photo and personal details.</p>
                         </div>
-                        <div class="col-4 col-md-auto">
-                            <a href="{% url 'store:wishlist' %}"
-                                class="btn btn-outline-secondary border-0 w-100 h-100 d-flex flex-column align-items-center justify-content-center gap-2 py-3 hover-bg-white">
-                                <i class="bi bi-heart fs-4"></i>
-                                <span class="small fw-bold">Wishlist</span>
-                            </a>
-                        </div>
-                        <div class="col-4 col-md-auto">
-                            <a href="{% url 'store:password_reset' %}"
-                                class="btn btn-outline-secondary border-0 w-100 h-100 d-flex flex-column align-items-center justify-content-center gap-2 py-3 hover-bg-white">
-                                <i class="bi bi-shield-lock fs-4"></i>
-                                <span class="small fw-bold">Security</span>
-                            </a>
+
+                        <div class="p-4 p-md-5">
+                            <form method="POST" enctype="multipart/form-data" class="needs-validation" novalidate>
+                                {% csrf_token %}
+
+                                <div
+                                    class="d-flex flex-column flex-sm-row align-items-center gap-4 mb-5 pb-4 border-bottom border-light">
+                                    <div class="position-relative">
+                                        {% if user.profile_picture %}
+                                        <img src="{{ user.profile_picture.url }}" alt="{{ user.username }}"
+                                            class="rounded-circle shadow object-fit-cover border border-4 border-white"
+                                            width="120" height="120">
+                                        {% else %}
+                                        <div class="rounded-circle bg-primary-subtle text-primary d-flex align-items-center justify-content-center shadow border border-4 border-white fw-bold"
+                                            style="width: 120px; height: 120px; font-size: 3rem;">
+                                            {{ user.username|make_list|first|upper }}
+                                        </div>
+                                        {% endif %}
+                                        <!-- Note: form.profile_picture covers this upload visually in original layout, adapting for MD3 -->
+                                        <div class="position-absolute bottom-0 end-0 bg-primary text-white rounded-circle p-2 shadow-sm d-flex align-items-center justify-content-center border border-2 border-white"
+                                            style="width:36px; height:36px; cursor:pointer;"
+                                            onclick="document.querySelector('input[type=file]').click();">
+                                            <i class="bi bi-camera-fill"></i>
+                                        </div>
+                                    </div>
+                                    <div class="flex-grow-1 text-center text-sm-start w-100">
+                                        <label class="fw-bold mb-2">Profile Photo</label>
+                                        <div class="d-none">{{ form.profile_picture }}</div>
+                                        <p class="small text-secondary mb-0">SVG, PNG, JPG or GIF (max. 800x800px)</p>
+                                    </div>
+                                </div>
+
+                                <div class="row g-4">
+                                    <div class="col-md-6">
+                                        <div class="form-floating input-wrapper">
+                                            {{ form.first_name }}
+                                            <label>First Name</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-floating input-wrapper">
+                                            {{ form.last_name }}
+                                            <label>Last Name</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-floating input-wrapper">
+                                            {{ form.username }}
+                                            <label>Username</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-floating input-wrapper">
+                                            {{ form.email }}
+                                            <label>Email Address</label>
+                                            <div class="form-text mt-1 text-success small"><i
+                                                    class="bi bi-check-circle-fill"></i> Verified Address</div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-12 mt-5">
+                                        <div class="d-flex justify-content-end gap-3">
+                                            <button type="reset"
+                                                class="btn btn-outline-secondary rounded-pill px-4 py-2 border-0 bg-subtle ripple">Cancel</button>
+                                            <button type="submit"
+                                                class="btn btn-primary rounded-pill px-5 py-2 shadow-sm ripple fw-bold">Save
+                                                Changes</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
                         </div>
                     </div>
                 </div>
+
+                <!-- Addresses Tab -->
+                <div class="tab-pane fade" id="addresses" role="tabpanel" tabindex="0">
+                    <div class="bg-white rounded-5 shadow-sm border border-light overflow-hidden">
+                        <div
+                            class="p-4 p-md-5 border-bottom border-light bg-subtle d-flex flex-column flex-sm-row justify-content-between align-items-sm-center gap-3">
+                            <div>
+                                <h4 class="fw-bold mb-1">Saved Addresses</h4>
+                                <p class="text-secondary mb-0">Manage your shipping destinations.</p>
+                            </div>
+                            <a href="{% url 'store:add_address' %}"
+                                class="btn btn-primary rounded-pill shadow-sm px-4 ripple fw-medium flex-shrink-0">
+                                <i class="bi bi-plus-lg me-1"></i> New Address
+                            </a>
+                        </div>
+
+                        <div class="p-4 p-md-5">
+                            {% if addresses %}
+                            <div class="row g-4">
+                                {% for address in addresses %}
+                                <div class="col-md-6">
+                                    <div
+                                        class="border rounded-4 p-4 h-100 position-relative transition card-hover {% if address.is_default %}border-primary bg-primary-subtle shadow-sm{% else %}border-light{% endif %}">
+
+                                        {% if address.is_default %}
+                                        <span
+                                            class="position-absolute top-0 end-0 m-3 badge bg-primary rounded-pill px-2 py-1 shadow-sm"><i
+                                                class="bi bi-star-fill me-1"></i>Default</span>
+                                        {% endif %}
+
+                                        <div class="d-flex align-items-center gap-2 mb-3">
+                                            <div class="bg-white rounded-circle d-flex align-items-center justify-content-center shadow-sm text-primary"
+                                                style="width: 40px; height: 40px;">
+                                                <i
+                                                    class="bi {% if address.label == 'Home' %}bi-house{% elif address.label == 'Work' %}bi-building{% else %}bi-geo-alt{% endif %} fs-5"></i>
+                                            </div>
+                                            <h6 class="fw-bold mb-0 text-dark">{{ address.label }}</h6>
+                                        </div>
+
+                                        <div class="mb-4">
+                                            <p class="mb-1 fw-bold text-dark">{{ address.first_name }} {{
+                                                address.last_name }}</p>
+                                            <p class="mb-1 text-secondary small">{{ address.address_line1 }}</p>
+                                            {% if address.address_line2 %}<p class="mb-1 text-secondary small">{{
+                                                address.address_line2 }}</p>{% endif %}
+                                            <p class="mb-1 text-secondary small">{{ address.city }}, {{ address.state }}
+                                                {{ address.zip_code }}</p>
+                                            <p class="mb-0 text-secondary small mt-2"><i
+                                                    class="bi bi-telephone text-muted me-1"></i> {{ address.phone }}</p>
+                                        </div>
+
+                                        <div class="d-flex gap-2 border-top border-light pt-3">
+                                            <a href="{% url 'store:edit_address' address.id %}"
+                                                class="btn btn-sm btn-outline-secondary rounded-pill flex-grow-1 ripple border-light">Edit</a>
+
+                                            <div class="dropdown">
+                                                <button
+                                                    class="btn btn-sm btn-outline-secondary rounded-pill p-2 border-light ripple"
+                                                    data-bs-toggle="dropdown" aria-expanded="false"
+                                                    style="width:36px;height:36px;">
+                                                    <i class="bi bi-three-dots"></i>
+                                                </button>
+                                                <ul
+                                                    class="dropdown-menu dropdown-menu-end border-0 shadow-lg rounded-3">
+                                                    {% if not address.is_default %}
+                                                    <li>
+                                                        <form action="{% url 'store:set_default_address' address.id %}"
+                                                            method="POST">
+                                                            {% csrf_token %}
+                                                            <button type="submit" class="dropdown-item fw-medium"><i
+                                                                    class="bi bi-star me-2 text-primary"></i>Set as
+                                                                Default</button>
+                                                        </form>
+                                                    </li>
+                                                    {% endif %}
+                                                    <li>
+                                                        <form action="{% url 'store:delete_address' address.id %}"
+                                                            method="POST"
+                                                            onsubmit="return confirm('Delete this address?')">
+                                                            {% csrf_token %}
+                                                            <button type="submit"
+                                                                class="dropdown-item fw-medium text-danger"><i
+                                                                    class="bi bi-trash3 me-2"></i>Delete
+                                                                Address</button>
+                                                        </form>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            </div>
+                            {% else %}
+                            <div class="text-center py-5">
+                                <div class="bg-subtle rounded-circle d-inline-flex align-items-center justify-content-center mb-4 border border-light"
+                                    style="width: 100px; height: 100px;">
+                                    <i class="bi bi-geo-alt text-secondary opacity-50" style="font-size: 3rem;"></i>
+                                </div>
+                                <h4 class="fw-bold mb-2">No addresses saved</h4>
+                                <p class="text-secondary mb-4 mx-auto" style="max-width: 400px;">Add an address for a
+                                    quicker checkout experience next time you shop with us.</p>
+                                <a href="{% url 'store:add_address' %}"
+                                    class="btn btn-primary rounded-pill px-4 shadow-sm">Add New Address</a>
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+
             </div>
         </div>
     </div>
 </div>
+
+<!-- Logout Form -->
+<form id="logout-form" action="{% url 'store:logout' %}" method="POST" style="display: none;">
+    {% csrf_token %}
+</form>
+
+<style>
+    /* MD3 Nav Pills overrides */
+    .nav-pills .nav-link {
+        color: var(--md-sys-color-on-surface-variant);
+        transition: all 0.2s ease;
+    }
+
+    .nav-pills .nav-link.active {
+        background-color: var(--md-sys-color-secondary-container);
+        color: var(--md-sys-color-on-secondary-container);
+        font-weight: 600 !important;
+    }
+
+    .nav-pills .nav-link:not(.active):hover,
+    .hover-primary:hover {
+        background-color: var(--md-sys-color-surface-container-high);
+        color: var(--md-sys-color-primary) !important;
+    }
+
+    /* MD3 Expressive Input Styles Repeated */
+    .input-wrapper .form-control {
+        border: 1px solid var(--md-sys-color-outline-variant);
+        border-radius: var(--md-shape-medium);
+        transition: all 0.2s ease;
+        background-color: var(--md-sys-color-surface);
+    }
+
+    .input-wrapper .form-control:focus {
+        border-color: var(--md-sys-color-primary);
+        box-shadow: 0 0 0 4px var(--md-sys-color-primary-container);
+        background-color: var(--md-sys-color-surface);
+    }
+
+    .input-wrapper label {
+        color: var(--md-sys-color-on-surface-variant);
+        font-weight: 500;
+    }
+
+    .hover-bg-danger-subtle:hover {
+        background-color: var(--bs-danger-bg-subtle);
+        color: var(--bs-danger) !important;
+    }
+</style>
+<script>
+    // Ensure inputs have form-control class
+    document.addEventListener("DOMContentLoaded", function () {
+        document.querySelectorAll('input:not([type="hidden"]):not([type="checkbox"])').forEach(function (input) {
+            if (!input.classList.contains('form-control')) {
+                input.classList.add('form-control');
+            }
+        });
+    });
+</script>
 {% endblock %}

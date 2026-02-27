@@ -28,8 +28,13 @@ urlpatterns = [
     path('orders/<int:order_id>/', orders.order_detail, name='order_detail'),
     path('orders/<int:order_id>/cancel/', orders.cancel_order, name='cancel_order'),
     
-    # Contact
+    # Contact & Pages
     path('contact/', main.contact, name='contact'),
+    path('about/', main.about, name='about'),
+    path('faq/', main.faq, name='faq'),
+    path('blog/', main.blog, name='blog'),
+    path('privacy/', main.privacy, name='privacy'),
+    path('terms/', main.terms, name='terms'),
     
     # Authentication
     path('login/', auth.login_view, name='login'),

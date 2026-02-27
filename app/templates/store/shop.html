@@ -1,142 +1,246 @@
 {% extends 'base.html' %}
 
-{% block title %}Shop - Amanzon{% endblock %}
+{% block title %}Shop Collection - Amanzon Premium{% endblock %}
 
 {% block content %}
-<div class="container py-5">
-    <div class="d-flex flex-column flex-md-row justify-content-between align-items-center mb-5">
-        <div>
-            <h1 class="h2 fw-bold mb-2">Shop Collection</h1>
-            <nav aria-label="breadcrumb">
-                <ol class="breadcrumb mb-0">
-                    <li class="breadcrumb-item"><a href="{% url 'store:index' %}"
-                            class="text-secondary text-decoration-none small">Home</a></li>
-                    <li class="breadcrumb-item active text-primary small">Shop</li>
-                    {% if current_category %}
-                    <li class="breadcrumb-item active text-primary small">{{ current_category.name }}</li>
-                    {% endif %}
-                </ol>
-            </nav>
-        </div>
-        <div class="d-flex align-items-center gap-3 mt-3 mt-md-0">
-            <p class="mb-0 text-muted small">{% if query %}Results for "{{ query }}"{% else %}{{ products.paginator.count }} items {% endif %}</p>
-            <form method="GET" action="" id="sort-form">
-                {% if query %}<input type="hidden" name="q" value="{{ query }}">{% endif %}
-                {% if request.GET.min_price %}<input type="hidden" name="min_price" value="{{ request.GET.min_price }}">{% endif %}
-                {% if request.GET.max_price %}<input type="hidden" name="max_price" value="{{ request.GET.max_price }}">{% endif %}
-                {% if request.GET.in_stock %}<input type="hidden" name="in_stock" value="{{ request.GET.in_stock }}">{% endif %}
-                <select class="form-select form-select-sm border-0 bg-light rounded-pill px-3 py-2 fw-medium"
-                    style="min-width: 160px; cursor: pointer;" name="sort" onchange="this.form.submit()">
-                    <option value="-created_at" {% if request.GET.sort == '-created_at' or not request.GET.sort %}selected{% endif %}>Newest First</option>
-                    <option value="price_low" {% if request.GET.sort == 'price_low' %}selected{% endif %}>Price: Low to High</option>
-                    <option value="price_high" {% if request.GET.sort == 'price_high' %}selected{% endif %}>Price: High to Low</option>
-                    <option value="rating" {% if request.GET.sort == 'rating' %}selected{% endif %}>Top Rated</option>
-                    <option value="name" {% if request.GET.sort == 'name' %}selected{% endif %}>Name: A-Z</option>
-                </select>
-            </form>
-        </div>
-    </div>
-    <div class="row g-5">
-        <div class="col-lg-3">
-            <div class="sticky-top" style="top: 100px; z-index: 1;">
-                <div class="mb-4">
-                    <h6 class="text-uppercase tracking-wide fw-bold mb-3 small text-secondary">Categories</h6>
-                    <div class="nav flex-column gap-1">
-                        <a href="{% url 'store:shop' %}"
-                            class="nav-link px-0 py-2 d-flex justify-content-between align-items-center {% if not current_category %}text-primary fw-bold{% else %}text-secondary{% endif %}">All Products{% if not current_category %}<i class="bi bi-chevron-right small"
-                                aria-hidden="true"></i>{% endif %}</a>
-                        {% for category in categories %}
-                        <a href="{% url 'store:shop_category' category.slug %}"
-                            class="nav-link px-0 py-2 d-flex justify-content-between align-items-center {% if current_category.id == category.id %}text-primary fw-bold{% else %}text-secondary{% endif %}">{{ category.name }}{% if current_category.id == category.id %}<i
-                                class="bi bi-chevron-right small" aria-hidden="true"></i>{% endif %}</a>{% endfor %}
-                    </div>
-                </div>
-                <form method="GET" action="" id="filter-form">
+<div class="bg-subtle pt-4 pb-5 mb-5 border-bottom border-light">
+    <div class="container stagger-item">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb mb-4 align-items-center">
+                <li class="breadcrumb-item"><a href="{% url 'store:index' %}"
+                        class="text-secondary text-decoration-none hover-primary"><i
+                            class="bi bi-house-door me-1"></i>Home</a></li>
+                <li class="breadcrumb-item active text-primary fw-bold" aria-current="page">Shop</li>
+                {% if current_category %}
+                <li class="breadcrumb-item active text-primary fw-bold" aria-current="page">{{ current_category.name }}
+                </li>
+                {% endif %}
+            </ol>
+        </nav>
+
+        <div class="row align-items-end">
+            <div class="col-md-8">
+                <h1 class="display-4 fw-bold text-primary mb-2 text-balance">
+                    {% if current_category %}{{ current_category.name }}{% else %}The Complete Collection{% endif %}
+                </h1>
+                <p class="lead text-secondary mb-0 text-balance">
+                    {% if current_category %}Curated premium items for your lifestyle.{% else %}Browse our entire
+                    catalog of highly curated premium items.{% endif %}
+                </p>
+            </div>
+            <div class="col-md-4 text-md-end mt-4 mt-md-0">
+                <p class="mb-2 text-secondary fw-medium">
+                    {% if query %}Found results for "<span class="text-primary">{{ query }}</span>"{% else %}Showing {{ products.paginator.count|default:"0" }} items{% endif %}
+                </p>
+                <form method="GET" action="" id="sort-form">
                     {% if query %}<input type="hidden" name="q" value="{{ query }}">{% endif %}
-                    {% if request.GET.sort %}<input type="hidden" name="sort" value="{{ request.GET.sort }}">{% endif %}
-                    <div class="mb-4">
-                        <h6 class="text-uppercase tracking-wide fw-bold mb-3 small text-secondary">Price Range</h6>
-                        <div class="d-flex flex-wrap gap-2 mb-3">
-                            <button type="submit"
-                                class="btn btn-sm {% if not request.GET.min_price and not request.GET.max_price %}btn-primary{% else %}btn-outline-secondary{% endif %} rounded-pill px-3"
-                                onclick="setPriceRange('', '')">All</button>
-                            <button type="submit"
-                                class="btn btn-sm {% if request.GET.max_price == '500' %}btn-primary{% else %}btn-outline-secondary{% endif %} rounded-pill px-3"
-                                onclick="setPriceRange('0', '500')">Under 500</button>
-                            <button type="submit"
-                                class="btn btn-sm {% if request.GET.min_price == '500' and request.GET.max_price == '1000' %}btn-primary{% else %}btn-outline-secondary{% endif %} rounded-pill px-3"
-                                onclick="setPriceRange('500', '1000')">500 - 1000</button>
-                            <button type="submit"
-                                class="btn btn-sm {% if request.GET.min_price == '1000' and request.GET.max_price == '5000' %}btn-primary{% else %}btn-outline-secondary{% endif %} rounded-pill px-3"
-                                onclick="setPriceRange('1000', '5000')">1000 - 5000</button>
-                            <button type="submit"
-                                class="btn btn-sm {% if request.GET.min_price == '5000' and not request.GET.max_price %}btn-primary{% else %}btn-outline-secondary{% endif %} rounded-pill px-3"
-                                onclick="setPriceRange('5000', '')">5000+</button>
-                        </div>
-                        <div class="row g-2">
-                            <div class="col-6"><input type="number" name="min_price" id="min_price"
-                                    class="form-control form-control-sm bg-light border-0 rounded-pill"
-                                    placeholder="Min" value="{{ request.GET.min_price }}"></div>
-                            <div class="col-6"><input type="number" name="max_price" id="max_price"
-                                    class="form-control form-control-sm bg-light border-0 rounded-pill"
-                                    placeholder="Max" value="{{ request.GET.max_price }}"></div>
-                        </div>
-                    </div>
-                    <div class="mb-4">
-                        <h6 class="text-uppercase tracking-wide fw-bold mb-3 small text-secondary">Availability</h6>
-                        <div class="form-check form-switch">
-                            <input class="form-check-input" type="checkbox" role="switch" id="in_stock" name="in_stock"
-                                value="1" {% if request.GET.in_stock == '1' %}checked{% endif %}>
-                            <label class="form-check-label small" for="in_stock">In Stock Only</label>
-                        </div>
-                    </div>
-                    <div class="d-grid gap-2">
-                        <button type="submit" class="btn btn-primary rounded-pill btn-sm">Apply Filters</button>
-                        <a href="{% if current_category %}{% url 'store:shop_category' current_category.slug %}{% else %}{% url 'store:shop' %}{% endif %}"
-                            class="btn btn-outline-secondary rounded-pill btn-sm"><i class="bi bi-x-circle me-1"
-                                aria-hidden="true"></i> Clear All Filters</a>
+                    {% if request.GET.min_price %}<input type="hidden" name="min_price" value="{{ request.GET.min_price }}">{% endif %}
+                    {% if request.GET.max_price %}<input type="hidden" name="max_price" value="{{ request.GET.max_price }}">{% endif %}
+                    {% if request.GET.in_stock %}<input type="hidden" name="in_stock" value="{{ request.GET.in_stock }}">{% endif %}
+
+                    <!-- Styled Select -->
+                    <div class="position-relative d-inline-block text-start" style="width: 220px;">
+                        <i
+                            class="bi bi-sort-down position-absolute top-50 start-0 translate-middle-y ms-3 text-primary"></i>
+                        <select class="form-select bg-white border-light shadow-sm fw-medium ripple"
+                            style="cursor: pointer; padding-left: 2.5rem; border-radius: var(--md-shape-full);"
+                            name="sort" onchange="this.form.submit()">
+                            <option value="-created_at" {% if request.GET.sort == '-created_at' or not request.GET.sort %}selected{% endif %}>Newest Arrivals</option>
+                            <option value="price_low" {% if request.GET.sort == 'price_low' %}selected{% endif %}>Price:
+                                Low to High</option>
+                            <option value="price_high" {% if request.GET.sort == 'price_high' %}selected{% endif %}>Price:
+                                High to Low</option>
+                            <option value="rating" {% if request.GET.sort == 'rating' %}selected{% endif %}>Highest Rated
+                            </option>
+                            <option value="name" {% if request.GET.sort == 'name' %}selected{% endif %}>Name: A to Z
+                            </option>
+                        </select>
                     </div>
                 </form>
             </div>
         </div>
-        <div class="col-lg-9">
+    </div>
+</div>
+
+<div class="container pb-5">
+    <div class="row g-5">
+        <!-- Modern Filter Sidebar -->
+        <div class="col-lg-3 stagger-item">
+            <div class="sticky-lg-top" style="top: 100px; z-index: 1;">
+
+                <div class="bg-white p-4 rounded-4 border border-light shadow-sm mb-4">
+                    <h6 class="text-uppercase fw-bold text-primary mb-4 d-flex align-items-center gap-2"
+                        style="letter-spacing: 0.1em;">
+                        <i class="bi bi-funnel"></i> Filters
+                    </h6>
+
+                    <!-- Categories List -->
+                    <div class="mb-5">
+                        <p class="fw-bold mb-3 fs-6">Categories</p>
+                        <div class="d-flex flex-column gap-2">
+                            <a href="{% url 'store:shop' %}"
+                                class="text-decoration-none px-3 py-2 rounded-3 d-flex justify-content-between align-items-center transition {% if not current_category %}bg-primary-subtle text-primary fw-bold{% else %}text-secondary hover-bg-light{% endif %}">
+                                <span>All Products</span>
+                                {% if not current_category %}<i class="bi bi-check-lg" aria-hidden="true"></i>{% endif %}
+                            </a>
+                            {% for category in categories %}
+                            <a href="{% url 'store:shop_category' category.slug %}"
+                                class="text-decoration-none px-3 py-2 rounded-3 d-flex justify-content-between align-items-center transition {% if current_category.id == category.id %}bg-primary-subtle text-primary fw-bold{% else %}text-secondary hover-bg-light{% endif %}">
+                                <span>{{ category.name }}</span>
+                                {% if current_category.id == category.id %}<i class="bi bi-check-lg"
+                                    aria-hidden="true"></i>{% endif %}
+                            </a>
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                    <form method="GET" action="" id="filter-form">
+                        {% if query %}<input type="hidden" name="q" value="{{ query }}">{% endif %}
+                        {% if request.GET.sort %}<input type="hidden" name="sort" value="{{ request.GET.sort }}">{% endif %}
+
+                        <!-- Premium Price Range -->
+                        <div class="mb-5">
+                            <p class="fw-bold mb-3 fs-6">Price Range</p>
+
+                            <div class="d-flex flex-wrap gap-2 mb-4">
+                                <button type="submit"
+                                    class="btn btn-sm {% if not request.GET.min_price and not request.GET.max_price %}btn-primary{% else %}bg-subtle text-secondary border-0 hover-bg-light{% endif %} rounded-pill px-3 py-1 fw-medium"
+                                    onclick="setPriceRange('', '')">Any</button>
+                                <button type="submit"
+                                    class="btn btn-sm {% if request.GET.max_price == '500' %}btn-primary{% else %}bg-subtle text-secondary border-0 hover-bg-light{% endif %} rounded-pill px-3 py-1 fw-medium"
+                                    onclick="setPriceRange('0', '500')">₹0 - ₹500</button>
+                                <button type="submit"
+                                    class="btn btn-sm {% if request.GET.min_price == '500' and request.GET.max_price == '1000' %}btn-primary{% else %}bg-subtle text-secondary border-0 hover-bg-light{% endif %} rounded-pill px-3 py-1 fw-medium"
+                                    onclick="setPriceRange('500', '1000')">₹500 - ₹1K</button>
+                                <button type="submit"
+                                    class="btn btn-sm {% if request.GET.min_price == '1000' and request.GET.max_price == '5000' %}btn-primary{% else %}bg-subtle text-secondary border-0 hover-bg-light{% endif %} rounded-pill px-3 py-1 fw-medium"
+                                    onclick="setPriceRange('1000', '5000')">₹1K - ₹5K</button>
+                                <button type="submit"
+                                    class="btn btn-sm {% if request.GET.min_price == '5000' and not request.GET.max_price %}btn-primary{% else %}bg-subtle text-secondary border-0 hover-bg-light{% endif %} rounded-pill px-3 py-1 fw-medium"
+                                    onclick="setPriceRange('5000', '')">₹5K+</button>
+                            </div>
+
+                            <div class="row g-2 align-items-center">
+                                <div class="col-5">
+                                    <div class="input-group input-group-sm form-floating">
+                                        <input type="number" name="min_price" id="min_price"
+                                            class="form-control bg-light border-0 px-3" placeholder="Min"
+                                            value="{{ request.GET.min_price }}"
+                                            style="border-radius: var(--md-shape-small); height: 50px;">
+                                        <label for="min_price" class="small text-muted py-2 px-3">Min ₹</label>
+                                    </div>
+                                </div>
+                                <div class="col-2 text-center text-muted fw-bold">-</div>
+                                <div class="col-5">
+                                    <div class="input-group input-group-sm form-floating">
+                                        <input type="number" name="max_price" id="max_price"
+                                            class="form-control bg-light border-0 px-3" placeholder="Max"
+                                            value="{{ request.GET.max_price }}"
+                                            style="border-radius: var(--md-shape-small); height: 50px;">
+                                        <label for="max_price" class="small text-muted py-2 px-3">Max ₹</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Availability & Mock Options -->
+                        <div class="mb-5">
+                            <p class="fw-bold mb-3 fs-6">Options</p>
+
+                            <div class="form-check form-switch mb-3 custom-switch-premium cursor-pointer">
+                                <input class="form-check-input cursor-pointer" type="checkbox" role="switch"
+                                    id="in_stock" name="in_stock" value="1" {% if request.GET.in_stock == '1' %}checked{% endif %} style="transform: scale(1.2); margin-top: 0.35rem; margin-right: 0.8rem;">
+                                <label class="form-check-label fw-medium cursor-pointer" for="in_stock">In Stock
+                                    Ready</label>
+                            </div>
+
+                            <div class="form-check form-switch mb-3 custom-switch-premium opacity-75 cursor-pointer"
+                                onclick="showMockToast('Filter applied locally!', 'success')">
+                                <input class="form-check-input cursor-pointer" type="checkbox" role="switch"
+                                    id="sustainable"
+                                    style="transform: scale(1.2); margin-top: 0.35rem; margin-right: 0.8rem;">
+                                <label class="form-check-label fw-medium cursor-pointer" for="sustainable">Sustainable
+                                    Materials</label>
+                            </div>
+                        </div>
+
+                        <div class="d-flex flex-column gap-3">
+                            <button type="submit" class="btn btn-primary rounded-pill py-2 shadow-sm ripple">Apply
+                                Filters</button>
+                            <a href="{% if current_category %}{% url 'store:shop_category' current_category.slug %}{% else %}{% url 'store:shop' %}{% endif %}"
+                                class="btn btn-outline-secondary rounded-pill py-2 border-0 bg-subtle ripple">
+                                Clear All
+                            </a>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Promo banner mock -->
+                <div class="rounded-4 overflow-hidden position-relative d-none d-lg-block shadow-sm"
+                    style="aspect-ratio: 4/5;">
+                    <div class="w-100 h-100 bg-primary d-flex flex-column justify-content-end p-4 text-white p-4"
+                        style="background: linear-gradient(135deg, var(--md-sys-color-primary) 0%, var(--md-sys-color-tertiary) 100%);">
+                        <div class="position-absolute top-0 end-0 m-3 opacity-25">
+                            <i class="bi bi-stars fs-1"></i>
+                        </div>
+                        <span
+                            class="badge bg-white text-primary rounded-pill px-3 py-2 align-self-start mb-auto">Amanzon
+                            Club</span>
+                        <h4 class="fw-bold mb-2 text-balance">Get 20% Off Your First VIP Order</h4>
+                        <p class="small text-white-50 mb-4 text-balance">Join our premium tier to unlock exclusive
+                            releases.</p>
+                        <button class="btn btn-light rounded-pill w-100 ripple btn-sm fw-bold shadow-sm"
+                            onclick="showMockToast('VIP Registration opening...', 'info')">Join Now</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Product Grid -->
+        <div class="col-lg-9 stagger-item">
             {% if products %}
-            <div class="row g-4 row-cols-1 row-cols-sm-2 row-cols-lg-3">
+            <div class="row g-4 row-cols-1 row-cols-sm-2 row-cols-lg-3 mb-5">
                 {% for product in products %}
                 <div class="col">{% include 'store/_product_card.html' with product=product wishlist_ids=wishlist_ids show_rating=True %}</div>
                 {% endfor %}
             </div>
+
+            <!-- MD3 Expressive Pagination -->
             {% if products.has_other_pages %}
-            <nav class="mt-5">
-                <ul class="pagination justify-content-center gap-2">
+            <nav class="mt-5 pt-4 border-top border-light d-flex justify-content-between align-items-center">
+                <span class="text-secondary small fw-medium d-none d-md-block">Showing Page {{ products.number }} of {{ products.paginator.num_pages }}</span>
+
+                <ul class="pagination m-0 gap-2">
                     {% if products.has_previous %}
                     <li class="page-item">
-                        <a class="page-link border-0 rounded-circle d-flex align-items-center justify-content-center"
-                            style="width: 40px; height: 40px;"
+                        <a class="page-link border bg-light text-secondary rounded-circle d-flex align-items-center justify-content-center hover-primary ripple shadow-sm"
+                            style="width: 44px; height: 44px;"
                             href="?page={{ products.previous_page_number }}{% if request.GET.sort %}&sort={{ request.GET.sort }}{% endif %}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}{% if request.GET.min_price %}&min_price={{ request.GET.min_price }}{% endif %}{% if request.GET.max_price %}&max_price={{ request.GET.max_price }}{% endif %}{% if request.GET.in_stock %}&in_stock={{ request.GET.in_stock }}{% endif %}{% if request.GET.rating %}&rating={{ request.GET.rating }}{% endif %}"
                             aria-label="Previous page">
                             <i class="bi bi-chevron-left" aria-hidden="true"></i>
                         </a>
                     </li>
                     {% endif %}
+
                     {% for num in products.paginator.page_range %}
                     {% if products.number == num %}
                     <li class="page-item active">
                         <span
-                            class="page-link border-0 rounded-circle d-flex align-items-center justify-content-center bg-primary text-white"
-                            style="width: 40px; height: 40px;">{{ num }}</span>
+                            class="page-link border-0 rounded-circle d-flex align-items-center justify-content-center bg-primary text-white fw-bold shadow-sm"
+                            style="width: 44px; height: 44px;">{{ num }}</span>
                     </li>
-                    {% elif num > products.number|add:-3 and num < products.number|add:3 %} <li class="page-item">
-                        <a class="page-link border-0 rounded-circle d-flex align-items-center justify-content-center text-secondary"
-                            style="width: 40px; height: 40px;"
+                    {% elif num > products.number|add:"-3" and num < products.number|add:"3" %} <li class="page-item">
+                        <a class="page-link border-0 bg-transparent text-secondary rounded-circle d-flex align-items-center justify-content-center fw-medium hover-primary"
+                            style="width: 44px; height: 44px;"
                             href="?page={{ num }}{% if request.GET.sort %}&sort={{ request.GET.sort }}{% endif %}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}{% if request.GET.min_price %}&min_price={{ request.GET.min_price }}{% endif %}{% if request.GET.max_price %}&max_price={{ request.GET.max_price }}{% endif %}{% if request.GET.in_stock %}&in_stock={{ request.GET.in_stock }}{% endif %}{% if request.GET.rating %}&rating={{ request.GET.rating }}{% endif %}">{{ num }}</a>
                         </li>
                         {% endif %}
                         {% endfor %}
+
                         {% if products.has_next %}
                         <li class="page-item">
-                            <a class="page-link border-0 rounded-circle d-flex align-items-center justify-content-center"
-                                style="width: 40px; height: 40px;"
+                            <a class="page-link border bg-light text-secondary rounded-circle d-flex align-items-center justify-content-center hover-primary ripple shadow-sm"
+                                style="width: 44px; height: 44px;"
                                 href="?page={{ products.next_page_number }}{% if request.GET.sort %}&sort={{ request.GET.sort }}{% endif %}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}{% if request.GET.min_price %}&min_price={{ request.GET.min_price }}{% endif %}{% if request.GET.max_price %}&max_price={{ request.GET.max_price }}{% endif %}{% if request.GET.in_stock %}&in_stock={{ request.GET.in_stock }}{% endif %}{% if request.GET.rating %}&rating={{ request.GET.rating }}{% endif %}"
                                 aria-label="Next page">
                                 <i class="bi bi-chevron-right" aria-hidden="true"></i>
@@ -144,14 +248,29 @@
                         </li>
                         {% endif %}
                 </ul>
+                <div class="d-none d-md-block" style="width: 150px;"></div> <!-- Spacer -->
             </nav>
             {% endif %}
+
             {% else %}
-            <div class="empty-state py-5 my-5 text-center">
-                <div class="mb-4 text-secondary opacity-50"><i class="bi bi-search" style="font-size: 4rem;"></i></div>
-                <h4 class="fw-bold text-primary">No products found</h4>
-                <p class="text-secondary mb-4">We couldn't find any products matching your criteria.</p>
-                <a href="{% url 'store:shop' %}" class="btn btn-primary rounded-pill px-4">Clear All Filters</a>
+            <!-- Premium Empty State -->
+            <div class="py-5 my-5 text-center bg-subtle rounded-5 border border-light p-5">
+                <div class="mb-4 d-inline-flex align-items-center justify-content-center bg-white rounded-circle shadow-sm"
+                    style="width: 100px; height: 100px;">
+                    <i class="bi bi-search text-secondary opacity-50" style="font-size: 3rem;"></i>
+                </div>
+                <h3 class="fw-bold text-primary mb-3">No Elements Found</h3>
+                <p class="text-secondary mb-4 mx-auto lead" style="max-width: 500px;">
+                    We couldn't find any premium products matching your specific refinement criteria in our bespoke
+                    collection.
+                </p>
+                <div class="d-flex gap-3 justify-content-center">
+                    <button class="btn btn-primary rounded-pill px-4 py-2"
+                        onclick="document.querySelector('form#filter-form div a').click();">Reset Criteria</button>
+                    <a href="{% url 'store:shop' %}"
+                        class="btn btn-outline-secondary bg-white border-0 shadow-sm rounded-pill px-4 py-2">Browse
+                        All</a>
+                </div>
             </div>
             {% endif %}
         </div>
@@ -166,4 +285,13 @@
         document.getElementById('max_price').value = max;
     }
 </script>
+<style>
+    .hover-bg-light:hover {
+        background-color: var(--md-sys-color-surface-container-high) !important;
+    }
+
+    .transition {
+        transition: all 0.2s cubic-bezier(0.2, 0, 0, 1);
+    }
+</style>
 {% endblock %}

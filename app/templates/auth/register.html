@@ -1,68 +1,148 @@
 {% extends 'base.html' %}
 
-{% block title %}Register - Amanzon{% endblock %}
+{% block title %}Create Account - Amanzon Premium{% endblock %}
 
 {% block content %}
-<div class="container py-5 my-5">
-    <div class="row justify-content-center">
-        <div class="col-md-6 col-lg-5">
-            <div class="text-center mb-4">
-                <h2 class="fw-bold">Create Account</h2>
-                <p class="text-secondary">Join us to start shopping today.</p>
-            </div>
+<div class="bg-subtle position-relative overflow-hidden" style="min-height: calc(100vh - 200px);">
+    <!-- Decorative background elements -->
+    <div class="position-absolute rounded-circle bg-primary opacity-10 blur-xl"
+        style="width: 500px; height: 500px; top: -150px; right: -150px; filter: blur(70px); z-index: 0;"></div>
+    <div class="position-absolute rounded-circle bg-info opacity-10 blur-xl"
+        style="width: 400px; height: 400px; bottom: 5%; left: -100px; filter: blur(60px); z-index: 0;"></div>
 
-            <div class="bg-white rounded-4 shadow-sm border border-subtle p-4 p-md-5">
-                {% if form.errors %}
-                <div
-                    class="alert alert-danger rounded-3 border-danger-subtle bg-danger-subtle text-danger-emphasis mb-4">
-                    {% for field, errors in form.errors.items %}
-                    {% for error in errors %}
-                    <p class="mb-0 small"><i class="bi bi-exclamation-circle me-1"></i> {{ error }}</p>
-                    {% endfor %}
-                    {% endfor %}
-                </div>
-                {% endif %}
+    <div class="container py-5 my-md-5 position-relative z-1 stagger-item">
+        <div class="row justify-content-center">
+            <div class="col-md-7 col-lg-5 col-xl-4">
 
-                <form method="POST">
-                    {% csrf_token %}
-                    <div class="mb-3">
-                        <label
-                            class="form-label small fw-bold text-secondary text-uppercase tracking-wide">Username</label>
-                        {{ form.username }}
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label small fw-bold text-secondary text-uppercase tracking-wide">Email
-                            Address</label>
-                        {{ form.email }}
-                    </div>
-                    <div class="mb-3">
-                        <label
-                            class="form-label small fw-bold text-secondary text-uppercase tracking-wide">Password</label>
-                        {{ form.password }}
-                    </div>
-                    <div class="mb-4">
-                        <label class="form-label small fw-bold text-secondary text-uppercase tracking-wide">Confirm
-                            Password</label>
-                        {{ form.confirm_password }}
-                    </div>
-                    <button type="submit" class="btn btn-primary w-100 rounded-pill py-2 fw-medium shadow-sm">Create
-                        Account</button>
-                </form>
-
-                <div class="my-4 d-flex align-items-center text-secondary">
-                    <hr class="flex-grow-1 border-secondary opacity-10">
-                    <span class="mx-3 small">or</span>
-                    <hr class="flex-grow-1 border-secondary opacity-10">
+                <div class="text-center mb-5">
+                    <a href="{% url 'store:index' %}" class="d-inline-flex align-items-center justify-content-center bg-white rounded-circle shadow-sm mb-4 ripple" style="width: 64px; height: 64px;" title="Back to Home">
+                        <i class="bi bi-stars fs-3 text-primary"></i>
+                    </a>
+                    <h2 class="display-6 fw-bold text-primary mb-2 text-balance">Join Premium</h2>
+                    <p class="text-secondary fs-5 text-balance">Create an account to unlock exclusive collections.</p>
                 </div>
 
-                <div class="text-center">
-                    <p class="mb-0 text-secondary">
-                        Already have an account? <a href="{% url 'store:login' %}"
-                            class="fw-bold text-primary text-decoration-none">Sign in</a>
-                    </p>
+                <div class="bg-white rounded-5 shadow-sm border border-light p-4 p-md-5">
+
+                    {% if form.errors %}
+                    <div
+                        class="alert alert-danger rounded-4 border-0 bg-danger-subtle text-danger-emphasis mb-4 p-4 shadow-sm">
+                        <div class="d-flex align-items-center gap-2 mb-2 fw-bold"><i class="bi bi-exclamation-octagon-fill"></i> Please correct the following:</div>
+                        <ul class="mb-0 small ps-3">
+                            {% for field, errors in form.errors.items %}
+                            {% for error in errors %}
+                            <li>{{ error }}</li>
+                            {% endfor %}
+                            {% endfor %}
+                        </ul>
+                    </div>
+                    {% endif %}
+
+                    <form method="POST" class="needs-validation" novalidate>
+                        {% csrf_token %}
+
+                        <div class="d-flex flex-column gap-4 mb-4">
+                            <div class="form-floating input-wrapper">
+                                {{ form.username }}
+                                <label for="id_username">Username</label>
+                            </div>
+
+                            <div class="form-floating input-wrapper">
+                                {{ form.email }}
+                                <label for="id_email">Email Address</label>
+                            </div>
+
+                            <div>
+                                <div class="form-floating input-wrapper position-relative">
+                                    {{ form.password }}
+                                    <label for="id_password">Password</label>
+                                    <button type="button"
+                                        class="btn btn-sm btn-link text-secondary position-absolute top-50 end-0 translate-middle-y me-2 text-decoration-none shadow-none" onclick="const p = this.previousElementSibling.previousElementSibling; if(p.type === 'password'){p.type='text'; this.innerHTML='<i class=\'bi bi-eye-slash\'></i>';}else{p.type='password'; this.innerHTML='<i class=\'bi bi-eye\'></i>';}">
+                                        <i class="bi bi-eye"></i>
+                                    </button>
+                                </div>
+                                <!-- Mock password requirements -->
+                                <div class="d-flex gap-2 mt-2 px-1">
+                                    <div class="flex-grow-1 bg-primary rounded-pill opacity-25" style="height: 4px;">
+                                    </div>
+                                    <div class="flex-grow-1 bg-primary rounded-pill opacity-25" style="height: 4px;">
+                                    </div>
+                                    <div class="flex-grow-1 bg-light rounded-pill" style="height: 4px;"></div>
+                                </div>
+                                <p class="small text-secondary mt-2 mb-0 px-1"><i class="bi bi-info-circle me-1"></i>
+                                    Must be at least 8 characters</p>
+                            </div>
+
+                            <div class="form-floating input-wrapper position-relative">
+                                {{ form.confirm_password }}
+                                <label for="id_confirm_password">Confirm Password</label>
+                            </div>
+                        </div>
+
+                        <!-- Mock Terms Checkbox -->
+                        <div class="form-check custom-switch-premium cursor-pointer mb-4">
+                            <input class="form-check-input cursor-pointer" type="checkbox" id="terms" required
+                                style="transform: scale(1.2); margin-top: 0.25rem;">
+                            <label class="form-check-label small ms-2 cursor-pointer text-secondary" for="terms">
+                                I agree to the <a href="#" class="text-primary text-decoration-none hover-primary" onclick="event.preventDefault(); showMockToast('Terms modal opening...', 'info')">Terms of Service</a> & Privacy Policy
+                            </label>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary btn-lg w-100 rounded-pill py-3 fw-bold shadow-sm ripple position-relative overflow-hidden mb-4">
+                            Create Account
+                        </button>
+                    </form>
+
+                    <div class="position-relative text-center my-4">
+                        <hr class="border-secondary opacity-10">
+                        <span class="position-absolute top-50 start-50 translate-middle bg-white px-3 small text-secondary fw-medium letter-spacing-wide text-uppercase">or</span>
+                    </div>
+
+                    <div class="text-center">
+                        <p class="mb-0 text-secondary d-flex flex-column flex-sm-row align-items-center justify-content-center gap-2 fs-6">
+                            <span>Already a member?</span>
+                            <a href="{% url 'store:login' %}" class="fw-bold text-primary text-decoration-none hover-primary position-relative border-bottom border-transparent hover-border-primary pb-1 transition">Sign in here</a>
+                        </p>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
+
+<style>
+    /* MD3 Expressive Input Styles Repeated */
+    .input-wrapper .form-control {
+        border: 1px solid var(--md-sys-color-outline-variant);
+        border-radius: var(--md-shape-medium);
+        transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        background-color: var(--md-sys-color-surface);
+        height: 3.5rem;
+    }
+
+    .input-wrapper .form-control:focus {
+        border-color: var(--md-sys-color-primary);
+        box-shadow: 0 0 0 4px var(--md-sys-color-primary-container);
+        background-color: var(--md-sys-color-surface);
+    }
+
+    .input-wrapper label {
+        color: var(--md-sys-color-on-surface-variant);
+        font-weight: 500;
+    }
+
+    .hover-border-primary:hover {
+        border-color: var(--md-sys-color-primary) !important;
+    }
+</style>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        document.querySelectorAll('input:not([type="hidden"]):not([type="checkbox"])').forEach(function (input) {
+            if (!input.classList.contains('form-control')) {
+                input.classList.add('form-control');
+            }
+        });
+    });
+</script>
 {% endblock %}

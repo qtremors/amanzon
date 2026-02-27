@@ -1,32 +1,35 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block title %}Amanzon - The Minimalist Collection{% endblock %}
+{% block title %}Amanzon - Premium E-Commerce Platform{% endblock %}
 
 {% block content %}
-<!-- Hero Section -->
-<section class="container mt-4">
+<!-- Premium Expressive Hero Section -->
+<section class="container mt-4 mb-5 stagger-item">
     <div class="hero-premium">
-        <div class="row justify-content-center">
-            <div class="col-lg-8">
+        <div class="row justify-content-center align-items-center min-vh-50">
+            <div class="col-lg-9 text-center">
                 <span
-                    class="d-inline-block py-1 px-3 rounded-pill bg-white border border-secondary fw-semibold small text-uppercase mb-4 text-secondary">
-                    New Collection 2026
+                    class="d-inline-flex align-items-center py-2 px-4 rounded-pill bg-white text-primary fw-bold mb-4 shadow-sm"
+                    style="font-size: 0.85rem; letter-spacing: 0.05em; text-transform: uppercase;">
+                    <i class="bi bi-stars me-2 text-warning fs-5"></i>
+                    Material Design 3 Collection
                 </span>
-                <h1 class="display-heading mb-4 text-balance">
-                    Elevate Your Everyday <br>
-                    <span class="text-secondary opacity-50">With Premium Essentials.</span>
+                <h1 class="display-heading mb-4 text-balance px-md-5">
+                    Discover The Art <br /> Of <span style="color: var(--gold-accent);">Premium</span> Living.
                 </h1>
-                <p class="lead text-secondary mb-5 mx-auto" style="max-width: 600px;">
-                    Discover a curated selection of quality products designed for the modern lifestyle.
-                    Simple, functional, and beautiful.
+                <p class="lead text-secondary mb-5 mx-auto" style="max-width: 650px; font-size: 1.15rem;">
+                    Curated essentials designed with modern aesthetics and pristine functionality.
+                    Experience a fully featured, production-grade shopping journey.
                 </p>
-                <div class="d-flex gap-3 justify-content-center">
-                    <a href="{% url 'store:shop' %}" class="btn btn-primary btn-lg px-5">
-                        Shop Collection
+                <div class="d-flex flex-column flex-sm-row gap-3 justify-content-center align-items-center">
+                    <a href="{% url 'store:shop' %}" class="btn btn-primary btn-lg px-5 py-3 ripple"
+                        style="font-size: 1.1rem;">
+                        <i class="bi bi-cart3 fs-5"></i> Shop Collection
                     </a>
-                    <a href="#featured" class="btn btn-outline-primary btn-lg px-5">
-                        View Lookbook
+                    <a href="#featured" class="btn btn-outline-primary btn-lg px-5 py-3 ripple bg-white"
+                        style="font-size: 1.1rem;">
+                        <i class="bi bi-compass fs-5"></i> Explore Lookbook
                     </a>
                 </div>
             </div>
@@ -34,85 +37,208 @@
     </div>
 </section>
 
-<!-- Categories -->
-{% if categories %}
-<section class="mb-5">
+<!-- Brand Trust Mock Section -->
+<section class="border-top border-bottom border-light py-4 mb-5 bg-subtle stagger-item">
     <div class="container text-center">
-        <div class="d-flex flex-wrap justify-content-center gap-3">
-            <a href="{% url 'store:shop' %}" class="category-pill active">All</a>
+        <p class="text-uppercase text-secondary fw-bold small mb-4" style="letter-spacing: 0.1em;">Trusted By Global
+            Brands</p>
+        <div class="d-flex flex-wrap justify-content-center align-items-center gap-4 gap-md-5 opacity-50"
+            style="filter: grayscale(1);">
+            <!-- Mock Brands using Bootstrap Icons -->
+            <i class="bi bi-stripe fs-2"></i>
+            <i class="bi bi-spotify fs-2"></i>
+            <i class="bi bi-google fs-2"></i>
+            <i class="bi bi-meta fs-2"></i>
+            <i class="bi bi-apple fs-2"></i>
+            <i class="bi bi-microsoft fs-2"></i>
+        </div>
+    </div>
+</section>
+
+<!-- Expressive Categories -->
+{% if categories %}
+<section class="mb-5 pb-4 stagger-item">
+    <div class="container">
+        <div class="d-flex justify-content-between align-items-end mb-4 px-2">
+            <div>
+                <h2 class="h2 fw-bold mb-1">Curated Categories</h2>
+                <p class="text-secondary mb-0">Explore our handpicked selections</p>
+            </div>
+        </div>
+
+        <div class="d-flex overflow-auto pb-3 gap-3 px-2"
+            style="scrollbar-width: thin; scrollbar-color: var(--md-sys-color-outline-variant) transparent;">
+            <a href="{% url 'store:shop' %}"
+                class="category-pill active text-nowrap ripple d-flex align-items-center gap-2"
+                style="font-size: 1.05rem; padding: 0.8rem 1.5rem;">
+                <i class="bi bi-grid-fill"></i> All Items
+            </a>
             {% for category in categories %}
-            <a href="{% url 'store:shop_category' category.slug %}" class="category-pill">
-                {{ category.name }}
+            <a href="{% url 'store:shop_category' category.slug %}"
+                class="category-pill text-nowrap ripple d-flex align-items-center gap-2"
+                style="font-size: 1.05rem; padding: 0.8rem 1.5rem;">
+                <!-- Try to map category to an icon conceptually, default to star -->
+                <i class="bi bi-star"></i> {{ category.name }}
             </a>
             {% endfor %}
+            <!-- Mock extra category to show scrolling -->
+            <a href="#" onclick="showMockToast('Opening Exclusive Collection...'); return false;"
+                class="category-pill text-nowrap ripple d-flex align-items-center gap-2"
+                style="font-size: 1.05rem; padding: 0.8rem 1.5rem;">
+                <i class="bi bi-gem text-warning"></i> Exclusive Drops
+            </a>
         </div>
     </div>
 </section>
 {% endif %}
 
-<!-- Featured Products -->
+<!-- Featured Products (Expressive Cards) -->
 {% if featured_products %}
-<section id="featured" class="py-5">
-    <div class="container">
+<section id="featured" class="py-5 bg-subtle stagger-item"
+    style="border-radius: var(--md-shape-extra-large); margin-bottom: 5rem;">
+    <div class="container px-4 px-md-5">
         <div class="d-flex justify-content-between align-items-end mb-5">
             <div>
-                <h2 class="h2 fw-bold mb-1">Trending Now</h2>
-                <p class="text-secondary mb-0">Our most popular products this week</p>
+                <h2 class="display-6 fw-bold mb-2">Trending Now</h2>
+                <p class="text-secondary mb-0 fs-5">Our most popular products this week</p>
             </div>
-            <a href="{% url 'store:shop' %}" class="btn btn-link text-primary text-decoration-none fw-medium">
-                View All ->
+            <a href="{% url 'store:shop' %}"
+                class="btn btn-outline-primary rounded-pill px-4 d-none d-md-flex align-items-center gap-2 ripple">
+                View All <i class="bi bi-arrow-right"></i>
             </a>
         </div>
 
-        <div class="row g-4 row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4">
+        <div class="row g-4 row-cols-1 row-cols-sm-2 row-cols-lg-4">
             {% for product in featured_products %}
             <div class="col">
-                {% include 'store/_product_card.html' with product=product wishlist_ids=wishlist_ids show_rating=0 %}
+                {% include 'store/_product_card.html' with product=product wishlist_ids=wishlist_ids show_rating=1 %}
             </div>
             {% endfor %}
-        </div>
+            <!-- If we have less than 4, add mock cards to fill out the grid for the demo -->
+            {% if featured_products|length < 4 %}
+            <div class="col">
+                <div class="product-card h-100 card-hover h-100 d-flex flex-column justify-content-center align-items-center p-4 text-center border overflow-hidden position-relative"
+                    style="border-style: dashed !important; border-width: 2px !important; background: transparent;">
+                    <div class="position-absolute w-100 h-100 bg-white opacity-50" style="z-index: 0" data-theme="dark"
+                        class="bg-dark"></div>
+                    <div class="position-relative z-1">
+                        <i class="bi bi-box-seam fs-1 text-secondary mb-3"></i>
+                        <h5 class="fw-bold">Coming Soon</h5>
+                        <p class="small text-secondary mb-4">New premium items dropping next week.</p>
+                        <button class="btn btn-sm btn-outline-primary rounded-pill ripple"
+                            onclick="showMockToast('You will be notified when new items arrive!', 'success')">Notify
+                            Me</button>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+    </div>
+
+    <div class="text-center mt-5 d-md-none">
+        <a href="{% url 'store:shop' %}" class="btn btn-outline-primary btn-lg rounded-pill px-5 w-100 ripple">
+            View All Trending
+        </a>
+    </div>
     </div>
 </section>
 {% endif %}
 
-<!-- Features Grid -->
-<section class="py-5 mt-5 bg-subtle">
-    <div class="container py-4">
-        <div class="row g-4 text-center">
-            <div class="col-md-3 col-6">
-                <div class="p-4 rounded-4 bg-white shadow-sm h-100">
-                    <div class="mb-3 text-primary bg-light d-inline-block p-3 rounded-circle">
-                        <i class="bi bi-truck fs-3"></i>
+<!-- Highlight/Promo Section (Mock Frontend Feature) -->
+<section class="container mb-5 pb-5 stagger-item">
+    <div class="row g-4 align-items-center">
+        <div class="col-lg-6">
+            <div class="rounded-5 overflow-hidden position-relative shadow-sm"
+                style="aspect-ratio: 4/3; background: var(--md-sys-color-surface-variant);">
+                <!-- Placeholder for lifestyle image -->
+                <div class="w-100 h-100 d-flex align-items-center justify-content-center bg-secondary text-white">
+                    <i class="bi bi-images" style="font-size: 5rem; opacity: 0.2;"></i>
+                </div>
+                <div class="position-absolute bottom-0 start-0 w-100 p-4"
+                    style="background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);">
+                    <h3 class="text-white fw-bold mb-1">Summer Essentials '26</h3>
+                    <p class="text-white-50 mb-0">Discover the lookbook</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-6 ps-lg-5">
+            <span class="badge bg-danger-subtle text-danger rounded-pill px-3 py-2 mb-3 fw-bold">Limited Time</span>
+            <h2 class="display-5 fw-bold mb-4">The Minimalist <br /> Aesthetics.</h2>
+            <p class="lead text-secondary mb-4">
+                We believe that less is more. Our new collection focuses on clean lines, sustainable materials, and
+                timeless design that fits effortlessly into your life.
+            </p>
+            <ul class="list-unstyled mb-5 d-flex flex-column gap-3">
+                <li class="d-flex align-items-center gap-3">
+                    <div class="bg-primary-subtle text-primary rounded-circle p-2 d-flex align-items-center justify-content-center"
+                        style="width: 40px; height: 40px;">
+                        <i class="bi bi-check-lg fs-5"></i>
                     </div>
-                    <h6 class="fw-bold mb-2">Free Shipping</h6>
-                    <p class="text-secondary small mb-0">On all orders over ₹500</p>
+                    <span class="fs-5 fw-medium">Sustainably Sourced Materials</span>
+                </li>
+                <li class="d-flex align-items-center gap-3">
+                    <div class="bg-primary-subtle text-primary rounded-circle p-2 d-flex align-items-center justify-content-center"
+                        style="width: 40px; height: 40px;">
+                        <i class="bi bi-check-lg fs-5"></i>
+                    </div>
+                    <span class="fs-5 fw-medium">Lifetime Craftsmanship Guarantee</span>
+                </li>
+            </ul>
+            <a href="#" onclick="showMockToast('Redirecting to the sustainability report...'); return false;"
+                class="btn btn-primary btn-lg rounded-pill px-5 py-3 ripple shadow-sm">
+                Read Our Story
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- Features Grid (Redesigned MD3) -->
+<section class="py-5 bg-subtle stagger-item"
+    style="border-radius: var(--md-shape-extra-large) var(--md-shape-extra-large) 0 0;">
+    <div class="container py-5">
+        <div class="text-center mb-5 pb-3">
+            <h2 class="h1 fw-bold">The Amanzon Promise</h2>
+            <p class="text-secondary fs-5">Why thousands of customers choose us daily</p>
+        </div>
+        <div class="row g-4 g-lg-5 text-center">
+            <div class="col-md-3 col-6">
+                <div class="p-4 rounded-4 bg-white shadow-sm h-100 card-hover border-0 transition-transform">
+                    <div class="mb-4 text-primary bg-primary-subtle d-inline-flex p-3 rounded-circle"
+                        style="background-color: var(--md-sys-color-primary-container);">
+                        <i class="bi bi-truck fs-2" style="color: var(--md-sys-color-on-primary-container);"></i>
+                    </div>
+                    <h5 class="fw-bold mb-2">Free Express Shipping</h5>
+                    <p class="text-secondary small mb-0 px-2">On all premium orders over ₹500 across India.</p>
                 </div>
             </div>
             <div class="col-md-3 col-6">
-                <div class="p-4 rounded-4 bg-white shadow-sm h-100">
-                    <div class="mb-3 text-primary bg-light d-inline-block p-3 rounded-circle">
-                        <i class="bi bi-shield-check fs-3"></i>
+                <div class="p-4 rounded-4 bg-white shadow-sm h-100 card-hover border-0 transition-transform">
+                    <div class="mb-4 text-primary bg-primary-subtle d-inline-flex p-3 rounded-circle"
+                        style="background-color: var(--md-sys-color-primary-container);">
+                        <i class="bi bi-shield-check fs-2" style="color: var(--md-sys-color-on-primary-container);"></i>
                     </div>
-                    <h6 class="fw-bold mb-2">Secure Payment</h6>
-                    <p class="text-secondary small mb-0">Encrypted transactions</p>
+                    <h5 class="fw-bold mb-2">Secure Payment</h5>
+                    <p class="text-secondary small mb-0 px-2">Bank-level 256-bit AES encrypted transactions.</p>
                 </div>
             </div>
             <div class="col-md-3 col-6">
-                <div class="p-4 rounded-4 bg-white shadow-sm h-100">
-                    <div class="mb-3 text-primary bg-light d-inline-block p-3 rounded-circle">
-                        <i class="bi bi-arrow-repeat fs-3"></i>
+                <div class="p-4 rounded-4 bg-white shadow-sm h-100 card-hover border-0 transition-transform">
+                    <div class="mb-4 text-primary bg-primary-subtle d-inline-flex p-3 rounded-circle"
+                        style="background-color: var(--md-sys-color-primary-container);">
+                        <i class="bi bi-arrow-return-left fs-2"
+                            style="color: var(--md-sys-color-on-primary-container);"></i>
                     </div>
-                    <h6 class="fw-bold mb-2">Easy Returns</h6>
-                    <p class="text-secondary small mb-0">14-day return window</p>
+                    <h5 class="fw-bold mb-2">Easy 30-Day Returns</h5>
+                    <p class="text-secondary small mb-0 px-2">No-questions-asked return policy for all items.</p>
                 </div>
             </div>
             <div class="col-md-3 col-6">
-                <div class="p-4 rounded-4 bg-white shadow-sm h-100">
-                    <div class="mb-3 text-primary bg-light d-inline-block p-3 rounded-circle">
-                        <i class="bi bi-headset fs-3"></i>
+                <div class="p-4 rounded-4 bg-white shadow-sm h-100 card-hover border-0 transition-transform">
+                    <div class="mb-4 text-primary bg-primary-subtle d-inline-flex p-3 rounded-circle"
+                        style="background-color: var(--md-sys-color-primary-container);">
+                        <i class="bi bi-headset fs-2" style="color: var(--md-sys-color-on-primary-container);"></i>
                     </div>
-                    <h6 class="fw-bold mb-2">24/7 Support</h6>
-                    <p class="text-secondary small mb-0">We're here for you</p>
+                    <h5 class="fw-bold mb-2">24/7 Concierge Service</h5>
+                    <p class="text-secondary small mb-0 px-2">Dedicated support squad ready to help anytime.</p>
                 </div>
             </div>
         </div>

@@ -1,0 +1,145 @@
+{% extends 'base.html' %}
+
+{% block title %}About Us - Amanzon Premium{% endblock %}
+
+{% block content %}
+<!-- Premium Hero Section -->
+<div class="position-relative overflow-hidden bg-primary text-white"
+    style="background: linear-gradient(135deg, var(--md-sys-color-primary) 0%, var(--md-sys-color-tertiary) 100%);">
+    <div class="position-absolute top-0 start-0 w-100 h-100 opacity-25"
+        style="background-image: radial-gradient(circle at 20% 50%, rgba(255,255,255,0.3) 0%, transparent 50%); mix-blend-mode: overlay;">
+    </div>
+
+    <div class="container py-5 my-md-5 py-md-5 position-relative z-1 stagger-item">
+        <div class="row align-items-center">
+            <div class="col-lg-7 py-5">
+                    class="badge bg-white text-primary rounded-pill px-3 py-2 fw-bold letter-spacing-wide text-uppercase mb-4 shadow-sm">Our Story</span>
+                <h1 class="display-3 fw-bold mb-4 text-balance" style="line-height: 1.1;">Curating Everyday Excellence.</h1>
+                <p class="fs-4 text-white-50 text-balance mb-5" style="max-width: 600px;">Amanzon was founded on a simple principle: beautiful, high-quality products shouldn't be out of reach. We source the extraordinary so you can live exceptionally.</p>
+                <div class="d-flex gap-3">
+                    <a href="#values" class="btn btn-light rounded-pill px-4 py-3 fw-bold ripple shadow-sm">Explore Our Values</a>
+                </div>
+            </div>
+            <div class="col-lg-5 d-none d-lg-block">
+                <div class="position-relative w-100 rounded-5 overflow-hidden shadow-lg border border-3 border-white border-opacity-25" style="aspect-ratio: 4/5; transform: rotate(2deg);">
+                    <img src="https://placehold.co/800x1000/10b981/ffffff?text=Studio" alt="Amanzon Studio" class="w-100 h-100 object-fit-cover shadow">
+                    <!-- Glassmorphism overlay mock -->
+                    <div class="position-absolute bottom-0 start-0 w-100 p-4"
+                        style="background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(10px); border-top: 1px solid rgba(255, 255, 255, 0.2);">
+                        <div class="d-flex align-items-center gap-3">
+                            <div class="bg-white text-primary rounded-circle d-flex align-items-center justify-content-center fw-bold fs-4 shadow-sm"
+                                style="width: 48px; height: 48px;">15</div>
+                            <div class="text-white">
+                                <h6 class="fw-bold mb-0">Years of Craft</h6>
+                                <p class="small text-white-50 mb-0">Est. 2009</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Values Section (Mock) -->
+<div id="values" class="container py-5 my-5 stagger-item">
+    <div class="text-center mb-5 pb-4">
+        <h2 class="display-6 fw-bold text-primary mb-3">The Amanzon Standard</h2>
+        <p class="text-secondary fs-5 mx-auto" style="max-width: 700px;">We measure our success not by the quantity of items sold, but by the quality of the lives we touch.</p>
+    </div>
+
+    <div class="row g-5">
+        <div class="col-md-4">
+            <div class="bg-subtle p-5 rounded-4 h-100 border border-light text-center card-hover transition">
+                <div class="bg-white rounded-circle d-inline-flex align-items-center justify-content-center shadow-sm mb-4 text-primary" style="width: 80px; height: 80px;">
+                    <i class="bi bi-gem fs-1"></i>
+                </div>
+                <h4 class="fw-bold mb-3">Uncompromising Quality</h4>
+                <p class="text-secondary mb-0">Every item undergoes a rigorous 50-point inspection. We refuse to settle for anything less than perfection in materials and craftsmanship.</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="bg-primary-subtle p-5 rounded-4 h-100 border border-primary-subtle text-center card-hover transition" style="box-shadow: 0 10px 30px rgba(16, 185, 129, 0.1);">
+                <div class="bg-primary text-white rounded-circle d-inline-flex align-items-center justify-content-center shadow-sm mb-4" style="width: 80px; height: 80px;">
+                    <i class="bi bi-tree fs-1"></i>
+                </div>
+                <h4 class="fw-bold mb-3 text-primary">Sustainable Sourcing</h4>
+                <p class="text-primary-emphasis mb-0 opacity-75">We partner exclusively with artisans and manufacturers who share our commitment to ethical labor and environmental stewardship.</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="bg-subtle p-5 rounded-4 h-100 border border-light text-center card-hover transition">
+                <div class="bg-white rounded-circle d-inline-flex align-items-center justify-content-center shadow-sm mb-4 text-primary"
+                    style="width: 80px; height: 80px;">
+                    <i class="bi bi-people fs-1"></i>
+                </div>
+                <h4 class="fw-bold mb-3">Community First</h4>
+                <p class="text-secondary mb-0">Beyond retail, we're building a network of creators and connoisseurs who inspire each other to elevate their everyday existence.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Team Placeholder -->
+<div class="bg-light py-5 my-5 stagger-item">
+    <div class="container py-5">
+        <div class="row align-items-center g-5">
+            <div class="col-lg-5">
+                <h2 class="display-6 fw-bold text-primary mb-4">Meet the Curators</h2>
+                <p class="text-secondary fs-5 mb-4">Behind every product is a team of obsessive designers, buyers, and
+                    quality experts who reject the ordinary.</p>
+                <button class="btn btn-outline-primary rounded-pill px-4 shadow-sm fw-bold ripple" onclick="showMockToast('Opening careers page... (Mock)', 'info')">Join Our Team</button>
+            </div>
+            <div class="col-lg-7">
+                <div class="row g-4 overflow-hidden position-relative">
+                    <!-- Carousel mock -->
+                    <div class="d-flex gap-4 pb-4" style="overflow-x: auto; scrollbar-width: none;">
+                        <div class="card border-0 bg-transparent flex-shrink-0" style="width: 250px;">
+                            <img src="https://placehold.co/400x400/e2e3e0/707973?text=CEO"
+                                class="rounded-5 shadow-sm mb-3 object-fit-cover" style="aspect-ratio: 1/1;" alt="Team">
+                            <h5 class="fw-bold mb-1">Elena Rostova</h5>
+                            <p class="text-primary small fw-bold text-uppercase tracking-wide mb-0">Founder & CEO</p>
+                        </div>
+                        <div class="card border-0 bg-transparent flex-shrink-0" style="width: 250px;">
+                            <img src="https://placehold.co/400x400/dbe5dd/404943?text=Design"
+                                class="rounded-5 shadow-sm mb-3 object-fit-cover" style="aspect-ratio: 1/1;" alt="Team">
+                            <h5 class="fw-bold mb-1">Marcus Chen</h5>
+                            <p class="text-primary small fw-bold text-uppercase tracking-wide mb-0">Head of Design</p>
+                        </div>
+                        <div class="card border-0 bg-transparent flex-shrink-0" style="width: 250px;">
+                            <img src="https://placehold.co/400x400/e5e7eb/9ca3af?text=Sourcing"
+                                class="rounded-5 shadow-sm mb-3 object-fit-cover opacity-50" style="aspect-ratio: 1/1;"
+                                alt="Team">
+                            <h5 class="fw-bold mb-1">Sarah Jenkins</h5>
+                            <p class="text-primary small fw-bold text-uppercase tracking-wide mb-0">Lead Sourcing</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- CTA -->
+<div class="container py-5 mb-5 stagger-item">
+    <div class="bg-primary text-white rounded-5 p-5 text-center position-relative overflow-hidden border border-4 border-light shadow"
+        style="background: linear-gradient(45deg, var(--md-sys-color-primary) 0%, var(--md-sys-color-secondary) 100%);">
+        <div class="position-relative z-1 py-4">
+            <h2 class="display-5 fw-bold mb-4">Ready to Experience the Difference?</h2>
+            <p class="fs-5 text-white-50 mb-5 mx-auto" style="max-width: 600px;">Explore our curated collection and
+                discover why thousands of customers refuse to shop anywhere else.</p>
+            <a href="{% url 'store:shop' %}" class="btn btn-light btn-lg rounded-pill px-5 py-3 fw-bold text-primary shadow-lg ripple transform-hover">Shop The Collection</a>
+        </div>
+    </div>
+</div>
+
+<style>
+    .transform-hover {
+        transition: transform 0.3s cubic-bezier(0.2, 0, 0, 1);
+    }
+
+    .transform-hover:hover {
+        transform: translateY(-5px);
+    }
+</style>
+{% endblock %}

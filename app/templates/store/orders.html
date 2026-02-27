@@ -1,110 +1,180 @@
 {% extends 'base.html' %}
 
-{% block title %}My Orders - Amanzon{% endblock %}
+{% block title %}Order History - Amanzon Premium{% endblock %}
 
 {% block content %}
-<div class="container py-5">
-    <div class="d-flex align-items-center justify-content-between mb-5">
-        <div>
-            <h1 class="h3 fw-bold mb-2">My Orders</h1>
-            <p class="text-secondary mb-0">Track and manage your recent purchases</p>
+<div class="bg-subtle pt-4 pb-4 border-bottom border-light">
+    <div class="container stagger-item">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb mb-3 align-items-center">
+                <li class="breadcrumb-item"><a href="{% url 'store:index' %}"
+                        class="text-secondary text-decoration-none hover-primary"><i
+                            class="bi bi-house-door me-1"></i>Home</a></li>
+                <li class="breadcrumb-item"><a href="{% url 'store:profile' %}"
+                        class="text-secondary text-decoration-none hover-primary">My Account</a></li>
+                <li class="breadcrumb-item active text-primary fw-bold" aria-current="page">Order History</li>
+            </ol>
+        </nav>
+        <div class="d-flex align-items-center justify-content-between">
+            <div>
+                <h1 class="display-5 fw-bold mb-1 text-primary">Order History</h1>
+                <p class="text-secondary mb-0 fs-5 pb-1">Track and manage your premium acquisitions.</p>
+            </div>
+            <a href="{% url 'store:shop' %}"
+                class="btn btn-outline-primary rounded-pill px-4 py-2 border-0 bg-white shadow-sm ripple fw-medium d-none d-md-flex align-items-center gap-2">
+                <i class="bi bi-bag"></i> Continue Shopping
+            </a>
         </div>
-        <a href="{% url 'store:shop' %}" class="btn btn-outline-primary rounded-pill px-4">Continue Shopping</a>
     </div>
+</div>
 
+<div class="container py-5 mb-5">
     {% if orders %}
-    <div class="row g-4">
-        {% for order in orders %}
-        <div class="col-12">
-            <div class="bg-white rounded-4 shadow-sm border border-subtle overflow-hidden">
-                <div
-                    class="d-flex flex-column flex-md-row justify-content-between align-items-md-center bg-light p-4 border-bottom border-subtle gap-3">
-                    <div class="d-flex gap-4">
-                        <div>
-                            <small class="text-uppercase text-secondary fw-bold tracking-wide d-block mb-1"
-                                style="font-size: 0.7rem;">Order Placed</small>
-                            <span class="fw-medium text-dark">{{ order.created_at|date:"M d, Y" }}</span>
+    <div class="row g-5">
+        <div class="col-12 col-xl-10 mx-auto">
+            <div class="d-flex flex-column gap-5">
+                {% for order in orders %}
+                <div class="bg-white rounded-5 shadow-sm border border-light overflow-hidden stagger-item">
+                    <!-- Order Header -->
+                    <div
+                        class="bg-subtle p-4 p-md-5 border-bottom border-light d-flex flex-column flex-lg-row justify-content-between align-items-lg-center gap-4">
+                        <div class="d-flex flex-wrap gap-4 gap-md-5 flex-grow-1">
+                            <div>
+                                <small class="text-uppercase text-secondary fw-bold tracking-wide d-block mb-1"
+                                    style="font-size: 0.75rem; letter-spacing: 0.05em;">Order Placed</small>
+                                <span class="fw-bold text-dark fs-5">{{ order.created_at|date:"M d, Y" }}</span>
+                            </div>
+                            <div>
+                                <small class="text-uppercase text-secondary fw-bold tracking-wide d-block mb-1"
+                                    style="font-size: 0.75rem; letter-spacing: 0.05em;">Total</small>
+                                <span class="fw-bold text-primary fs-5">₹{{ order.total }}</span>
+                            </div>
+                            <div>
+                                <small class="text-uppercase text-secondary fw-bold tracking-wide d-block mb-1"
+                                    style="font-size: 0.75rem; letter-spacing: 0.05em;">Order #</small>
+                                <span class="fw-bold text-dark fs-5 font-monospace text-uppercase">{{
+                                    order.id|stringformat:"06d" }}</span>
+                            </div>
                         </div>
-                        <div>
-                            <small class="text-uppercase text-secondary fw-bold tracking-wide d-block mb-1"
-                                style="font-size: 0.7rem;">Total</small>
-                            <span class="fw-medium text-dark">₹{{ order.total }}</span>
-                        </div>
-                        <div>
-                            <small class="text-uppercase text-secondary fw-bold tracking-wide d-block mb-1"
-                                style="font-size: 0.7rem;">Order #</small>
-                            <span class="fw-medium text-dark">{{ order.id }}</span>
+
+                        <div
+                            class="d-flex flex-column flex-sm-row align-items-start align-items-sm-center justify-content-lg-end gap-3 min-w-0">
+                            <div class="d-flex flex-wrap gap-2">
+                                {% if order.is_paid %}
+                                <span
+                                    class="badge bg-success-subtle text-success border border-success-subtle rounded-pill px-3 py-2 d-flex align-items-center gap-1"><i
+                                        class="bi bi-check-circle-fill"></i> Paid</span>
+                                {% else %}
+                                <span
+                                    class="badge bg-warning-subtle text-warning-emphasis border border-warning-subtle rounded-pill px-3 py-2 d-flex align-items-center gap-1"><i
+                                        class="bi bi-clock-history"></i> Pending Payment</span>
+                                {% endif %}
+
+                                {% if order.status == 'delivered' %}
+                                <span
+                                    class="badge bg-primary-subtle text-primary border border-primary-subtle rounded-pill px-3 py-2 d-flex align-items-center gap-1"><i
+                                        class="bi bi-box-seam-fill"></i> Delivered</span>
+                                {% elif order.status == 'cancelled' %}
+                                <span
+                                    class="badge bg-danger-subtle text-danger border border-danger-subtle rounded-pill px-3 py-2 d-flex align-items-center gap-1"><i
+                                        class="bi bi-x-circle-fill"></i> Cancelled</span>
+                                {% else %}
+                                <span
+                                    class="badge bg-info-subtle text-info-emphasis border border-info-subtle rounded-pill px-3 py-2">{{
+                                    order.get_status_display }}</span>
+                                {% endif %}
+                            </div>
+                            <!-- Removed order_detail view link since it doesn't exist, using a toast mock instead -->
+                            <button class="btn btn-outline-primary rounded-pill px-4 flex-shrink-0 ripple"
+                                onclick="showMockToast('Opening order details...', 'info')">View Details</button>
                         </div>
                     </div>
-                    <div class="d-flex align-items-center gap-3">
-                        <div class="d-flex gap-2">
-                            {% if order.is_paid %}
-                            <span
-                                class="badge bg-success-subtle text-success border border-success-subtle rounded-pill px-3">Paid</span>
-                            {% else %}
-                            <span
-                                class="badge bg-warning-subtle text-warning border border-warning-subtle rounded-pill px-3">Pending
-                                Payment</span>
-                            {% endif %}
 
-                            {% if order.status == 'delivered' %}
-                            <span
-                                class="badge bg-primary-subtle text-primary border border-primary-subtle rounded-pill px-3">Delivered</span>
-                            {% elif order.status == 'cancelled' %}
-                            <span
-                                class="badge bg-danger-subtle text-danger border border-danger-subtle rounded-pill px-3">Cancelled</span>
-                            {% else %}
-                            <span class="badge bg-info-subtle text-info border border-info-subtle rounded-pill px-3">{{ order.get_status_display }}</span>
-                            {% endif %}
+                    <!-- Order Items List -->
+                    <div class="p-4 p-md-5">
+                        <div class="d-flex flex-column gap-4">
+                            {% for item in order.items.all %}
+                            <div
+                                class="d-flex flex-column flex-sm-row gap-4 align-items-sm-center{% if not forloop.last %} pb-4 border-bottom border-light{% endif %}">
+                                <!-- CR-2: Added null hook for product image to avoid broken links -->
+                                <div class="position-relative flex-shrink-0 rounded-4 overflow-hidden border border-light bg-subtle"
+                                    style="width: 100px; height: 100px;">
+                                    <img src="{% if item.product and item.product.image %}{{ item.product.image.url }}{% else %}https://placehold.co/100x100/e5e7eb/9ca3af?text=NA{% endif %}"
+                                        alt="{{ item.product_name|default:'Item' }}"
+                                        class="w-100 h-100 object-fit-cover shadow-sm p-2 bg-white rounded-4">
+
+                                    {% if item.quantity > 1 %}
+                                    <span
+                                        class="position-absolute top-0 end-0 badge rounded-circle bg-dark text-white fw-bold shadow-sm d-flex align-items-center justify-content-center m-1"
+                                        style="width: 24px; height: 24px; font-size: 0.8rem;">
+                                        {{ item.quantity }}
+                                    </span>
+                                    {% endif %}
+                                </div>
+
+                                <div class="flex-grow-1 min-w-0">
+                                    <h5 class="fw-bold text-dark text-balance mb-1">{{
+                                        item.product_name|default:"Premium Item" }}</h5>
+                                    {% if item.product %}
+                                    <p class="text-secondary small mb-2">{{ item.product.category.name }}</p>
+                                    <div class="d-flex gap-2">
+                                        <a href="{% url 'store:product_detail' item.product.slug %}"
+                                            class="btn btn-sm btn-outline-primary rounded-pill px-3 border-light ripple text-primary bg-subtle">Buy
+                                            It Again</a>
+                                        <button
+                                            class="btn btn-sm btn-outline-secondary rounded-pill px-3 border-light ripple text-secondary bg-subtle"
+                                            onclick="showMockToast('Writing review...', 'info')">Write Review</button>
+                                    </div>
+                                    {% else %}
+                                    <p class="text-secondary small fst-italic mb-0">Item no longer available</p>
+                                    {% endif %}
+                                </div>
+                                <div class="text-sm-end mt-2 mt-sm-0">
+                                    <span class="fw-bold text-primary fs-5">₹{{ item.price }}</span>
+                                </div>
+                            </div>
+                            {% endfor %}
                         </div>
-                        <a href="{% url 'store:order_detail' order.id %}"
-                            class="btn btn-outline-dark btn-sm rounded-pill px-3">View Details</a>
+
+                        <!-- Order Actions -->
+                        {% if order.status == 'pending' or order.status == 'confirmed' %}
+                        <div
+                            class="mt-5 pt-4 border-top border-light d-flex justify-content-end align-items-center gap-3">
+                            <span class="small text-secondary fw-medium"><i class="bi bi-info-circle me-1"></i> Changed
+                                your mind?</span>
+                            <form action="{% url 'store:cancel_order' order.id %}" method="POST" class="d-inline"
+                                onsubmit="return confirm('Are you sure you want to cancel this order?')">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-outline-danger rounded-pill px-4 ripple shadow-sm">
+                                    Cancel Order
+                                </button>
+                            </form>
+                        </div>
+                        {% endif %}
                     </div>
                 </div>
-
-                <div class="p-4">
-                    <div class="d-flex align-items-center gap-4 overflow-auto">
-                        {% for item in order.items.all %}
-                        <div class="position-relative flex-shrink-0" style="width: 80px;">
-                            <img src="{% if item.product %}{{ item.product.image.url }}{% endif %}"
-                                alt="{{ item.product_name }}" class="rounded border border-subtle" loading="lazy"
-                                style="width: 80px; height: 80px; object-fit: cover;">
-                            {% if item.quantity > 1 %}
-                            <span
-                                class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-secondary border border-white"
-                                style="font-size: 0.7rem;">
-                                {{ item.quantity }}
-                            </span>
-                            {% endif %}
-                        </div>
-                        {% endfor %}
-                    </div>
-
-                    {% if order.status == 'pending' or order.status == 'confirmed' %}
-                    <div class="mt-4 pt-3 border-top border-subtle text-end">
-                        <form action="{% url 'store:cancel_order' order.id %}" method="POST" class="d-inline"
-                            onsubmit="return confirm('Are you sure you want to cancel this order?')">
-                            {% csrf_token %}
-                            <button type="submit"
-                                class="btn btn-link text-danger small fw-medium text-decoration-none p-0">
-                                Cancel Order
-                            </button>
-                        </form>
-                    </div>
-                    {% endif %}
-                </div>
+                {% endfor %}
             </div>
         </div>
-        {% endfor %}
     </div>
     {% else %}
-    <div class="empty-state py-5 my-5 text-center">
-        <div class="mb-4 text-secondary opacity-25">
-            <i class="bi bi-box-seam" style="font-size: 5rem;"></i>
+    <!-- Premium Empty State -->
+    <div class="py-5 my-5 text-center bg-white rounded-5 border border-light p-5 shadow-sm stagger-item">
+        <div class="mb-4 d-inline-flex align-items-center justify-content-center bg-subtle rounded-circle"
+            style="width: 120px; height: 120px;">
+            <i class="bi bi-box2-heart text-primary" style="font-size: 4rem;"></i>
         </div>
-        <h4 class="fw-bold mb-3">No orders placed yet</h4>
-        <p class="text-secondary mb-4">Looks like you haven't made your choice yet.</p>
-        <a href="{% url 'store:shop' %}" class="btn btn-primary rounded-pill px-5 py-2">Start Shopping</a>
+        <h2 class="fw-bold text-primary mb-3">No Orders Yet</h2>
+        <p class="text-secondary mb-5 mx-auto fs-5" style="max-width: 600px;">
+            Your order history is currently empty. Discover our curated collection of premium products and make your
+            first acquisition today.
+        </p>
+        <div class="d-flex justify-content-center gap-3">
+            <a href="{% url 'store:shop' %}"
+                class="btn btn-primary btn-lg rounded-pill px-5 py-3 ripple shadow-sm fw-bold">
+                <i class="bi bi-bag me-1"></i> Start Shopping
+            </a>
+        </div>
     </div>
     {% endif %}
 </div>

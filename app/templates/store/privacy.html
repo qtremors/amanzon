@@ -1,0 +1,74 @@
+{% extends 'base.html' %}
+
+{% block title %}Privacy Policy - Amanzon Premium{% endblock %}
+
+{% block content %}
+<div class="bg-subtle pt-4 pb-4 border-bottom border-light">
+    <div class="container stagger-item">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb mb-3 align-items-center">
+                <li class="breadcrumb-item"><a href="{% url 'store:index' %}" class="text-secondary text-decoration-none hover-primary"><i class="bi bi-house-door me-1"></i>Home</a></li>
+                <li class="breadcrumb-item active text-primary fw-bold" aria-current="page">Privacy Policy</li>
+            </ol>
+        </nav>
+        <div class="d-flex align-items-center justify-content-between">
+            <div>
+                <h1 class="display-5 fw-bold mb-1 text-primary">Privacy Policy</h1>
+                <p class="text-secondary mb-0 fs-5 pb-1">Effective Date: January 1, 2024</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container py-5 mb-5 stagger-item">
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <div class="bg-white rounded-5 shadow-sm border border-light p-4 p-md-5 document-content">
+                <p class="lead mb-4">At Amanzon, accessible from amanzon.com, one of our main priorities is the privacy of our visitors. This Privacy Policy document contains types of information that is collected and recorded by Amanzon and how we use it.</p>
+
+                <h3 class="fw-bold mt-5 mb-3">1. Information We Collect</h3>
+                <p>We collect several different types of information for various purposes to provide and improve our premium service to you.</p>
+                <ul class="mb-4">
+                    <li><strong>Personal Data:</strong> While using our Service, we may ask you to provide us with certain personally identifiable information that can be used to contact or identify you ("Personal Data"). Personally identifiable information may include, but is not limited to: Email address, First name and last name, Phone number, Address, State, Province, ZIP/Postal code, City.</li>
+                    <li><strong>Usage Data:</strong> We may also collect information how the Service is accessed and used ("Usage Data"). This Usage Data may include information such as your computer's Internet Protocol address (e.g. IP address), browser type, browser version, the pages of our Service that you visit, the time and date of your visit, the time spent on those pages, unique device identifiers and other diagnostic data.</li>
+                </ul>
+
+                <h3 class="fw-bold mt-5 mb-3">2. Use of Data</h3>
+                <p>Amanzon uses the collected data for various purposes:</p>
+                <ul class="mb-4">
+                    <li>To provide and maintain the Service</li>
+                    <li>To notify you about changes to our Service</li>
+                    <li>To allow you to participate in interactive features of our Service when you choose to do so</li>
+                    <li>To provide customer care and support</li>
+                    <li>To provide analysis or valuable information so that we can improve the Service</li>
+                    <li>To monitor the usage of the Service</li>
+                    <li>To detect, prevent and address technical issues</li>
+                </ul>
+
+                <h3 class="fw-bold mt-5 mb-3">3. Data Security</h3>
+                <p class="mb-4">The security of your data is of paramount importance to us, but remember that no method of transmission over the Internet, or method of electronic storage is 100% secure. While we strive to use commercially acceptable means to protect your Personal Data—including industry-standard encryption for all premium transactions—we cannot guarantee its absolute security.</p>
+
+                <h3 class="fw-bold mt-5 mb-3">4. Contact Us</h3>
+                <p>If you have any questions about this Privacy Policy, please contact us:</p>
+                <ul>
+                    <li>By email: privacy@amanzon.com</li>
+                    <li>By visiting this page on our website: <a href="{% url 'store:contact' %}" class="text-primary text-decoration-none">Contact Us</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .document-content p {
+        color: var(--md-sys-color-on-surface-variant);
+        line-height: 1.8;
+    }
+
+    .document-content li {
+        color: var(--md-sys-color-on-surface-variant);
+        line-height: 1.8;
+        margin-bottom: 0.5rem;
+    }
+</style>
+{% endblock %}

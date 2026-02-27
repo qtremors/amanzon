@@ -6,6 +6,44 @@
 
 ---
 
+## [1.3.5] - 2026-02-27
+
+### Added
+- **Material Design 3 (MD3) System** - Migrated styling architecture to Google MD3, introducing custom premium typography (`Outfit`, `Plus Jakarta Sans`) and expressive shapes (`--md-shape-medium`, `--md-shape-large`, `--md-shape-full`).
+- **Dynamic Dark/Light Mode** - Sophisticated palettes with `localStorage` persistence and organic smooth transition interpolation.
+- **Frontend Mock Content** - Designed fully functional, richly-styled frontend mock pages to complete the platform experience:
+  - About Us (`about.html`)
+  - FAQ / Help Center (`faq.html`)
+  - Blog & Style Guides (`blog.html`)
+  - Privacy Policy (`privacy.html`)
+  - Terms of Service (`terms.html`)
+- **Interactive Feedback System** - Custom vanilla JS implementation of:
+  - Mobile-app style ripple effects on buttons/cards.
+  - Staggered IntersectionObserver fade-in animations.
+  - Global mock Toast Notification system for "Add to Cart" and wishlist actions.
+- **Advanced UI Interactions & Polish (Phase 2):**
+  - **Offcanvas Cart:** Expressive side drawer sliding in on cart icon click.
+  - **Mega Menu:** Interactive dropdown for shop categories in Navbar.
+  - **Skeleton Loaders:** CSS animations for perceived faster loading states.
+  - **Quick View Modal:** Material Design modal triggered from product cards.
+  - **Wishlist Animations:** Custom pulse and particle burst CSS on heart icons.
+  - **Sticky Action Bar:** "Add to Cart" sticky component sliding in on product detail pages.
+  - **Recently Viewed:** Horizontal snapping scroll component at the bottom of pages.
+
+### Changed
+- **Base Layout (`base.html`)** - Introduced a responsive, sticky glassmorphic Navbar and expanded footer (with mocked newsletter signups).
+- **Core Shopping Experience** - Massively upgraded:
+  - **Homepage:** Immersive hero sections, brand trust indicators, and horizontal scrolling categories.
+  - **Shop/Catalog:** Added sticky sidebar filters and premium zero-state designs for empty results.
+  - **Product Details:** Polished image galleries, mock interactive tabs, and customer review sections.
+  - **Cart & Checkout:** Streamlined step-by-step expressive layouts optimized for conversions.
+- **Authentication Pages** - Refactored Login, Register, and Password Reset screens to visually pleasing split-screen aesthetics with premium decorative blurs.
+- **User Dashboard** - Remade Profile and Orders to feature sidebar navigation and rich history cards.
+
+### Fixed
+- **IDE Formatting Issues** - Addressed widespread `invalid block tag` and syntax exceptions across all primary view and auth templates (including `base.html`, `shop.html`, `index.html`) caused by automated formatters splitting Django template tags across multiple lines.
+- **Django Template Syntax Bug** - Missing spacing in `shop.html` math filters and conditional sorting tags.
+
 ## [1.3.1] - 2026-01-12
 
 ### Added

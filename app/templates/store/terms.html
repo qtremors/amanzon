@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+
+{% block title %}Terms of Service - Amanzon Premium{% endblock %}
+
+{% block content %}
+<div class="bg-subtle pt-4 pb-4 border-bottom border-light">
+    <div class="container stagger-item">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb mb-3 align-items-center">
+                <li class="breadcrumb-item"><a href="{% url 'store:index' %}" class="text-secondary text-decoration-none hover-primary"><i class="bi bi-house-door me-1"></i>Home</a></li>
+                <li class="breadcrumb-item active text-primary fw-bold" aria-current="page">Terms of Service</li>
+            </ol>
+        </nav>
+        <div class="d-flex align-items-center justify-content-between">
+            <div>
+                <h1 class="display-5 fw-bold mb-1 text-primary">Terms of Service</h1>
+                <p class="text-secondary mb-0 fs-5 pb-1">Last Updated: January 1, 2024</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container py-5 mb-5 stagger-item">
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <div class="bg-white rounded-5 shadow-sm border border-light p-4 p-md-5 document-content">
+                <p class="lead mb-4">Welcome to Amanzon. These terms and conditions outline the rules and regulations for the use of Amanzon's Website, located at amanzon.com.</p>
+                <p class="mb-4">By accessing this website we assume you accept these terms and conditions. Do not continue to use Amanzon if you do not agree to take all of the terms and conditions stated on this page.</p>
+
+                <h3 class="fw-bold mt-5 mb-3">1. Limited License</h3>
+                <p class="mb-4">Unless otherwise stated, Amanzon and/or its licensors own the intellectual property rights for all material on Amanzon. All intellectual property rights are reserved. You may access this from Amanzon for your own personal use subjected to restrictions set in these terms and conditions.</p>
+
+                <p>You must not:</p>
+                <ul class="mb-4">
+                    <li>Republish material from Amanzon</li>
+                    <li>Sell, rent or sub-license material from Amanzon</li>
+                    <li>Reproduce, duplicate or copy material from Amanzon</li>
+                    <li>Redistribute content from Amanzon</li>
+                </ul>
+
+                <h3 class="fw-bold mt-5 mb-3">2. User Accounts</h3>
+                <p>When you create an account with us, you must provide us information that is accurate, complete, and current at all times. Failure to do so constitutes a breach of the Terms, which may result in immediate termination of your account on our Service.</p>
+                <p class="mb-4">You are responsible for safeguarding the password that you use to access the Service and for any activities or actions under your password, whether your password is with our Service or a third-party service.</p>
+
+                <h3 class="fw-bold mt-5 mb-3">3. Purchases and Payments</h3>
+                <p class="mb-4">If you wish to purchase any product made available through the Service ("Purchase"), you may be asked to supply certain information relevant to your Purchase including, without limitation, your credit card number, the expiration date of your credit card, your billing address, and your shipping information. All premium acquisitions are subject to our stringent quality checks prior to dispatch.</p>
+
+                <h3 class="fw-bold mt-5 mb-3">4. Limitation of Liability</h3>
+                <p class="mb-4">In no event shall Amanzon, nor its directors, employees, partners, agents, suppliers, or affiliates, be liable for any indirect, incidental, special, consequential or punitive damages, including without limitation, loss of profits, data, use, goodwill, or other intangible losses, resulting from (i) your access to or use of or inability to access or use the Service; (ii) any conduct or content of any third party on the Service.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .document-content p {
+        color: var(--md-sys-color-on-surface-variant);
+        line-height: 1.8;
+    }
+
+    .document-content li {
+        color: var(--md-sys-color-on-surface-variant);
+        line-height: 1.8;
+        margin-bottom: 0.5rem;
+    }
+</style>
+{% endblock %}
